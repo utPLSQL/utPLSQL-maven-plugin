@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.utplsql</groupId>
+    <artifactId>utplsql-maven-plugin-test</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>maven-plugin</packaging>
+
+    <name>utplsql-maven-plugin Maven Plugin Test</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>${pom.groupId}</groupId>
+                <artifactId>utplsql-maven-plugin</artifactId>
+                <version>${pom.version}</version>
+                <goals>
+                    <goal>test</goal>
+                </goals>
+                <configuration>
+                    <suitePaths>
+                        <suitePath>suite_path1</suitePath>
+                        <suitePath>suite_path2</suitePath>
+                    </suitePaths>
+                    <sourcePaths>
+                        <sourcePath>source_path1</sourcePath>
+                        <sourcePath>source_path2</sourcePath>
+                        <sourcePath>source_path3</sourcePath>
+                    </sourcePaths>
+                    <testPaths>
+                        <testPath>test_path1</testPath>
+                        <testPath>test_path2</testPath>
+                    </testPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
