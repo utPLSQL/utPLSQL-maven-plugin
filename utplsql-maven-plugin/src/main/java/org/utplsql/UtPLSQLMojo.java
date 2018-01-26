@@ -1,104 +1,144 @@
 package org.utplsql;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.utplsql.api.FileMapperOptions;
-import org.utplsql.api.OutputBuffer;
-import org.utplsql.api.TestRunner;
-import org.utplsql.api.exception.SomeTestsFailedException;
-import org.utplsql.api.reporter.Reporter;
-import org.utplsql.api.reporter.ReporterFactory;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.utplsql.api.CustomTypes.UT_DOCUMENTATION_REPORTER;
+import org.apache.maven.model.Resource;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.utplsql.api.FileMapperOptions;
+import org.utplsql.api.TestRunner;
+import org.utplsql.api.reporter.Reporter;
+import org.utplsql.api.reporter.ReporterFactory;
+import org.utplsql.helper.PluginDefault;
+import org.utplsql.helper.SQLScannerHelper;
 
-@Mojo(name = "test")
-public class UtPLSQLMojo extends AbstractMojo {
+@Mojo(name = "test", defaultPhase = LifecyclePhase.TEST)
+public class UtPLSQLMojo extends AbstractMojo
+{
 
+	@Parameter(required = true)
+	private String url;
 
-    /**
-     * List of paths with test suites.
-     */
-    @Parameter(name = "suitePaths", required = true, property = "utplsql.suite_paths")
-    private List<String> suitePaths;
+	@Parameter(required = true)
+	private String user;
 
-    /**
-     * List of paths with source files.
-     */
-    @Parameter(name = "sourcePaths", required = true, property = "utplsql.source_paths")
-    private List<String> sourcePaths;
+	@Parameter(required = true)
+	private String password;
 
-    /**
-     * List of paths with test files.
-     */
-    @Parameter(name = "testPaths", required = true, property = "utplsql.test_paths")
-    private List<String> testPaths;
+	@Parameter
+	private boolean failOnErrors;
 
-    public void execute() throws MojoExecutionException, MojoFailureException {
+	@Parameter
+	private boolean colorConsole;
 
-        List<Reporter> reporterList = new ArrayList<>();
-        reporterList.add(ReporterFactory.createReporter(UT_DOCUMENTATION_REPORTER));
-        List<String> testPaths = listOfStrings("tests");
-        FileMapperOptions sourceMappingOptions = new FileMapperOptions(listOfStrings(
-                "source/award_bonus/award_bonus.prc"
-//                "/Users/kamil.berdychowski/workspaces/utPLSQL/utPLSQL-demo-project/source/between_string/betwnstr.fnc"
-        ));
-        FileMapperOptions testMappingOptions = new FileMapperOptions(listOfStrings(
-                "/Users/kamil.berdychowski/workspaces/utPLSQL/utPLSQL-demo-project/test/award_bonus/test_award_bonus.pkb",
-                "/Users/kamil.berdychowski/workspaces/utPLSQL/utPLSQL-demo-project/test/award_bonus/test_award_bonus.pks"
-//                "/Users/kamil.berdychowski/workspaces/utPLSQL/utPLSQL-demo-project/test/between_string/test_betwnstr.pkb",
-//                "/Users/kamil.berdychowski/workspaces/utPLSQL/utPLSQL-demo-project/test/between_string/test_betwnstr.pks"
-        ));
+	@Parameter
+	private List<String> reporters;
 
-        Connection connection = null;
+	// Configuration of Sources, Testing
 
-        try {
-            connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XE", "tests", "tests");
+	@Parameter
+	private List<Resource> sources = new ArrayList<Resource>();
 
-            for (Reporter reporter : reporterList) {
-                reporter.init(connection);
-            }
+	@Parameter
+	private List<Resource> tests = new ArrayList<Resource>();
 
-            new TestRunner()
-                    .addPathList(testPaths)
-                    .addReporterList(reporterList)
-                    .sourceMappingOptions(sourceMappingOptions)
-                    .testMappingOptions(testMappingOptions)
-                    .colorConsole(true)
-                    .failOnErrors(true)
-                    .run(connection);
-        } catch (SomeTestsFailedException e) {
-            getLog().error(e);
-            throw new MojoExecutionException("Tests failed", e);
-        } catch (SQLException e) {
-            getLog().error(e);
-            throw new MojoFailureException("SQL error occured", e);
-        } finally {
-            //TODO: add more security checking, what happens when connection is broken
-            try {
-                new OutputBuffer(reporterList.get(0)).printAvailable(connection, System.out);
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                getLog().error("Error", e);
-            }
-        }
+	/**
+	 * 
+	 * Execute the plugin
+	 * 
+	 */
+	@Override
+	public void execute() throws MojoExecutionException
+	{
+		List<String> testPaths = Arrays.asList(new String[] { "tests" });
 
-    }
+		FileMapperOptions sourceMappingOptions = buildOptions(sources, PluginDefault.buildDefaultSource());
+		FileMapperOptions testMappingOptions = buildOptions(tests, PluginDefault.buildDefaultTest());
 
-    private List<String> listOfStrings(String... values) {
-        List<String> result = new ArrayList<>();
-        Collections.addAll(result, values);
-        return result;
-    }
+		Connection connection = null;
+		List<Reporter> reporterList = null;
+
+		try
+		{
+			connection = DriverManager.getConnection(url, user, password);
+
+			// Init Reporters
+			reporterList = initReporters(connection);
+
+			TestRunner runner = new TestRunner()
+					.addPathList(testPaths)
+					.addReporterList(reporterList)
+					.sourceMappingOptions(sourceMappingOptions)
+					.testMappingOptions(testMappingOptions)
+					.colorConsole(colorConsole)
+					.failOnErrors(failOnErrors);
+
+			runner.run(connection);
+
+		}
+		catch (Exception e)
+		{
+			getLog().error(e);
+			throw new MojoExecutionException("Unexpected error executing plugin " + e.getMessage());
+		}
+		finally
+		{
+			try
+			{
+				if (connection != null)
+					connection.close();
+			}
+			catch (SQLException e)
+			{
+				getLog().error("Error", e);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param resources
+	 * @return
+	 */
+	private FileMapperOptions buildOptions(List<Resource> resources, Resource defaultResource)
+	{
+		// Check if this element is empty
+		if (resources.isEmpty())
+		{
+			resources.add(defaultResource);
+		}
+
+		List<String> scripts = SQLScannerHelper.findSQLs(resources);
+		return new FileMapperOptions(scripts);
+	}
+
+	/**
+	 * Init all the reports
+	 * 
+	 * @param connection
+	 * @return
+	 * @throws SQLException
+	 */
+	private List<Reporter> initReporters(Connection connection) throws SQLException
+	{
+		List<Reporter> reporterList = new ArrayList<Reporter>();
+
+		for (String reporterId : reporters)
+		{
+			Reporter reporter = ReporterFactory.createReporter(reporterId);
+			reporter.init(connection);
+
+			reporterList.add(reporter);
+		}
+
+		return reporterList;
+	}
 }

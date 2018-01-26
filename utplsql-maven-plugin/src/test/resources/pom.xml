@@ -4,7 +4,7 @@
 
     <groupId>org.utplsql</groupId>
     <artifactId>utplsql-maven-plugin-test</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>utplsql-maven-plugin Maven Plugin Test</name>
@@ -19,19 +19,46 @@
                     <goal>test</goal>
                 </goals>
                 <configuration>
-                    <suitePaths>
-                        <suitePath>suite_path1</suitePath>
-                        <suitePath>suite_path2</suitePath>
-                    </suitePaths>
-                    <sourcePaths>
-                        <sourcePath>source_path1</sourcePath>
-                        <sourcePath>source_path2</sourcePath>
-                        <sourcePath>source_path3</sourcePath>
-                    </sourcePaths>
-                    <testPaths>
-                        <testPath>test_path1</testPath>
-                        <testPath>test_path2</testPath>
-                    </testPaths>
+                
+                	<!--  Mandatory Attributes -->
+                	<url>url_of_connection</url>
+                	<user>user</user>
+                	<password>password</password>
+                	
+                	
+					<failOnErrors>false</failOnErrors>
+					<colorConsole>true</colorConsole>
+					
+					<reporters>
+						<reporter>UT_COVERAGE_SONAR_REPORTER</reporter>
+						<reporter>UT_SONAR_TEST_REPORTER</reporter>
+					</reporters>
+					
+                    <sources>
+                    	<source>
+                    		<directory>SampleDirectory</directory>
+							<includes>
+								<include>**/*pkg</include>
+								<include>**/*pkb</include>
+							</includes>
+                    	</source>
+                    	<source>
+                    		<directory>SampleDirectory2</directory>
+							<includes>
+								<include>**/*pkb</include>
+							</includes>
+                    	</source>
+                    </sources>
+                    
+                    <tests>
+                    	<test>
+                    		<directory>src/main/test/test1</directory>
+							<includes>
+								<include>**/*pkg</include>
+							</includes>
+                    	</test>
+                    </tests>
+                    
                 </configuration>
             </plugin>
         </plugins>
