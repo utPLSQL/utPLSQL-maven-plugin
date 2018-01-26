@@ -1,5 +1,6 @@
 package org.utplsql.helper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,18 +24,20 @@ public class SQLScannerHelper
 	 */
 	public static List<String> findSQLs(List<Resource> resources)
 	{
-		List<String> founds = new ArrayList<String>();
+        List<String> founds = new ArrayList<>();
 		
 		for (Resource resource: resources)
 		{
 			// Build Scanner
 			DirectoryScanner scanner = buildScanner(resource);
 			scanner.scan();
-			
+            for (String basename : scanner.getIncludedFiles()) {
+                founds.add(new File(scanner.getBasedir(), basename).getAbsolutePath());
+            }
+
 			// Append all scanned objects
-			founds.addAll(Arrays.asList(scanner.getIncludedFiles()));
+            founds.addAll(Arrays.asList());
 		}
-		
 		
 		return founds;
 	}
