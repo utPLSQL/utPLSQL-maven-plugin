@@ -18,23 +18,17 @@ public class PluginDefault
 	// Test Directory
 	private static final String TEST_DIRECTORY = "src/test/plsql";
 
-	// Default Extension for Package HEAD
-	private static final String PACKAGE_HEAD = "**/*.pkg";
-
-	// Default Extension for Package HEAD
-	private static final String PACKAGE_BODY = "**/*.pkb";
-
 	/**
 	 * 
 	 * @return
 	 */
-	private static Resource buildDirectory(String directory)
+    private static Resource buildDirectory(String directory, String includes)
 	{
 		Resource resource = new Resource();
 
 		// Configure Resources
 		resource.setDirectory(directory);
-		resource.setIncludes(Arrays.asList(PACKAGE_BODY, PACKAGE_HEAD));
+        resource.setIncludes(Arrays.asList(includes));
 
 		return resource;
 	}
@@ -45,7 +39,7 @@ public class PluginDefault
 	 */
 	public static Resource buildDefaultSource()
 	{
-		return buildDirectory(SOURCE_DIRECTORY);
+        return buildDirectory(SOURCE_DIRECTORY, "**/*.*");
 	}
 
 	/**
@@ -54,7 +48,7 @@ public class PluginDefault
 	 */
 	public static Resource buildDefaultTest()
 	{
-		return buildDirectory(TEST_DIRECTORY);
+        return buildDirectory(TEST_DIRECTORY, "**/*.pkg");
 	}
 
 }

@@ -18,41 +18,38 @@ import org.utplsql.api.OutputBuffer;
 import org.utplsql.api.TestRunner;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.api.reporter.ReporterFactory;
-import org.utplsql.helper.PluginDefault;
 import org.utplsql.helper.SQLScannerHelper;
 
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST)
 public class UtPLSQLMojo extends AbstractMojo
 {
-
-	@Parameter(required = true)
+    @Parameter(defaultValue = "jdbc:oracle:thin:@localhost:1521:ut3")
 	private String url;
 
-	@Parameter(required = true)
+    @Parameter(defaultValue = "ut3")
 	private String user;
 
-	@Parameter(required = true)
+    @Parameter(defaultValue = "XNtxj8eEgA6X6b6f")
 	private String password;
 
-	@Parameter
+    // This parameter should honor the -Dmaven.test.failure.ignore=false
+    @Parameter(defaultValue = "false")
 	private boolean failOnErrors;
 
-	@Parameter
+    @Parameter(defaultValue = "false")
 	private boolean colorConsole;
 
-	@Parameter
+    @Parameter(defaultValue = "UT_DOCUMENTATION_REPORTER")
 	private List<String> reporters;
 
-	// Configuration of Sources, Testing
-
-	@Parameter
-	private List<Resource> sources = new ArrayList<>();
-
-	@Parameter
-	private List<Resource> tests = new ArrayList<>();
+    @Parameter
+    private List<String> paths;
 
     @Parameter
-    private List<String> reports = new ArrayList<>();
+	private List<Resource> sources = new ArrayList<>();
+
+    @Parameter
+	private List<Resource> tests = new ArrayList<>();
 
 	/**
 	 * 
@@ -64,9 +61,9 @@ public class UtPLSQLMojo extends AbstractMojo
 	{
         // List<String> testPaths = Arrays.asList(new String[] { "tests" });
 
-        FileMapperOptions sourceMappingOptions = buildOptions(sources,
-                PluginDefault.buildDefaultSource());
-        FileMapperOptions testMappingOptions = buildOptions(tests, PluginDefault.buildDefaultTest());
+        FileMapperOptions sourceMappingOptions = new FileMapperOptions(new ArrayList<>());
+        FileMapperOptions testMappingOptions = new FileMapperOptions(new ArrayList<>()); // buildOptions(tests,
+                                                                                         // PluginDefault.buildDefaultTest());
 
 		Connection connection = null;
 		List<Reporter> reporterList = null;
@@ -113,7 +110,7 @@ public class UtPLSQLMojo extends AbstractMojo
             }
 
 			TestRunner runner = new TestRunner()
-                    // .addPathList(testPaths)
+                    .addPathList(paths)
                     .addReporterList(reporterList)
 					.sourceMappingOptions(sourceMappingOptions)
 					.testMappingOptions(testMappingOptions)
@@ -133,7 +130,7 @@ public class UtPLSQLMojo extends AbstractMojo
 			try
             {
                 for (Reporter reporter : reporterList) {
-                    new OutputBuffer(reporter).printAvailable(connection, reporter.outputFile());
+                    new OutputBuffer(reporter).printAvailable(connection, System.out);
                 }
                 if (connection != null) {
 					connection.close();
@@ -160,7 +157,7 @@ public class UtPLSQLMojo extends AbstractMojo
 		}
 
 		List<String> scripts = SQLScannerHelper.findSQLs(resources);
-		return new FileMapperOptions(scripts);
+        return new FileMapperOptions(scripts);
 	}
 
 	/**
