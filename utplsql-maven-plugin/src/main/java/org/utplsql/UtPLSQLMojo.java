@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -64,7 +65,7 @@ public class UtPLSQLMojo extends AbstractMojo {
     private List<ReporterParameter> reporters;
     private Map<String, ReporterParameter> mapReporters = new HashMap<>();
 
-    @Parameter
+    @Parameter(defaultValue = "")
     private List<String> paths;
 
     @Parameter
@@ -83,8 +84,18 @@ public class UtPLSQLMojo extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException {
-        FileMapperOptions sourceMappingOptions = buildOptions(sources, PluginDefault.buildDefaultSource());
-        FileMapperOptions testMappingOptions = buildOptions(tests, PluginDefault.buildDefaultTest());
+        FileMapperOptions sourceMappingOptions = null;
+        try {
+            sourceMappingOptions = buildOptions(sources, PluginDefault.buildDefaultSource());
+        } catch (Exception e) {
+            throw new MojoExecutionException("Invalid <sources> in your pom.xml");
+        }
+        FileMapperOptions testMappingOptions = null;
+        try {
+            testMappingOptions = buildOptions(tests, PluginDefault.buildDefaultTest());
+        } catch (Exception e) {
+            throw new MojoExecutionException("Invalid <tests> in your pom.xml");
+        }
 
         Connection connection = null;
         List<Reporter> reporterList = null;
@@ -101,7 +112,7 @@ public class UtPLSQLMojo extends AbstractMojo {
                     .addReporterList(reporterList)
                     .sourceMappingOptions(sourceMappingOptions)
                     .testMappingOptions(testMappingOptions)
-                    // .excludeObject(excludeObject)
+                    .excludeObject(excludeObject)
                     .includeObject(includeObject)
                     .skipCompatibilityCheck(skipCompatibilityCheck)
                     .colorConsole(colorConsole)
@@ -191,37 +202,28 @@ public class UtPLSQLMojo extends AbstractMojo {
 
     private void dumpParameters(FileMapperOptions sourceMappingOptions, FileMapperOptions testMappingOptions,
             List<Reporter> reporterList) {
-        StringBuilder msg = new StringBuilder();
-        msg.append("Invoking TestRunner with: ").append('\n');
-        msg.append("reporters=");
+        Log log = getLog();
+        log.debug("Invoking TestRunner with: ");
+        log.debug("reporters=");
         reporterList.forEach(new Consumer<Reporter>() {
             @Override
             public void accept(Reporter t) {
-                try {
-                    msg.append(t.getSQLTypeName()).append(", ");
-                } catch (Exception e) {
-                    // NA
-                }
+                log.debug(t.getSelfType());
             }
-
         });
-        msg.append('\n');
-        msg.append("sources=");
+        log.debug("sources=");
         sourceMappingOptions.getFilePaths().forEach(new Consumer<String>() {
             @Override
             public void accept(String t) {
-                msg.append(t).append(", ");
+                log.debug(t);
             }
         });
-        msg.append('\n');
-        msg.append("tests=");
+        log.debug("tests=");
         testMappingOptions.getFilePaths().forEach(new Consumer<String>() {
             @Override
             public void accept(String t) {
-                msg.append(t).append(", ");
+                log.debug(t);
             }
         });
-        msg.append('\n');
-        getLog().debug(msg.toString());
     }
 }
