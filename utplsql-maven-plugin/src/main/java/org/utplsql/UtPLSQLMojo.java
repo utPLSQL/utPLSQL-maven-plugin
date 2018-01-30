@@ -141,7 +141,7 @@ public class UtPLSQLMojo extends AbstractMojo {
 
     private void writeReporter(Connection connection, Reporter reporter) throws SQLException, IOException {
         String outputFile = mapReporters.get(reporter.getReporterId()).getConfiguration().getOutputFile();
-        if (StringUtils.isNotBlank(outputFile)) {
+        if (StringUtils.isNotBlank(outputFile) && !StringUtils.equals("-", outputFile)) {
             File file = new File(outputFile);
             if (!file.isAbsolute()) {
                 file = new File(targetDir, outputFile);
