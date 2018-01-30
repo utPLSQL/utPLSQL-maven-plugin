@@ -151,7 +151,7 @@ public class UtPLSQLMojo extends AbstractMojo {
                 file.getParentFile().mkdirs();
             }
             try (FileOutputStream fout = new FileOutputStream(file)) {
-                getLog().info(format("Writing report to %s", file.getAbsolutePath()));
+                getLog().info(format("Writing report %s to %s", reporter.getSelfType(), file.getAbsolutePath()));
                 new OutputBuffer(reporter).printAvailable(connection, new PrintStream(fout));
             }
         } else {
