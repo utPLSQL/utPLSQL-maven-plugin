@@ -17,6 +17,10 @@ import org.codehaus.plexus.util.DirectoryScanner;
 public class SQLScannerHelper 
 {
 	
+    private SQLScannerHelper() {
+        // NA
+    }
+
 	/**
 	 * 
 	 * @param resouces

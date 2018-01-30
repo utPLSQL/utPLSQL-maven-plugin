@@ -33,7 +33,12 @@ import org.utplsql.helper.SQLScannerHelper;
 import org.utplsql.model.ReporterConfiguration;
 import org.utplsql.model.ReporterParameter;
 
-
+/**
+ * This class expose the {@link TestRunner} interface to Maven.
+ * 
+ * @author Alberto Hernández
+ *
+ */
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST)
 public class UtPLSQLMojo extends AbstractMojo {
     @Parameter(defaultValue = "jdbc:oracle:thin:@localhost:1521:ut3")
