@@ -115,9 +115,9 @@ public class UtPLSQLMojo extends AbstractMojo {
                     .addPathList(paths)
                     .addReporterList(reporterList)
                     .sourceMappingOptions(sourceMappingOptions)
+                    // .excludeObject(excludeObject)
+                    // .includeObject(includeObject)
                     .testMappingOptions(testMappingOptions)
-                    .excludeObject(excludeObject)
-                    .includeObject(includeObject)
                     .skipCompatibilityCheck(skipCompatibilityCheck)
                     .colorConsole(colorConsole)
                     .failOnErrors(!ignoreFailure);
