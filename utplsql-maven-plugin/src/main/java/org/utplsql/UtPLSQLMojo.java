@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Resource;
@@ -205,25 +204,10 @@ public class UtPLSQLMojo extends AbstractMojo {
         Log log = getLog();
         log.debug("Invoking TestRunner with: ");
         log.debug("reporters=");
-        reporterList.forEach(new Consumer<Reporter>() {
-            @Override
-            public void accept(Reporter t) {
-                log.debug(t.getSelfType());
-            }
-        });
+        reporterList.forEach((Reporter r) -> log.debug(r.getSelfType()));
         log.debug("sources=");
-        sourceMappingOptions.getFilePaths().forEach(new Consumer<String>() {
-            @Override
-            public void accept(String t) {
-                log.debug(t);
-            }
-        });
+        sourceMappingOptions.getFilePaths().forEach(log::debug);
         log.debug("tests=");
-        testMappingOptions.getFilePaths().forEach(new Consumer<String>() {
-            @Override
-            public void accept(String t) {
-                log.debug(t);
-            }
-        });
+        testMappingOptions.getFilePaths().forEach(log::debug);
     }
 }
