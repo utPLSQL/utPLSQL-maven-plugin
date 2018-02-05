@@ -92,13 +92,13 @@ public class UtPLSQLMojo extends AbstractMojo {
         try {
             sourceMappingOptions = buildOptions(sources, PluginDefault.buildDefaultSource());
         } catch (Exception e) {
-            throw new MojoExecutionException("Invalid <sources> in your pom.xml");
+            throw new MojoExecutionException(format("Invalid <sources> in your pom.xml: %s", e.getMessage()));
         }
         FileMapperOptions testMappingOptions = null;
         try {
             testMappingOptions = buildOptions(tests, PluginDefault.buildDefaultTest());
         } catch (Exception e) {
-            throw new MojoExecutionException("Invalid <tests> in your pom.xml");
+            throw new MojoExecutionException(format("Invalid <tests> in your pom.xml: %s", e.getMessage()));
         }
 
         Connection connection = null;
