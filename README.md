@@ -24,10 +24,10 @@ A maven plugin for running Unit Tests with utPLSQL v3+
   * `true` | `false` (default: `false`)
 * `reporters`
   * List of the Reporters
-  * Enumeration: 
+  * Enumeration : `UT_DOCUMENTATION_REPORTER`, `UT_COVERAGE_HTML_REPORTER`, `UT_TEAMCITY_REPORTER`, `UT_XUNIT_REPORTER`, `UT_COVERALLS_REPORTER`, `UT_COVERAGE_SONAR_REPORTER`,  `UT_SONAR_TEST_REPORTER` 
+  
 * `paths`
   * Paths of the resources
-  * Default: 
 * `sources`
   * Sources of the scripts at the style of the maven resources
 * `tests`
@@ -57,7 +57,7 @@ A maven plugin for running Unit Tests with utPLSQL v3+
           <user>user</user>
           <password>password</password>
                 	
-					<failOnErrors>false</failOnErrors>
+          <failOnErrors>false</failOnErrors>
 					<colorConsole>true</colorConsole>
 					
 					<reporters>

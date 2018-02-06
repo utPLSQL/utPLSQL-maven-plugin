@@ -40,181 +40,232 @@ import org.utplsql.model.ReporterParameter;
  *
  */
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST)
-public class UtPLSQLMojo extends AbstractMojo {
-    @Parameter(defaultValue = "jdbc:oracle:thin:@localhost:1521:ut3")
-    private String url;
+public class UtPLSQLMojo extends AbstractMojo
+{
+	@Parameter(defaultValue = "jdbc:oracle:thin:@localhost:1521:ut3")
+	private String url;
 
-    @Parameter(defaultValue = "ut3")
-    private String user;
+	@Parameter(defaultValue = "ut3")
+	private String user;
 
-    @Parameter(defaultValue = "XNtxj8eEgA6X6b6f")
-    private String password;
+	@Parameter(defaultValue = "XNtxj8eEgA6X6b6f")
+	private String password;
 
-    @Parameter
-    private String includeObject;
+	@Parameter
+	private String includeObject;
 
-    @Parameter
-    private String excludeObject;
+	@Parameter
+	private String excludeObject;
 
-    @Parameter(defaultValue = "${maven.test.failure.ignore}")
-    private boolean ignoreFailure;
+	@Parameter(defaultValue = "${maven.test.failure.ignore}")
+	private boolean ignoreFailure;
 
-    @Parameter(defaultValue = "false")
-    private boolean colorConsole;
+	@Parameter(defaultValue = "false")
+	private boolean colorConsole;
 
-    @Parameter(defaultValue = "false")
-    private boolean skipCompatibilityCheck;
+	@Parameter(defaultValue = "false")
+	private boolean skipCompatibilityCheck;
 
-    @Parameter
-    private List<ReporterParameter> reporters;
-    private Map<String, ReporterParameter> mapReporters = new HashMap<>();
+	@Parameter
+	private List<ReporterParameter> reporters;
+	private Map<String, ReporterParameter> mapReporters = new HashMap<>();
 
-    @Parameter(defaultValue = "")
-    private List<String> paths;
+	@Parameter(defaultValue = "")
+	private List<String> paths;
 
-    @Parameter
-    private List<Resource> sources = new ArrayList<>();
+	@Parameter
+	private List<Resource> sources = new ArrayList<>();
 
-    @Parameter
-    private List<Resource> tests = new ArrayList<>();
+	@Parameter
+	private List<Resource> tests = new ArrayList<>();
 
-    @Parameter(defaultValue = "${project.build.directory}", readonly = true)
-    private String targetDir;
+	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
+	private String targetDir;
 
-    /**
-     * 
-     * Execute the plugin
-     * 
-     */
-    @Override
-    public void execute() throws MojoExecutionException {
-        FileMapperOptions sourceMappingOptions = null;
-        try {
-            sourceMappingOptions = buildOptions(sources, PluginDefault.buildDefaultSource());
-        } catch (Exception e) {
-            throw new MojoExecutionException(format("Invalid <sources> in your pom.xml: %s", e.getMessage()));
-        }
-        FileMapperOptions testMappingOptions = null;
-        try {
-            testMappingOptions = buildOptions(tests, PluginDefault.buildDefaultTest());
-        } catch (Exception e) {
-            throw new MojoExecutionException(format("Invalid <tests> in your pom.xml: %s", e.getMessage()));
-        }
+	/**
+	 * 
+	 * Execute the plugin
+	 * 
+	 */
+	@Override
+	public void execute() throws MojoExecutionException
+	{
+		FileMapperOptions sourceMappingOptions = buildOptions(sources, PluginDefault.buildDefaultSource(), "sources");
+		;
+		FileMapperOptions testMappingOptions = buildOptions(tests, PluginDefault.buildDefaultTest(), "test");
 
-        Connection connection = null;
-        List<Reporter> reporterList = null;
-        try {
-            connection = DriverManager.getConnection(url, user, password);
-            reporterList = initReporters(connection);
+		Connection connection = null;
+		List<Reporter> reporterList = null;
+		try
+		{
+			connection = DriverManager.getConnection(url, user, password);
+			reporterList = initReporters(connection);
 
-            if (getLog().isDebugEnabled()) {
-                dumpParameters(sourceMappingOptions, testMappingOptions, reporterList);
-            }
+			if (getLog().isDebugEnabled())
+			{
+				dumpParameters(sourceMappingOptions, testMappingOptions, reporterList);
+			}
 
-            TestRunner runner = new TestRunner()
-                    .addPathList(paths)
-                    .addReporterList(reporterList)
-                    .sourceMappingOptions(sourceMappingOptions)
-                    // .excludeObject(excludeObject)
-                    // .includeObject(includeObject)
-                    .testMappingOptions(testMappingOptions)
-                    .skipCompatibilityCheck(skipCompatibilityCheck)
-                    .colorConsole(colorConsole)
-                    .failOnErrors(!ignoreFailure);
+			TestRunner runner = new TestRunner()
+					.addPathList(paths)
+					.addReporterList(reporterList)
+					.sourceMappingOptions(sourceMappingOptions)
+					.testMappingOptions(testMappingOptions)
+					.skipCompatibilityCheck(skipCompatibilityCheck)
+					.colorConsole(colorConsole)
+					.failOnErrors(!ignoreFailure);
 
-            runner.run(connection);
+			// Setting Optional Parameters
+			if (StringUtils.isNotEmpty(excludeObject))
+			{
+				runner.excludeObject(excludeObject);
+			}
+			if (StringUtils.isNotEmpty(includeObject))
+			{
+				runner.includeObject(includeObject);
+			}
 
-        } catch (SomeTestsFailedException e) {
-            getLog().error(e);
-            throw new MojoExecutionException(e.getMessage());
-        } catch (SQLException e) {
-            getLog().error(e);
-            throw new MojoExecutionException(e.getMessage(), e);
-        } finally {
-            try {
-                for (Reporter reporter : reporterList) {
-                    writeReporter(connection, reporter);
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (Exception e) {
-                getLog().error(e.getMessage(), e);
-            }
-        }
-    }
+			runner.run(connection);
 
-    private void writeReporter(Connection connection, Reporter reporter) throws SQLException, IOException {
-        String outputFile = mapReporters.get(reporter.getReporterId()).getConfiguration().getOutputFile();
-        if (StringUtils.isNotBlank(outputFile) && !StringUtils.equals("-", outputFile)) {
-            File file = new File(outputFile);
-            if (!file.isAbsolute()) {
-                file = new File(targetDir, outputFile);
-            }
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-            try (FileOutputStream fout = new FileOutputStream(file)) {
+		}
+		catch (SomeTestsFailedException e)
+		{
+			getLog().error(e);
+			throw new MojoExecutionException(e.getMessage());
+		}
+		catch (SQLException e)
+		{
+			getLog().error(e);
+			throw new MojoExecutionException(e.getMessage(), e);
+		}
+		finally
+		{
+			try
+			{
+				// Write Reporters
+				for (Reporter reporter : reporterList)
+				{
+					writeReporter(connection, reporter);
+				}
+				if (connection != null)
+				{
+					connection.close();
+				}
+			}
+			catch (Exception e)
+			{
+				getLog().error(e.getMessage(), e);
+			}
+		}
+	}
 
-                getLog().info(format("Writing report %s to %s", reporter.getSelfType(), file.getAbsolutePath()));
-                new OutputBuffer(reporter).printAvailable(connection, new PrintStream(fout));
-            }
-        } else {
-            getLog().info(format("Reporter %s:", reporter.getSelfType()));
-            new OutputBuffer(reporter).printAvailable(connection, System.out);
-        }
-    }
+	/**
+	 * 
+	 * @param connection
+	 * @param reporter
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	private void writeReporter(Connection connection, Reporter reporter) throws SQLException, IOException
+	{
+		String outputFile = mapReporters.get(reporter.getReporterId()).getConfiguration().getOutputFile();
+		if (StringUtils.isNotBlank(outputFile) && !StringUtils.equals("-", outputFile))
+		{
+			File file = new File(outputFile);
+			if (!file.isAbsolute())
+			{
+				file = new File(targetDir, outputFile);
+			}
+			if (!file.getParentFile().exists())
+			{
+				file.getParentFile().mkdirs();
+			}
+			try (FileOutputStream fout = new FileOutputStream(file))
+			{
 
-    /**
-     * 
-     * @param resources
-     * @return
-     */
-    private FileMapperOptions buildOptions(List<Resource> resources, Resource defaultResource) {
-        // Check if this element is empty
-        if (resources.isEmpty()) {
-            resources.add(defaultResource);
-        }
+				getLog().info(format("Writing report %s to %s", reporter.getSelfType(), file.getAbsolutePath()));
+				new OutputBuffer(reporter).printAvailable(connection, new PrintStream(fout));
+			}
+		}
+		else
+		{
+			getLog().info(format("Reporter %s:", reporter.getSelfType()));
+			new OutputBuffer(reporter).printAvailable(connection, System.out);
+		}
+	}
 
-        List<String> scripts = SQLScannerHelper.findSQLs(resources);
-        return new FileMapperOptions(scripts);
-    }
+	/**
+	 * 
+	 * @param resources
+	 * @return
+	 * @throws MojoExecutionException
+	 */
+	private FileMapperOptions buildOptions(List<Resource> resources, Resource defaultResource, String msg) throws MojoExecutionException
+	{
+		try
+		{
+			// Check if this element is empty
+			if (resources.isEmpty())
+			{
+				resources.add(defaultResource);
+			}
 
-    /**
-     * Init all the reports
-     * 
-     * @param connection
-     * @return
-     * @throws SQLException
-     */
-    private List<Reporter> initReporters(Connection connection) throws SQLException {
-        List<Reporter> reporterList = new ArrayList<>();
+			List<String> scripts = SQLScannerHelper.findSQLs(resources);
+			return new FileMapperOptions(scripts);
 
-        for (ReporterParameter reporterParameter : reporters) {
-            String reporterName = reporterParameter.getId().name();
-            Reporter reporter = ReporterFactory.createReporter(reporterName);
-            reporter.init(connection);
-            reporterList.add(reporter);
-            if (reporterParameter.getConfiguration() == null
-                    || StringUtils.isEmpty(reporterParameter.getConfiguration().getOutputFile())) {
-                reporterParameter
-                        .setConfiguration(new ReporterConfiguration(reporterParameter.getId().getOutputFile()));
-            }
-            mapReporters.put(reporter.getReporterId(), reporterParameter);
-        }
+		}
+		catch (Exception e)
+		{
+			throw new MojoExecutionException(format("Invalid <%s> in your pom.xml: %s", msg, e.getMessage()));
 
-        return reporterList;
-    }
+		}
+	}
 
-    private void dumpParameters(FileMapperOptions sourceMappingOptions, FileMapperOptions testMappingOptions,
-            List<Reporter> reporterList) {
-        Log log = getLog();
-        log.debug("Invoking TestRunner with: ");
-        log.debug("reporters=");
-        reporterList.forEach((Reporter r) -> log.debug(r.getSelfType()));
-        log.debug("sources=");
-        sourceMappingOptions.getFilePaths().forEach(log::debug);
-        log.debug("tests=");
-        testMappingOptions.getFilePaths().forEach(log::debug);
-    }
+	/**
+	 * Init all the reports
+	 * 
+	 * @param connection
+	 * @return
+	 * @throws SQLException
+	 */
+	private List<Reporter> initReporters(Connection connection) throws SQLException
+	{
+		List<Reporter> reporterList = new ArrayList<>();
+
+		for (ReporterParameter reporterParameter : reporters)
+		{
+			String reporterName = reporterParameter.getId().name();
+			Reporter reporter = ReporterFactory.createReporter(reporterName);
+			reporter.init(connection);
+			reporterList.add(reporter);
+			if (reporterParameter.getConfiguration() == null
+					|| StringUtils.isEmpty(reporterParameter.getConfiguration().getOutputFile()))
+			{
+				reporterParameter
+						.setConfiguration(new ReporterConfiguration(reporterParameter.getId().getOutputFile()));
+			}
+			mapReporters.put(reporter.getReporterId(), reporterParameter);
+		}
+
+		return reporterList;
+	}
+
+	/**
+	 * 
+	 * @param sourceMappingOptions
+	 * @param testMappingOptions
+	 * @param reporterList
+	 */
+	private void dumpParameters(FileMapperOptions sourceMappingOptions, FileMapperOptions testMappingOptions,
+			List<Reporter> reporterList)
+	{
+		Log log = getLog();
+		log.debug("Invoking TestRunner with: ");
+		log.debug("reporters=");
+		reporterList.forEach((Reporter r) -> log.debug(r.getSelfType()));
+		log.debug("sources=");
+		sourceMappingOptions.getFilePaths().forEach(log::debug);
+		log.debug("tests=");
+		testMappingOptions.getFilePaths().forEach(log::debug);
+	}
 }
