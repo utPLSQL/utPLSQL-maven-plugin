@@ -44,53 +44,51 @@ A maven plugin for running Unit Tests with utPLSQL v3+
 
 ### Example
 ```xml
-    <plugin>
-        <groupId>${pom.groupId}</groupId>
-        <artifactId>utplsql-maven-plugin</artifactId>
-        <version>${pom.version}</version>
+	<plugin>
+		<groupId>${pom.groupId}</groupId>
+		<artifactId>utplsql-maven-plugin</artifactId>
+		<version>${pom.version}</version>
         <goals>
             <goal>test</goal>
         </goals>
         <configuration>
                 	<!--  Mandatory Attributes -->
-          <url>url_of_connection</url>
-          <user>user</user>
-          <password>password</password>
+			<url>url_of_connection</url>
+			<user>user</user>
+			<password>password</password>
                 	
-          <failOnErrors>false</failOnErrors>
-					<colorConsole>true</colorConsole>
+			<failOnErrors>false</failOnErrors>
+			<colorConsole>true</colorConsole>
 					
-					<reporters>
-						<reporter>UT_COVERAGE_SONAR_REPORTER</reporter>
-						<reporter>UT_SONAR_TEST_REPORTER</reporter>
-					</reporters>
-					
-          <sources>
-            <source>
-              <directory>SampleDirectory</directory>
-							<includes>
-								<include>**/*pkg</include>
-								<include>**/*pkb</include>
-							</includes>
-            </source>
-            <source>
-              <directory>SampleDirectory2</directory>
-							<includes>
-								<include>**/*pkb</include>
-							</includes>
-            </source>
-          </sources>
-                    
-          <tests>
-            <test>
-              <directory>src/main/test/test1</directory>
-							<includes>
-								<include>**/*pkg</include>
-							</includes>
-            </test>
-          </tests>
+			<reporters>
+				<reporter>UT_COVERAGE_SONAR_REPORTER</reporter>
+				<reporter>UT_SONAR_TEST_REPORTER</reporter>
+			</reporters>
+			<sources>
+				<source>
+					<directory>SampleDirectory</directory>
+					<includes>
+						<include>**/*pkg</include>
+						<include>**/*pkb</include>
+					</includes>
+            	</source>
+				<source>
+					<directory>SampleDirectory2</directory>
+					<includes>
+						<include>**/*pkb</include>
+					</includes>
+				</source>
+			</sources>
+			
+			<tests>
+				<test>
+					<directory>src/main/test/test1</directory>
+					<includes>
+						<include>**/*pkg</include>
+					</includes>
+				</test>
+			</tests>
                     
         </configuration>
       </plugin>
 ```
-
