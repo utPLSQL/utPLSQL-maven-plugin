@@ -1,6 +1,7 @@
 package org.utplsql.helper;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.apache.maven.model.Resource;
 
@@ -10,42 +11,79 @@ import org.apache.maven.model.Resource;
  * @author Alberto Hernández
  *
  */
-public class PluginDefault {
+public class PluginDefault
+{
 
-    // Source Directory
-    private static final String SOURCE_DIRECTORY = "src/main/plsql";
+	private static final String STYLE_COLOR_PROPERTY = "style.color";
 
-    // Test Directory
-    private static final String TEST_DIRECTORY = "src/test/plsql";
+	private static final String BATCH_MODE = "B";
 
-    private PluginDefault() {
-        // NA
-    }
+	private static final String LOG_FILE = "l";
 
-    /**
-     * This method returns {@link Resource} for the default {@code source} directory
-     * 
-     * @return a {@link Resource}
-     */
-    public static Resource buildDefaultSource() {
-        return buildDirectory(SOURCE_DIRECTORY, "**/*.*");
-    }
+	// Source Directory
+	private static final String SOURCE_DIRECTORY = "src/main/plsql";
 
-    /**
-     * This method returns {@link Resource} for the default {@code test} directory
-     * 
-     * @return a {@link Resource}
-     */
-    public static Resource buildDefaultTest() {
-        return buildDirectory(TEST_DIRECTORY, "**/*.pkg");
-    }
+	// Test Directory
+	private static final String TEST_DIRECTORY = "src/test/plsql";
 
+	private PluginDefault()
+	{
+		// NA
+	}
 
-    private static Resource buildDirectory(String directory, String includes) {
-        Resource resource = new Resource();
-        resource.setDirectory(directory);
-        resource.setIncludes(Arrays.asList(includes));
-        return resource;
-    }
+	/**
+	 * This method returns {@link Resource} for the default {@code source} directory
+	 * 
+	 * @return a {@link Resource}
+	 */
+	public static Resource buildDefaultSource()
+	{
+		return buildDirectory(SOURCE_DIRECTORY, "**/*.*");
+	}
+
+	/**
+	 * This method returns {@link Resource} for the default {@code test} directory
+	 * 
+	 * @return a {@link Resource}
+	 */
+	public static Resource buildDefaultTest()
+	{
+		return buildDirectory(TEST_DIRECTORY, "**/*.pkg");
+	}
+
+	private static Resource buildDirectory(String directory, String includes)
+	{
+		Resource resource = new Resource();
+		resource.setDirectory(directory);
+		resource.setIncludes(Arrays.asList(includes));
+		return resource;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static boolean resolveColor()
+	{
+		final Map<String, String> env = System.getenv();
+		String color = env.get(STYLE_COLOR_PROPERTY);
+
+		if ("always".equals(color))
+		{
+			return true;
+		}
+
+		if ("never".equals(color))
+		{
+			return false;
+		}
+
+		if (env.containsKey(BATCH_MODE) || env.containsKey(LOG_FILE))
+		{
+			return false;
+		}
+
+		return false;
+	}
 
 }

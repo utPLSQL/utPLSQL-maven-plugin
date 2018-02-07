@@ -2,17 +2,11 @@ package org.utplsql;
 
 import static java.lang.String.format;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Resource;
@@ -23,15 +17,14 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.utplsql.api.FileMapperOptions;
-import org.utplsql.api.OutputBuffer;
 import org.utplsql.api.TestRunner;
 import org.utplsql.api.exception.SomeTestsFailedException;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.api.reporter.ReporterFactory;
 import org.utplsql.helper.PluginDefault;
 import org.utplsql.helper.SQLScannerHelper;
-import org.utplsql.model.ReporterConfiguration;
 import org.utplsql.model.ReporterParameter;
+import org.utplsql.reporter.ReporterWriter;
 
 /**
  * This class expose the {@link TestRunner} interface to Maven.
@@ -42,13 +35,13 @@ import org.utplsql.model.ReporterParameter;
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST)
 public class UtPLSQLMojo extends AbstractMojo
 {
-	@Parameter(defaultValue = "jdbc:oracle:thin:@localhost:1521:ut3")
+	@Parameter(defaultValue = "${dbUrl}")
 	private String url;
 
-	@Parameter(defaultValue = "ut3")
+	@Parameter(defaultValue = "${dbUser}")
 	private String user;
 
-	@Parameter(defaultValue = "XNtxj8eEgA6X6b6f")
+	@Parameter(defaultValue = "${dbPass}")
 	private String password;
 
 	@Parameter
@@ -57,18 +50,11 @@ public class UtPLSQLMojo extends AbstractMojo
 	@Parameter
 	private String excludeObject;
 
-	@Parameter(defaultValue = "${maven.test.failure.ignore}")
-	private boolean ignoreFailure;
-
-	@Parameter(defaultValue = "false")
-	private boolean colorConsole;
-
 	@Parameter(defaultValue = "false")
 	private boolean skipCompatibilityCheck;
 
 	@Parameter
 	private List<ReporterParameter> reporters;
-	private Map<String, ReporterParameter> mapReporters = new HashMap<>();
 
 	@Parameter(defaultValue = "")
 	private List<String> paths;
@@ -82,6 +68,15 @@ public class UtPLSQLMojo extends AbstractMojo
 	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
 	private String targetDir;
 
+	@Parameter(defaultValue = "${maven.test.failure.ignore}")
+	private boolean ignoreFailure;
+
+	// Color in the console, loaded by environment variables
+	private boolean colorConsole = PluginDefault.resolveColor();
+
+	// Reporter Writer
+	private ReporterWriter reporterWriter;
+
 	/**
 	 * 
 	 * Execute the plugin
@@ -90,21 +85,17 @@ public class UtPLSQLMojo extends AbstractMojo
 	@Override
 	public void execute() throws MojoExecutionException
 	{
-		FileMapperOptions sourceMappingOptions = buildOptions(sources, PluginDefault.buildDefaultSource(), "sources");
-		;
-		FileMapperOptions testMappingOptions = buildOptions(tests, PluginDefault.buildDefaultTest(), "test");
-
 		Connection connection = null;
-		List<Reporter> reporterList = null;
 		try
 		{
-			connection = DriverManager.getConnection(url, user, password);
-			reporterList = initReporters(connection);
+			FileMapperOptions sourceMappingOptions = buildOptions(sources, PluginDefault.buildDefaultSource(), "sources");
+			FileMapperOptions testMappingOptions = buildOptions(tests, PluginDefault.buildDefaultTest(), "test");
 
-			if (getLog().isDebugEnabled())
-			{
-				dumpParameters(sourceMappingOptions, testMappingOptions, reporterList);
-			}
+			// Create the Connection to the Database
+			connection = DriverManager.getConnection(url, user, password);
+			List<Reporter> reporterList = initReporters(connection);
+
+			logParameters(sourceMappingOptions, testMappingOptions, reporterList);
 
 			TestRunner runner = new TestRunner()
 					.addPathList(paths)
@@ -116,11 +107,11 @@ public class UtPLSQLMojo extends AbstractMojo
 					.failOnErrors(!ignoreFailure);
 
 			// Setting Optional Parameters
-			if (StringUtils.isNotEmpty(excludeObject))
+			if (StringUtils.isNotBlank(excludeObject))
 			{
 				runner.excludeObject(excludeObject);
 			}
-			if (StringUtils.isNotEmpty(includeObject))
+			if (StringUtils.isNotBlank(includeObject))
 			{
 				runner.includeObject(includeObject);
 			}
@@ -143,10 +134,8 @@ public class UtPLSQLMojo extends AbstractMojo
 			try
 			{
 				// Write Reporters
-				for (Reporter reporter : reporterList)
-				{
-					writeReporter(connection, reporter);
-				}
+				reporterWriter.writeReporters(connection);
+
 				if (connection != null)
 				{
 					connection.close();
@@ -156,41 +145,6 @@ public class UtPLSQLMojo extends AbstractMojo
 			{
 				getLog().error(e.getMessage(), e);
 			}
-		}
-	}
-
-	/**
-	 * 
-	 * @param connection
-	 * @param reporter
-	 * @throws SQLException
-	 * @throws IOException
-	 */
-	private void writeReporter(Connection connection, Reporter reporter) throws SQLException, IOException
-	{
-		String outputFile = mapReporters.get(reporter.getReporterId()).getConfiguration().getOutputFile();
-		if (StringUtils.isNotBlank(outputFile) && !StringUtils.equals("-", outputFile))
-		{
-			File file = new File(outputFile);
-			if (!file.isAbsolute())
-			{
-				file = new File(targetDir, outputFile);
-			}
-			if (!file.getParentFile().exists())
-			{
-				file.getParentFile().mkdirs();
-			}
-			try (FileOutputStream fout = new FileOutputStream(file))
-			{
-
-				getLog().info(format("Writing report %s to %s", reporter.getSelfType(), file.getAbsolutePath()));
-				new OutputBuffer(reporter).printAvailable(connection, new PrintStream(fout));
-			}
-		}
-		else
-		{
-			getLog().info(format("Reporter %s:", reporter.getSelfType()));
-			new OutputBuffer(reporter).printAvailable(connection, System.out);
 		}
 	}
 
@@ -217,12 +171,11 @@ public class UtPLSQLMojo extends AbstractMojo
 		catch (Exception e)
 		{
 			throw new MojoExecutionException(format("Invalid <%s> in your pom.xml: %s", msg, e.getMessage()));
-
 		}
 	}
 
 	/**
-	 * Init all the reports
+	 * Init all the reporters
 	 * 
 	 * @param connection
 	 * @return
@@ -232,19 +185,20 @@ public class UtPLSQLMojo extends AbstractMojo
 	{
 		List<Reporter> reporterList = new ArrayList<>();
 
+		// Initializate Reporters
+		reporterWriter = new ReporterWriter(targetDir);
+
 		for (ReporterParameter reporterParameter : reporters)
 		{
-			String reporterName = reporterParameter.getId().name();
-			Reporter reporter = ReporterFactory.createReporter(reporterName);
+			Reporter reporter = ReporterFactory.createReporter(reporterParameter.getName());
 			reporter.init(connection);
 			reporterList.add(reporter);
-			if (reporterParameter.getConfiguration() == null
-					|| StringUtils.isEmpty(reporterParameter.getConfiguration().getOutputFile()))
+
+			// Only added the reporter if at least one of the output is required
+			if (StringUtils.isNotBlank(reporterParameter.getFileOutput()) || reporterParameter.isConsoleOutput())
 			{
-				reporterParameter
-						.setConfiguration(new ReporterConfiguration(reporterParameter.getId().getOutputFile()));
+				reporterWriter.addReporter(reporterParameter, reporter);
 			}
-			mapReporters.put(reporter.getReporterId(), reporterParameter);
 		}
 
 		return reporterList;
@@ -256,10 +210,18 @@ public class UtPLSQLMojo extends AbstractMojo
 	 * @param testMappingOptions
 	 * @param reporterList
 	 */
-	private void dumpParameters(FileMapperOptions sourceMappingOptions, FileMapperOptions testMappingOptions,
+	private void logParameters(FileMapperOptions sourceMappingOptions, FileMapperOptions testMappingOptions,
 			List<Reporter> reporterList)
 	{
 		Log log = getLog();
+		log.info("Invoking TestRunner with: " + targetDir);
+
+		// Do nothing when the debug is disabled
+		if (!log.isDebugEnabled())
+		{
+			return;
+		}
+
 		log.debug("Invoking TestRunner with: ");
 		log.debug("reporters=");
 		reporterList.forEach((Reporter r) -> log.debug(r.getSelfType()));

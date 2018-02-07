@@ -1,28 +1,84 @@
 package org.utplsql.model;
 
-import org.utplsql.helper.ReporterDefault;
+import org.codehaus.plexus.util.StringUtils;
 
-public class ReporterParameter {
-    
-    private ReporterDefault id;
+public class ReporterParameter
+{
 
-    private ReporterConfiguration configuration;
+	// Name of the registered reported in UtPLSQL
+	private String name;
 
-    public ReporterDefault getId() {
-        return id;
-    }
+	// File Output of the reporter
+	private String fileOutput;
 
-    public void setId(ReporterDefault id) {
-        this.id = id;
-    }
+	// Writes the report to console
+	private boolean consoleOutput;
 
-    public ReporterConfiguration getConfiguration() {
-        return configuration;
-    }
+	/**
+	 * 
+	 */
+	public ReporterParameter()
+	{
+		super();
+	}
 
-    public void setConfiguration(ReporterConfiguration configuration) {
-        this.configuration = configuration;
-    }
-    
+	/**
+	 * @return the name
+	 */
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	/**
+	 * @return the fileOutput
+	 */
+	public String getFileOutput()
+	{
+		return fileOutput;
+	}
+
+	/**
+	 * @param fileOutput
+	 *            the fileOutput to set
+	 */
+	public void setFileOutput(String fileOutput)
+	{
+		this.fileOutput = fileOutput;
+	}
+
+	/**
+	 * @return the consoleOutput
+	 */
+	public boolean isConsoleOutput()
+	{
+		return consoleOutput;
+	}
+
+	/**
+	 * @param consoleOutput
+	 *            the consoleOutput to set
+	 */
+	public void setConsoleOutput(boolean consoleOutput)
+	{
+		this.consoleOutput = consoleOutput;
+	}
+
+	/**
+	 * @return the consoleOutput
+	 */
+	public boolean isFileOutput()
+	{
+		return StringUtils.isNotBlank(fileOutput);
+	}
 
 }
