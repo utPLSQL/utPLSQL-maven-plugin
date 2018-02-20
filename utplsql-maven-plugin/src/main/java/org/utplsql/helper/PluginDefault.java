@@ -1,7 +1,7 @@
 package org.utplsql.helper;
 
 import java.util.Arrays;
-import java.util.Map;
+import java.util.Properties;
 
 import org.apache.maven.model.Resource;
 
@@ -65,8 +65,8 @@ public class PluginDefault
 	 */
 	public static boolean resolveColor()
 	{
-		final Map<String, String> env = System.getenv();
-		String color = env.get(STYLE_COLOR_PROPERTY);
+		final Properties env = System.getProperties();
+		String color = env.getProperty(STYLE_COLOR_PROPERTY);
 
 		if ("always".equals(color))
 		{
