@@ -12,7 +12,7 @@ public class UtPLSQLMojoTest
 {
 	public static final String POM_PATH = "src/test/resources/";
 
-	public static final String OUTPUT_DIRECTORY = "target/test-classes";
+	public static final String OUTPUT_DIRECTORY = "target/";
 
 	@Rule
 	public MojoRule rule = new MojoRule();
@@ -46,7 +46,7 @@ public class UtPLSQLMojoTest
 		for (String filename : files)
 		{
 			File file = new File(OUTPUT_DIRECTORY, filename);
-			Assert.assertTrue("The reporter for " + filename + " was not generated", file.exists());
+			Assert.assertTrue("The reporter for " + file.getAbsolutePath() + " was not generated", file.exists());
 		}
 	}
 

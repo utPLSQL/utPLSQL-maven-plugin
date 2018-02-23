@@ -9,6 +9,7 @@
 
     <name>utplsql-maven-plugin Maven Plugin Test</name>
     
+    <url>http://utplsql.org</url>
     
     <properties>
       	<dbUrl>jdbc:oracle:thin:@180.129.3.101:1521:xe</dbUrl>  
@@ -17,7 +18,7 @@
     </properties>
     
     <build>
-    	<directory>../../../target/test-classes</directory>
+    	<directory>../../../target/</directory>
     
         <plugins>
             <plugin>

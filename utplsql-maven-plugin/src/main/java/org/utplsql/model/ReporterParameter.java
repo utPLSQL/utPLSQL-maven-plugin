@@ -2,6 +2,11 @@ package org.utplsql.model;
 
 import org.codehaus.plexus.util.StringUtils;
 
+/**
+ * 
+ * @author Alberto Hdez
+ *
+ */
 public class ReporterParameter
 {
 
