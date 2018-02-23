@@ -51,10 +51,10 @@ You have to be a fully utPLSQL environment available compatible with the Java AP
 ### Sample of use
 The next snippet is a sample of declaration of the pom
 ```xml
-		<plugin>
-		<groupId>org.utplsql</groupId>
-		<artifactId>utplsql-maven-plugin</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+<plugin>
+	<groupId>org.utplsql</groupId>
+	<artifactId>utplsql-maven-plugin</artifactId>
+	<version>1.0.0</version>
         <goals>
             <goal>test</goal>
         </goals>
@@ -97,5 +97,5 @@ The next snippet is a sample of declaration of the pom
 				</test>
 			</tests>                  
         </configuration>
-      </plugin>
+</plugin>
 ```
