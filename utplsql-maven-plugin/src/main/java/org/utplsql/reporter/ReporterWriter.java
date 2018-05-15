@@ -14,7 +14,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
-import org.utplsql.api.OutputBuffer;
+import org.utplsql.api.Version;
+import org.utplsql.api.outputBuffer.OutputBuffer;
+import org.utplsql.api.outputBuffer.OutputBufferProvider;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.model.ReporterParameter;
 
@@ -27,14 +29,22 @@ public class ReporterWriter
 
 	// Output Directory
 	private String outputDirectory;
+	
+	// Database Version
+	private Version databaseVersion;
 
+	
 	/**
-	 * 
+	 * Constructor of the reporter writer
+	 * @param outputDirectory
+	 * @param databaseVersion
 	 */
-	public ReporterWriter(String outputDirectory)
+	public ReporterWriter(String outputDirectory, Version databaseVersion)
 	{
-		listReporters = new ArrayList<>();
+		this.listReporters = new ArrayList<>();
 		this.outputDirectory = outputDirectory;
+		this.databaseVersion = databaseVersion;
+		
 	}
 
 	/**
@@ -64,7 +74,7 @@ public class ReporterWriter
 		//
 		try
 		{
-			OutputBuffer buffer = new OutputBuffer(reporter);
+			OutputBuffer buffer = OutputBufferProvider.getCompatibleOutputBuffer(databaseVersion, reporter, connection);
 
 			if (reporterParameter.isFileOutput())
 			{
@@ -82,7 +92,7 @@ public class ReporterWriter
 				}
 
 				fout = new FileOutputStream(file);
-				LOG.info(format("Writing report %s to %s", reporter.getSelfType(), file.getAbsolutePath()));
+				LOG.info(format("Writing report %s to %s", reporter.getTypeName(), file.getAbsolutePath()));
 
 				// Added to the Report
 				printStreams.add(new PrintStream(fout));
@@ -90,7 +100,7 @@ public class ReporterWriter
 
 			if (reporterParameter.isConsoleOutput())
 			{
-				LOG.info(format("Writing report %s to Console", reporter.getSelfType()));
+				LOG.info(format("Writing report %s to Console", reporter.getTypeName()));
 				printStreams.add(System.out);
 			}
 			buffer.printAvailable(connection, printStreams);

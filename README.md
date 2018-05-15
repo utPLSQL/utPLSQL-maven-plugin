@@ -3,7 +3,7 @@ A maven plugin for running Unit Tests with utPLSQL v3+
 
 ### Compatibility
 
-This plugin is compatible with the Java-API 3.0.4.
+This plugin is compatible with the Java-API 3.1.0.
 
 ### Prerequisites
 You have to be a fully utPLSQL environment available compatible with the Java API.
@@ -20,6 +20,9 @@ You have to be a fully utPLSQL environment available compatible with the Java AP
 * `password`
   * Password of the connection to the database
   * Default: `${dbPass}`
+* `version`
+  * Version of the  utplsql
+  * Default: `3.1.0`
 * `ignoreFailure`
   * Ignore or continue when a test fail
   * Default: `${maven.test.failure.ignore}`
@@ -62,6 +65,7 @@ The next snippet is a sample of declaration of the pom
 			<url>url_of_connection</url>
 			<user>user</user>
 			<password>password</password>
+			<version>3.1.0</version>
 			<failOnErrors>false</failOnErrors>
 			<reporters>
 				<reporter>

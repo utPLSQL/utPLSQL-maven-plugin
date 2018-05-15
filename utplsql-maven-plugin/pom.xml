@@ -17,13 +17,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 	</properties>
-
 	<dependencies>
 
 		<dependency>
 			<groupId>org.utplsql</groupId>
 			<artifactId>java-api</artifactId>
-			<version>3.0.4</version>
+			<version>3.1.0</version>
 		</dependency>
 
 		<dependency>
@@ -118,9 +117,22 @@
 						</goals>
 					</execution>
 				</executions>
-				
+
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>utplsql-java-api</id>
+			<url>https://packagecloud.io/utplsql/utplsql-java-api/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 </project>

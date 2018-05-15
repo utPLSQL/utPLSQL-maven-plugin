@@ -18,6 +18,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.utplsql.api.FileMapperOptions;
 import org.utplsql.api.TestRunner;
+import org.utplsql.api.Version;
 import org.utplsql.api.exception.SomeTestsFailedException;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.api.reporter.ReporterFactory;
@@ -43,6 +44,9 @@ public class UtPLSQLMojo extends AbstractMojo
 
 	@Parameter(defaultValue = "${dbPass}")
 	private String password;
+	
+	@Parameter(defaultValue = "3.1.0")
+	private String version;
 
 	@Parameter
 	private String includeObject;
@@ -86,13 +90,14 @@ public class UtPLSQLMojo extends AbstractMojo
 	public void execute() throws MojoExecutionException
 	{
 		Connection connection = null;
-		try
+		try 
 		{
 			FileMapperOptions sourceMappingOptions = buildOptions(sources, PluginDefault.buildDefaultSource(), "sources");
 			FileMapperOptions testMappingOptions = buildOptions(tests, PluginDefault.buildDefaultTest(), "test");
-
+			
 			// Create the Connection to the Database
 			connection = DriverManager.getConnection(url, user, password);
+			
 			List<Reporter> reporterList = initReporters(connection);
 
 			logParameters(sourceMappingOptions, testMappingOptions, reporterList);
@@ -117,7 +122,7 @@ public class UtPLSQLMojo extends AbstractMojo
 			}
 
 			runner.run(connection);
-
+			
 		}
 		catch (SomeTestsFailedException e)
 		{
@@ -135,11 +140,6 @@ public class UtPLSQLMojo extends AbstractMojo
 			{
 				// Write Reporters
 				reporterWriter.writeReporters(connection);
-
-				if (connection != null)
-				{
-					connection.close();
-				}
 			}
 			catch (Exception e)
 			{
@@ -184,13 +184,17 @@ public class UtPLSQLMojo extends AbstractMojo
 	private List<Reporter> initReporters(Connection connection) throws SQLException
 	{
 		List<Reporter> reporterList = new ArrayList<>();
+		
+		Version utlVersion = new Version (version);
 
-		// Initializate Reporters
-		reporterWriter = new ReporterWriter(targetDir);
+		// Initialized Reporters
+		reporterWriter = new ReporterWriter(targetDir, utlVersion);
+		
+		ReporterFactory reporterFactory = ReporterFactory.createEmpty();
 
 		for (ReporterParameter reporterParameter : reporters)
 		{
-			Reporter reporter = ReporterFactory.createReporter(reporterParameter.getName());
+			Reporter reporter = reporterFactory.createReporter(reporterParameter.getName());
 			reporter.init(connection);
 			reporterList.add(reporter);
 
@@ -224,7 +228,7 @@ public class UtPLSQLMojo extends AbstractMojo
 
 		log.debug("Invoking TestRunner with: ");
 		log.debug("reporters=");
-		reporterList.forEach((Reporter r) -> log.debug(r.getSelfType()));
+		reporterList.forEach((Reporter r) -> log.debug(r.getTypeName()));
 		log.debug("sources=");
 		sourceMappingOptions.getFilePaths().forEach(log::debug);
 		log.debug("tests=");
