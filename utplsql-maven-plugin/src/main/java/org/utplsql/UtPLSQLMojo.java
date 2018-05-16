@@ -16,6 +16,7 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.utplsql.api.DBHelper;
 import org.utplsql.api.FileMapperOptions;
 import org.utplsql.api.TestRunner;
 import org.utplsql.api.Version;
@@ -45,9 +46,6 @@ public class UtPLSQLMojo extends AbstractMojo
 	@Parameter(defaultValue = "${dbPass}")
 	private String password;
 	
-	@Parameter(defaultValue = "3.1.0")
-	private String version;
-
 	@Parameter
 	private String includeObject;
 
@@ -185,7 +183,7 @@ public class UtPLSQLMojo extends AbstractMojo
 	{
 		List<Reporter> reporterList = new ArrayList<>();
 		
-		Version utlVersion = new Version (version);
+		Version utlVersion = DBHelper.getDatabaseFrameworkVersion(connection);
 
 		// Initialized Reporters
 		reporterWriter = new ReporterWriter(targetDir, utlVersion);

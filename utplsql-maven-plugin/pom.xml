@@ -6,7 +6,7 @@
 	<artifactId>utplsql-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 
-	<version>1.0.0-SNAPSHOT</version>
+	<version>3.1.0-SNAPSHOT</version>
 
 	<name>utplsql-maven-plugin Maven Plugin</name>
 

@@ -20,9 +20,6 @@ You have to be a fully utPLSQL environment available compatible with the Java AP
 * `password`
   * Password of the connection to the database
   * Default: `${dbPass}`
-* `version`
-  * Version of the  utplsql
-  * Default: `3.1.0`
 * `ignoreFailure`
   * Ignore or continue when a test fail
   * Default: `${maven.test.failure.ignore}`
