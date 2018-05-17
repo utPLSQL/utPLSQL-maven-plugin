@@ -1,0 +1,66 @@
+sudo: required
+language: java
+
+services:
+  - docker
+
+jdk:
+  - oraclejdk8
+
+env:
+  global:
+    - DOCKER_CFG=$HOME/.docker
+    - DOCKER_REPO="utplsqlv3/oracledb"
+    - CACHE_DIR=$HOME/.cache
+    - MAVEN_HOME=/usr/local/maven
+    - MAVEN_CFG=$HOME/.m2
+    - DB_URL="127.0.0.1:1521:XE"
+    - DB_USER=app
+    - DB_PASS=app
+    - ORACLE_VERSION="11g-r2-xe"
+    - DOCKER_OPTIONS="--shm-size=1g"
+
+cache:
+  directories:
+    - $DOCKER_CFG
+    - $CACHE_DIR
+    - $MAVEN_CFG
+
+install:
+  - bash .travis/maven_cfg.sh
+  - bash .travis/start_db.sh
+  - bash .travis/install_utplsql.sh
+  - bash .travis/install_demo_project.sh
+
+script:
+  - mvn package -ddbUrl="${DB_URL}" -ddbUser="${DB_USER}" -ddbPass="${DB_PASS}"
+
+#before_deploy:
+#  - bash .travis/create_release.sh
+#  - if [ ! -z "$TRAVIS_TAG" ]; then VERSION=$(tr -d "/v/" <<<$TRAVIS_TAG); mvn org.codehaus.mojo:versions-maven-plugin:2.1:set -DnewVersion=${VERSION}; fi
+#
+#deploy:
+#  - provider: releases
+#    api_key: $GITHUB_API_TOKEN
+#    file: utPLSQL-cli.zip
+#    skip_cleanup: true
+#    on:
+#      repository: utPLSQL/utPLSQL-cli
+#      tags: true
+#  - provider: bintray
+#    file: bintray.json
+#    user: ${BINTRAY_USER}
+#    key: ${BINTRAY_API_KEY}
+#    dry-run: false
+#    skip_cleanup: true
+#    on:
+#      repository: utPLSQL/utPLSQL-cli
+#      branch: develop
+#
+
+notifications:
+  slack:
+    rooms:
+      - secure: "Gz0pGOOM6xbnz8Q/B3RzOFoVr8QGXsDSHcgCloPnO3ZkEOh4JJikqWAVdZrksMxhewIBRpbdIWAZOgsNXvW+cEDXxfml3X9Clj2wg5Uon97UeI+5WEHDhLYHn7t9EYr9QvVSOuQgBIiddk6kURxY4N0eAA4VUti8BDcMRq+gPxF1w/toFJXVR/I/tkLxcHPTbWQ9X87nNWcQgMoHe2AixYpglntmtoLXJ5F8MF08fcyTX7GJQ5xjq7HbYy+/39nEhQo2ZPhHHfk2rS6gIUY0wc+MAqobxvesplgGDybdTQyrdl48VjJ/CiQDedglUbNN9VYTFjPIYMdWCUCLV1uL866aNMiBpB7CQoNhi5WS7RERE9gblVPX2k6tOda27fEWlhjha6OmdK6TQ9qTITU7U4OTSOz41dDPeVfqMHRggxo3ozlLONTiZ1y9fz/Ez9WjiJjtUDt60vgnVIo7BcQV/yDJcqAtQbfWyf0n73g5lMBvLGnO2Agm2N7hNEeCbpr+PZUoqkEM/e4SxdUCQGi8Ppi9Zp0E4v0iG7hyjzol+G4T8JN0bUGg0OOow/bfZa5J2aUsrC1qP/ZLpMA94NI6ZlL2wRHhZ9JtVSDLjtSwq9yW5XF7o7kdqBWBCslbGnYPoCoHOzfZuUvArSlRoGNu75dw/Qhoo9gFl1RG/RlChaU="
+    on_success: change
+    on_failure: always
