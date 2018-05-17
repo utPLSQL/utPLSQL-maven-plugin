@@ -10,7 +10,7 @@ CREATE OR REPLACE PACKAGE TEST_PKG_TEST_ME AS
   * This two parameters are used by the test framework in
   * order to identify the test suite to run
   */
-  -- %suite(TEST_PKG_TEST_ME)
+  -- %suite(plsql)
   -- %suitepath(plsql.examples)
 
   /*

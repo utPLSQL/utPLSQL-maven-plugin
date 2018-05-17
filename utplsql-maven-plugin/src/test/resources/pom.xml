@@ -32,8 +32,8 @@
                 	
 					<ignoreFailure>false</ignoreFailure>
 					
-					 <paths>
-            			<path>:plsql</path>
+					<paths>
+            			<path>ut3</path>
           			</paths>
 					
 					<reporters>
