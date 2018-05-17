@@ -33,7 +33,7 @@ install:
   - bash .travis/install_demo_project.sh
 
 script:
-  - mvn package -ddbUrl="${DB_URL}" -ddbUser="${DB_USER}" -ddbPass="${DB_PASS}"
+  - mvn package "-DdbUrl=${DB_URL}" "-DdbUser=${DB_USER}" "-DdbPass=${DB_PASS}"
 
 #before_deploy:
 #  - bash .travis/create_release.sh
