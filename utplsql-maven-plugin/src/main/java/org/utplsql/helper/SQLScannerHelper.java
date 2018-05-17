@@ -35,7 +35,7 @@ public class SQLScannerHelper {
             DirectoryScanner scanner = buildScanner(resource);
             scanner.scan();
             for (String basename : scanner.getIncludedFiles()) {
-                founds.add(new File(scanner.getBasedir(), basename).getAbsolutePath());
+                founds.add(new File(scanner.getBasedir(), basename).getPath());
             }
 
             // Append all scanned objects
