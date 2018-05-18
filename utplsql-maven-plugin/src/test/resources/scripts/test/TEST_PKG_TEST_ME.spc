@@ -1,4 +1,6 @@
 CREATE OR REPLACE PACKAGE TEST_PKG_TEST_ME AS
+  -- %suite(TEST_PKG_TEST_ME)
+  -- %suitepath(plsql.examples)
   --
   -- This package shows all the possibilities to unit test
   -- your PL/SQL package. NOTE that it is not limited to
@@ -10,8 +12,6 @@ CREATE OR REPLACE PACKAGE TEST_PKG_TEST_ME AS
   * This two parameters are used by the test framework in
   * order to identify the test suite to run
   */
-  -- %suite(TEST_PKG_TEST_ME)
-  -- %suitepath(plsql.examples)
 
   /*
   * This method is invoked once before any other method.
