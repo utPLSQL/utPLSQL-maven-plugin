@@ -3,7 +3,7 @@ set -ev
 cd $(dirname $(readlink -f $0))
 
 # Download the specified version of utPLSQL.
-UTPLSQL_VERSION="v3.0.4"
+UTPLSQL_VERSION="v3.1.1"
 UTPLSQL_FILE="utPLSQL"
 curl -L -O "https://github.com/utPLSQL/utPLSQL/releases/download/$UTPLSQL_VERSION/$UTPLSQL_FILE.tar.gz"
 
