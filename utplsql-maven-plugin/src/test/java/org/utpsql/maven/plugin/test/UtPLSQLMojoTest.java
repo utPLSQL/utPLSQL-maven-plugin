@@ -1,4 +1,4 @@
-package org.utpsql.test;
+package org.utpsql.maven.plugin.test;
 
 import java.io.File;
 
@@ -6,7 +6,7 @@ import org.apache.maven.plugin.testing.MojoRule;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.utplsql.UtPLSQLMojo;
+import org.utplsql.maven.plugin.UtPLSQLMojo;
 
 public class UtPLSQLMojoTest
 {

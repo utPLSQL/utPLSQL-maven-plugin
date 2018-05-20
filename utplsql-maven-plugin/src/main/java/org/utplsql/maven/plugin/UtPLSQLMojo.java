@@ -1,4 +1,4 @@
-package org.utplsql;
+package org.utplsql.maven.plugin;
 
 import static java.lang.String.format;
 
@@ -23,10 +23,10 @@ import org.utplsql.api.Version;
 import org.utplsql.api.exception.SomeTestsFailedException;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.api.reporter.ReporterFactory;
-import org.utplsql.helper.PluginDefault;
-import org.utplsql.helper.SQLScannerHelper;
-import org.utplsql.model.ReporterParameter;
-import org.utplsql.reporter.ReporterWriter;
+import org.utplsql.maven.plugin.helper.PluginDefault;
+import org.utplsql.maven.plugin.helper.SQLScannerHelper;
+import org.utplsql.maven.plugin.model.ReporterParameter;
+import org.utplsql.maven.plugin.reporter.ReporterWriter;
 
 /**
  * This class expose the {@link TestRunner} interface to Maven.
@@ -37,41 +37,42 @@ import org.utplsql.reporter.ReporterWriter;
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST)
 public class UtPLSQLMojo extends AbstractMojo
 {
-	@Parameter(defaultValue = "${dbUrl}")
-	private String url;
+	@Parameter(property = "dbUrl")
+	protected String url;
 
-	@Parameter(defaultValue = "${dbUser}")
-	private String user;
+	@Parameter(property = "dbUser")
+	protected String user;
 
-	@Parameter(defaultValue = "${dbPass}")
-	private String password;
+	@Parameter(property = "dbPass")
+	protected String password;
 	
 	@Parameter
-	private String includeObject;
+	protected String includeObject;
 
 	@Parameter
-	private String excludeObject;
+	protected String excludeObject;
 
 	@Parameter(defaultValue = "false")
-	private boolean skipCompatibilityCheck;
+	protected boolean skipCompatibilityCheck;
 
 	@Parameter
-	private List<ReporterParameter> reporters;
+	protected List<ReporterParameter> reporters;
 
 	@Parameter(defaultValue = "")
-	private List<String> paths;
+	protected List<String> paths;
 
 	@Parameter
-	private List<Resource> sources = new ArrayList<>();
+	protected List<Resource> sources = new ArrayList<>();
 
 	@Parameter
-	private List<Resource> tests = new ArrayList<>();
+	protected List<Resource> tests = new ArrayList<>();
 
 	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
-	private String targetDir;
+	protected String targetDir;
 
 	@Parameter(defaultValue = "${maven.test.failure.ignore}")
-	private boolean ignoreFailure;
+	protected boolean ignoreFailure;
+
 
 	// Color in the console, loaded by environment variables
 	private boolean colorConsole = PluginDefault.resolveColor();
@@ -87,6 +88,8 @@ public class UtPLSQLMojo extends AbstractMojo
 	@Override
 	public void execute() throws MojoExecutionException
 	{
+		loadDefaultCredentials();
+		
 		Connection connection = null;
 		try 
 		{
@@ -137,12 +140,30 @@ public class UtPLSQLMojo extends AbstractMojo
 			try
 			{
 				// Write Reporters
-				reporterWriter.writeReporters(connection);
+				if (connection != null) 
+					reporterWriter.writeReporters(connection);
 			}
 			catch (Exception e)
 			{
 				getLog().error(e.getMessage(), e);
 			}
+		}
+	}
+	
+	/**
+	 * Load 
+	 * 
+	 */
+	private void loadDefaultCredentials ()
+	{
+		if (StringUtils.isEmpty(user))
+		{
+			user = System.getProperty("dbUser");
+		}
+		
+		if (StringUtils.isEmpty(password))
+		{
+			password = System.getProperty("dbPass");
 		}
 	}
 

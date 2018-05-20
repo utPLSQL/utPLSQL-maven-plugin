@@ -1,4 +1,4 @@
-package org.utplsql.helper;
+package org.utplsql.maven.plugin.helper;
 
 import static java.lang.String.format;
 

@@ -1,4 +1,4 @@
-package org.utplsql.helper;
+package org.utplsql.maven.plugin.helper;
 
 import org.utplsql.api.reporter.Reporter;
 

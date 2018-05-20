@@ -1,4 +1,4 @@
-package org.utplsql.reporter;
+package org.utplsql.maven.plugin.reporter;
 
 import static java.lang.String.format;
 
@@ -18,7 +18,7 @@ import org.utplsql.api.Version;
 import org.utplsql.api.outputBuffer.OutputBuffer;
 import org.utplsql.api.outputBuffer.OutputBufferProvider;
 import org.utplsql.api.reporter.Reporter;
-import org.utplsql.model.ReporterParameter;
+import org.utplsql.maven.plugin.model.ReporterParameter;
 
 public class ReporterWriter
 {
