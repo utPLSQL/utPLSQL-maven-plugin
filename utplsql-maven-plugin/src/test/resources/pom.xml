@@ -53,8 +53,8 @@
                     	<source>
                     		<directory>src/test/resources/scripts/sources</directory>
 							<includes>
-								<include>**/*pkg</include>
-								<include>**/*pkb</include>
+								<include>**/*bdy</include>
+								<include>**/*spc</include>
 							</includes>
                     	</source>
                     </sources>
@@ -63,8 +63,8 @@
                     	<test>
                     		<directory>src/test/resources/scripts/test</directory>
 							<includes>
-								<include>**/*pkg</include>
-								<include>**/*pkb</include>
+								<include>**/*bdy</include>
+								<include>**/*spc</include>
 							</includes>
                     	</test>
                     </tests>
