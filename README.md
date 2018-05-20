@@ -11,15 +11,12 @@ You have to be a fully utPLSQL environment available compatible with the Java AP
 
 ### Plugin Parameters 
 
-* `url`
+* `dbUrl`
   * URL of the Connection to the database
-  * Default: `${dbURL}`
-* `user`
+* `dbUser`
   * Credential of the connection to the database
-  * Default: `${dbUser}`
-* `password`
+* `dbPass`
   * Password of the connection to the database
-  * Default: `${dbPass}`
 * `ignoreFailure`
   * Ignore or continue when a test fail
   * Default: `${maven.test.failure.ignore}`
@@ -34,10 +31,25 @@ You have to be a fully utPLSQL environment available compatible with the Java AP
   
 * `paths`
   * Paths of the resources
-* `sources`
-  * Sources of the scripts at the style of the maven resources
+* `sourcesRegexExpression`
+  * 
+* `sourcesOwnerSubexpression`
+  * 
+* `sourcesNameSubexpression`
+  *     
+* `sourcesTypeSubexpression`
+  *     
+   
 * `tests`
   * Test fo the scripts at the style of the maven resources
+* `testsRegexExpression`
+  * 
+* `testsOwnerSubexpression`
+  * 
+* `testsNameSubexpression`
+  *     
+* `testsTypeSubexpression`
+
 * `targetDir`
   * Target dir, this is a readonly property
   * Default: `${project.build.directory}`
@@ -59,9 +71,9 @@ The next snippet is a sample of declaration of the pom
             <goal>test</goal>
         </goals>
         <configuration>
-			<url>url_of_connection</url>
-			<user>user</user>
-			<password>password</password>
+			<dbUrl>url_of_connection</dbUrl>
+			<dbUser>user</dbUser>
+			<dbPass>password</dbPass>
 			<version>3.1.0</version>
 			<failOnErrors>false</failOnErrors>
 			<reporters>
