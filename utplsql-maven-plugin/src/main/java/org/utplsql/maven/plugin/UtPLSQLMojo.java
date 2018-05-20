@@ -61,17 +61,49 @@ public class UtPLSQLMojo extends AbstractMojo
 	@Parameter(defaultValue = "")
 	protected List<String> paths;
 
+	// Sources Configuration
 	@Parameter
 	protected List<Resource> sources = new ArrayList<>();
+	
+	@Parameter
+	private String sourcesRegexExpression;
+	
+	@Parameter
+	private Integer sourcesOwnerSubexpression;
+	
+	@Parameter
+	private Integer sourcesNameSubexpression;
+	
+	@Parameter
+	private Integer sourcesTypeSubexpression;
 
+	
+	// Tests Configuration
+	
 	@Parameter
 	protected List<Resource> tests = new ArrayList<>();
+	
+	@Parameter
+	private String testsRegexExpression;
+	
+	@Parameter
+	private Integer testsOwnerSubexpression;
+	
+	@Parameter
+	private Integer testsNameSubexpression;
+	
+	@Parameter
+	private Integer testsTypeSubexpression;
+	
 
 	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
 	protected String targetDir;
 
 	@Parameter(defaultValue = "${maven.test.failure.ignore}")
 	protected boolean ignoreFailure;
+	
+	
+	
 
 
 	// Color in the console, loaded by environment variables
@@ -93,8 +125,8 @@ public class UtPLSQLMojo extends AbstractMojo
 		Connection connection = null;
 		try 
 		{
-			FileMapperOptions sourceMappingOptions = buildOptions(sources, PluginDefault.buildDefaultSource(), "sources");
-			FileMapperOptions testMappingOptions = buildOptions(tests, PluginDefault.buildDefaultTest(), "test");
+			FileMapperOptions sourceMappingOptions = buildSourcesOptions();
+			FileMapperOptions testMappingOptions = buildTestsOptions();
 			
 			// Create the Connection to the Database
 			connection = DriverManager.getConnection(url, user, password);
@@ -173,26 +205,98 @@ public class UtPLSQLMojo extends AbstractMojo
 	 * @return
 	 * @throws MojoExecutionException
 	 */
-	private FileMapperOptions buildOptions(List<Resource> resources, Resource defaultResource, String msg) throws MojoExecutionException
+	private FileMapperOptions buildSourcesOptions() throws MojoExecutionException
 	{
 		try
 		{
 			// Check if this element is empty
-			if (resources.isEmpty())
+			if (sources.isEmpty())
 			{
-				resources.add(defaultResource);
+				sources.add(PluginDefault.buildDefaultSource());
 			}
 
-			List<String> scripts = SQLScannerHelper.findSQLs(resources);
-			return new FileMapperOptions(scripts);
+			List<String> scripts = SQLScannerHelper.findSQLs(sources);
+			FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
+			
+			if (StringUtils.isNotEmpty(sourcesRegexExpression)) 
+			{
+				fileMapperOptions.setRegexPattern(sourcesRegexExpression);
+			}
+			
+			if (sourcesOwnerSubexpression != null)
+			{
+				fileMapperOptions.setOwnerSubExpression(sourcesOwnerSubexpression);
+			}
+			
+			if (sourcesNameSubexpression != null)
+			{
+				fileMapperOptions.setNameSubExpression(sourcesNameSubexpression);
+			}
+			
+			if (sourcesTypeSubexpression != null)
+			{
+				fileMapperOptions.setTypeSubExpression(sourcesTypeSubexpression);
+			}
+			
+			return fileMapperOptions;
 
 		}
 		catch (Exception e)
 		{
-			throw new MojoExecutionException(format("Invalid <%s> in your pom.xml: %s", msg, e.getMessage()));
+			throw new MojoExecutionException("Invalid <SOURCES> in your pom.xml: " + e.getMessage());
 		}
+		
 	}
+	
+	
+	/**
+	 * 
+	 * @param resources
+	 * @return
+	 * @throws MojoExecutionException
+	 */
+	private FileMapperOptions buildTestsOptions() throws MojoExecutionException
+	{
+		try
+		{
+			// Check if this element is empty
+			if (tests.isEmpty())
+			{
+				tests.add(PluginDefault.buildDefaultTest());
+			}
 
+			List<String> scripts = SQLScannerHelper.findSQLs(tests);
+			FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
+			
+			if (StringUtils.isNotEmpty(testsRegexExpression)) 
+			{
+				fileMapperOptions.setRegexPattern(testsRegexExpression);
+			}
+			
+			if (testsOwnerSubexpression != null)
+			{
+				fileMapperOptions.setOwnerSubExpression(testsOwnerSubexpression);
+			}
+			
+			if (testsNameSubexpression != null)
+			{
+				fileMapperOptions.setNameSubExpression(testsNameSubexpression);
+			}
+			
+			if (testsTypeSubexpression != null)
+			{
+				fileMapperOptions.setTypeSubExpression(testsTypeSubexpression);
+			}
+			
+			return fileMapperOptions;
+
+		}
+		catch (Exception e)
+		{
+			throw new MojoExecutionException("Invalid <TESTS> in your pom.xml: " + e.getMessage());
+		}
+		
+	}
 	/**
 	 * Init all the reporters
 	 * 
