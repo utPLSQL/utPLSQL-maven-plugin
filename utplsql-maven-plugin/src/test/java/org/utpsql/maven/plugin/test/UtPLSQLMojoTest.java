@@ -37,6 +37,26 @@ public class UtPLSQLMojoTest
 			Assert.fail("Unexpected Exception running the test of Definition");
 		}
 	}
+	
+	@Test
+    public void testRegexDefinition() throws Exception
+    {
+        try
+        {
+            final String PROJECT_NAME =  "regex-project";
+            UtPLSQLMojo myMojo = (UtPLSQLMojo) rule.lookupConfiguredMojo(new File(TARGET_DIRECTORY+"/"+PROJECT_NAME), "test");
+
+            Assert.assertNotNull(myMojo);
+            myMojo.execute();
+
+            checkCoverReportsGenerated(PROJECT_NAME,"utplsql/coverage-sonar-reporter.xml", "utplsql/sonar-test-reporter.xml");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            Assert.fail("Unexpected Exception running the test of Definition");
+        }
+    }
 
 	/**
 	 * 
