@@ -1,9 +1,8 @@
 #!/bin/bash
 set -ev
-cd $(dirname $(readlink -f $0))
 
-PROJECT_FILE="utPLSQL-demo-project"
-git clone -b develop --single-branch https://github.com/utPLSQL/utPLSQL-demo-project.git
+PROJECT_FILES_SRC="utplsql-maven-plugin/src/test/resources"
+PROJECT_FILES="resources"
 
 cat > demo_project.sh.tmp <<EOF
 sqlplus -S -L sys/oracle@//127.0.0.1:1521/xe AS SYSDBA <<SQL
@@ -13,32 +12,22 @@ grant select any dictionary to ${DB_USER};
 exit
 SQL
 
-cd ${PROJECT_FILE}
+cd ${PROJECT_FILES}
 sqlplus -S -L ${DB_USER}/${DB_PASS}@//127.0.0.1:1521/xe <<SQL
 whenever sqlerror exit failure rollback
 whenever oserror  exit failure rollback
 
-@source/award_bonus/employees_test.sql
-@source/award_bonus/award_bonus.prc
+@scripts/sources/TO_TEST_ME.tab
+@scripts/sources/PKG_TEST_ME.spc
+@scripts/sources/PKG_TEST_ME.bdy
 
-@source/between_string/betwnstr.fnc
-
-@source/remove_rooms_by_name/rooms.sql
-@source/remove_rooms_by_name/remove_rooms_by_name.prc
-
-@test/award_bonus/test_award_bonus.pks
-@test/award_bonus/test_award_bonus.pkb
-
-@test/between_string/test_betwnstr.pks
-@test/between_string/test_betwnstr.pkb
-
-@test/remove_rooms_by_name/test_remove_rooms_by_name.pks
-@test/remove_rooms_by_name/test_remove_rooms_by_name.pkb
+@scripts/test/TEST_PKG_TEST_ME.spc
+@scripts/test/TEST_PKG_TEST_ME.bdy
 
 exit
 SQL
 EOF
 
-docker cp ./$PROJECT_FILE $ORACLE_VERSION:/$PROJECT_FILE
+docker cp ./$PROJECT_FILES_SRC $ORACLE_VERSION:/$PROJECT_FILES
 docker cp ./demo_project.sh.tmp $ORACLE_VERSION:/demo_project.sh
 docker exec $ORACLE_VERSION bash demo_project.sh
