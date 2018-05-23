@@ -31,50 +31,45 @@ You have to be a fully utPLSQL environment available compatible with the Java AP
   
 * `paths`
   * Paths of the resources
+  
+* `sources`
+  * Path to project source files
 * `sourcesRegexExpression`
-  * 
+  * utPLSQL will convert file paths into database objects using the following regular expression
 * `sourcesOwnerSubexpression`
-  * 
+  * Object owner is identified by the expression with the specified set of brackets
 * `sourcesNameSubexpression`
-  *     
+  * Object name is identified by the expression with the specified set of brackets    
 * `sourcesTypeSubexpression`
-  *     
+  * Object Type is identified by the expression with the specified set of brackets    
    
 * `tests`
-  * Test fo the scripts at the style of the maven resources
+  * Path to project test files
 * `testsRegexExpression`
-  * 
+  * utPLSQL will convert file paths into database objects using the following regular expression
 * `testsOwnerSubexpression`
-  * 
+  * Owner is identified by the expression with the specified set of brackets
 * `testsNameSubexpression`
-  *     
+  * Object name is identified by the expression with the specified set of brackets  
 * `testsTypeSubexpression`
-
-* `targetDir`
-  * Target dir, this is a readonly property
-  * Default: `${project.build.directory}`
-* `includeObject`
-  * Include Object
-* `excludeObject`
-  * Exclude Objects
+  * Object Type is identified by the expression with the specified set of brackets
 
 
 
 ### Sample of use
 The next snippet is a sample of declaration of the pom
 ```xml
-		<plugin>
+	<plugin>
 		<groupId>org.utplsql</groupId>
 		<artifactId>utplsql-maven-plugin</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-        <goals>
-            <goal>test</goal>
-        </goals>
-        <configuration>
+		<goals>
+			<goal>test</goal>
+		</goals>
+		<configuration>
 			<dbUrl>url_of_connection</dbUrl>
 			<dbUser>user</dbUser>
 			<dbPass>password</dbPass>
-			<version>3.1.0</version>
 			<failOnErrors>false</failOnErrors>
 			<reporters>
 				<reporter>
@@ -109,6 +104,10 @@ The next snippet is a sample of declaration of the pom
 					</includes>
 				</test>
 			</tests>                  
-        </configuration>
-      </plugin>
+		</configuration>
+	</plugin>
 ```
+
+More project samples are available in the src/test/resources directory :
+* simple-project : minimalist test project with standard project directory structure
+* regex-project : override project directory structure and use additional parameters (sourcesRegexExpression, testsRegexExpression, ...) to tell utPLSQL how the project files are to be mapped into database objects.
