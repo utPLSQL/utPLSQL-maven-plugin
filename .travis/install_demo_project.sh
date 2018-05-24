@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ev
 
-PROJECT_FILES_SRC="utplsql-maven-plugin/src/test/resources"
+PROJECT_FILES_SRC="utplsql-maven-plugin/src/test/resources/simple-project"
 PROJECT_FILES="resources"
 
 cat > demo_project.sh.tmp <<EOF
@@ -18,11 +18,11 @@ whenever sqlerror exit failure rollback
 whenever oserror  exit failure rollback
 
 @scripts/sources/TO_TEST_ME.tab
-@scripts/sources/PKG_TEST_ME.spc
-@scripts/sources/PKG_TEST_ME.bdy
+@scripts/sources/APP.PKG_TEST_ME.spc
+@scripts/sources/APP.PKG_TEST_ME.bdy
 
-@scripts/test/TEST_PKG_TEST_ME.spc
-@scripts/test/TEST_PKG_TEST_ME.bdy
+@scripts/tests/APP.TEST_PKG_TEST_ME.spc
+@scripts/tests/APP.TEST_PKG_TEST_ME.bdy
 
 exit
 SQL
