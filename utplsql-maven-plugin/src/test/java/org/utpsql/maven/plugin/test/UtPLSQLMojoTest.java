@@ -2,6 +2,10 @@ package org.utpsql.maven.plugin.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.testing.MojoRule;
@@ -29,7 +33,7 @@ public class UtPLSQLMojoTest
 			Assert.assertNotNull(myMojo);
 			myMojo.execute();
 
-			checkCoverReportsGenerated(PROJECT_NAME,"utplsql/coverage-sonar-reporter.xml", "utplsql/sonar-test-reporter.xml");
+			checkReportsGenerated(PROJECT_NAME,"utplsql/coverage-sonar-reporter.xml", "utplsql/sonar-test-reporter.xml");
 		}
 		catch (Exception e)
 		{
@@ -49,7 +53,7 @@ public class UtPLSQLMojoTest
             Assert.assertNotNull(myMojo);
             myMojo.execute();
 
-            checkCoverReportsGenerated(PROJECT_NAME,"utplsql/coverage-sonar-reporter.xml", "utplsql/sonar-test-reporter.xml");
+            checkReportsGenerated(PROJECT_NAME,"utplsql/coverage-sonar-reporter.xml", "utplsql/sonar-test-reporter.xml");
         }
         catch (Exception e)
         {
@@ -62,7 +66,7 @@ public class UtPLSQLMojoTest
 	 * 
 	 * @param files
 	 */
-	private void checkCoverReportsGenerated(String projectName, String... files)
+	private void checkReportsGenerated(String projectName, String... files)
 	{
 		for (String filename : files)
 		{
@@ -71,10 +75,18 @@ public class UtPLSQLMojoTest
             
             Assert.assertTrue("The reporter for " + filename + " was not generated", outputFile.exists());
             try {
-                // Duration is set to 1 before comparing contents.
+                // Duration is set to 1 before comparing contents as it is always different.
+                // Path separator is set to "/" to ensure windows / linux / mac compatibility  
+                Stream<String> stream = Files.lines(Paths.get(TARGET_DIRECTORY,projectName,"target",filename));
+                String outputContent = stream.map(line -> line.replaceAll("(duration=\"[0-9\\.]*\")", "duration=\"1\""))
+                                                .map(line ->  line.replaceAll("\\\\", "/"))
+                                                .map(line -> line.replaceAll("\r", "").replaceAll("\n", ""))
+                                                .collect(Collectors.joining("\n"));
+                                                
+                stream.close();
                 Assert.assertEquals("The files differ!", 
-                        FileUtils.readFileToString(outputFile, "utf-8").replaceAll("(duration=\"[0-9\\.]*\")", "duration=\"1\""), 
-                        FileUtils.readFileToString(expectedOutputFile, "utf-8"));
+                        outputContent,
+                        FileUtils.readFileToString(expectedOutputFile, "utf-8").replace("\r",""));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -82,5 +94,4 @@ public class UtPLSQLMojoTest
             }
 		}
 	}
-
 }
