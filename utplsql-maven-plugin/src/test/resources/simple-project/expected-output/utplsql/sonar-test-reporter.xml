@@ -1,0 +1,18 @@
+<testExecutions version="1">
+<file path="src/test/resources/simple-project/scripts/tests/APP.TEST_PKG_TEST_ME.bdy">
+<testCase name="test_fc_input_1" duration="1" >
+</testCase>
+<testCase name="test_fc_input_0" duration="1" >
+</testCase>
+<testCase name="test_fc_input_null" duration="1" >
+</testCase>
+<testCase name="test_pr_test_me_null" duration="1" >
+</testCase>
+<testCase name="test_pr_test_me_not_null" duration="1" >
+</testCase>
+<testCase name="test_pr_test_me_exists" duration="1" >
+</testCase>
+<testCase name="test_pr_test_me_cursor" duration="1" >
+</testCase>
+</file>
+</testExecutions>

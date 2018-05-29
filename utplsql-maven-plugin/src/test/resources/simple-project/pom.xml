@@ -11,7 +11,7 @@
     
     
     <properties>
-      	<dbUrl>jdbc:oracle:thin:@127.0.0.1:1521:xe</dbUrl>  
+    	<dbUrl>jdbc:oracle:thin:@127.0.0.1:1521:xe</dbUrl>  
 		<!-- 
  		<dbUser>ut3</dbUser> 
   		<dbPass>XNtxj8eEgA6X6b6f</dbPass> 
@@ -19,8 +19,6 @@
     </properties>
     
     <build>
-    	<directory>../../../target/test-classes</directory>
-    
         <plugins>
             <plugin>
                 <groupId>${pom.groupId}</groupId>
@@ -35,7 +33,7 @@
 					<ignoreFailure>false</ignoreFailure>
 					
 					<paths>
-            			<path>ut3</path>
+            			<path>app</path>
           			</paths>
 					
 					<reporters>
@@ -53,7 +51,7 @@
 					
                     <sources>
                     	<source>
-                    		<directory>src/test/resources/scripts/sources</directory>
+                    		<directory>src/test/resources/simple-project/scripts/sources</directory>
 							<includes>
 								<include>**/*bdy</include>
 								<include>**/*spc</include>
@@ -63,7 +61,7 @@
                     
                     <tests>
                     	<test>
-                    		<directory>src/test/resources/scripts/test</directory>
+                    		<directory>src/test/resources/simple-project/scripts/tests</directory>
 							<includes>
 								<include>**/*bdy</include>
 								<include>**/*spc</include>

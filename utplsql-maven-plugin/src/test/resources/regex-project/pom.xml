@@ -1,0 +1,85 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.utplsql</groupId>
+    <artifactId>utplsql-maven-plugin-test</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>maven-plugin</packaging>
+
+    <name>utplsql-maven-plugin Maven Plugin Test</name>
+    
+    
+     <properties>
+      	<dbUrl>jdbc:oracle:thin:@127.0.0.1:1521:xe</dbUrl>  
+		<!-- 
+ 		<dbUser>ut3</dbUser> 
+  		<dbPass>XNtxj8eEgA6X6b6f</dbPass> 
+  		-->
+    </properties>
+    
+    <build>
+    
+        <plugins>
+            <plugin>
+                <groupId>${pom.groupId}</groupId>
+                <artifactId>utplsql-maven-plugin</artifactId>
+                <version>${pom.version}</version>
+                <goals>
+                    <goal>test</goal>
+                </goals>
+                <configuration>
+                	<!--  Mandatory Attributes -->
+                	
+					<ignoreFailure>false</ignoreFailure>
+					
+					<paths>
+            			<path>app</path>
+          			</paths>
+					
+					<reporters>
+						<reporter>
+								<name>UT_COVERAGE_SONAR_REPORTER</name>
+								<fileOutput>utplsql/coverage-sonar-reporter.xml</fileOutput>
+								<consoleOutput>true</consoleOutput>
+						</reporter>
+						<reporter>
+								<name>UT_SONAR_TEST_REPORTER</name>
+								<fileOutput>utplsql/sonar-test-reporter.xml</fileOutput>
+								<consoleOutput>true</consoleOutput>
+						</reporter>
+					</reporters>
+					
+                    <sources>
+                    	<source>
+                    		<directory>src/test/resources/regex-project/scripts/sources</directory>
+							<includes>
+								<include>**/*bdy</include>
+								<include>**/*spc</include>
+							</includes>
+                    	</source>
+                    </sources>
+                    <sourcesRegexExpression>.*(\\|\/)(\w+)(\\|\/)(\w+)(\\|\/)(\w+).(\w{3})</sourcesRegexExpression>
+                    <sourcesOwnerSubexpression>2</sourcesOwnerSubexpression>
+                    <sourcesNameSubexpression>6</sourcesNameSubexpression>
+                    <sourcesTypeSubexpression>7</sourcesTypeSubexpression>
+                    
+                    <tests>
+                    	<test>
+                    		<directory>src/test/resources/regex-project/scripts/test</directory>
+							<includes>
+								<include>**/*bdy</include>
+								<include>**/*spc</include>
+							</includes>
+                    	</test>
+                    </tests>
+                    <testsRegexExpression>.*(\\|\/)(\w+)(\\|\/)(\w+)(\\|\/)(\w+).(\w{3})</testsRegexExpression>
+                    <testsOwnerSubexpression>2</testsOwnerSubexpression>
+                    <testsNameSubexpression>6</testsNameSubexpression>
+                    <testsTypeSubexpression>7</testsTypeSubexpression>
+                    
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
