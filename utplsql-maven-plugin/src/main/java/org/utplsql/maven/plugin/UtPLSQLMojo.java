@@ -1,7 +1,5 @@
 package org.utplsql.maven.plugin;
 
-import static java.lang.String.format;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,6 +16,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.utplsql.api.DBHelper;
 import org.utplsql.api.FileMapperOptions;
+import org.utplsql.api.KeyValuePair;
 import org.utplsql.api.TestRunner;
 import org.utplsql.api.Version;
 import org.utplsql.api.exception.SomeTestsFailedException;
@@ -76,7 +75,9 @@ public class UtPLSQLMojo extends AbstractMojo
 	
 	@Parameter
 	private Integer sourcesTypeSubexpression;
-
+	
+	@Parameter
+	private List<CustomTypeMapping> sourcesCustomTypeMapping;
 	
 	// Tests Configuration
 	
@@ -94,6 +95,9 @@ public class UtPLSQLMojo extends AbstractMojo
 	
 	@Parameter
 	private Integer testsTypeSubexpression;
+	
+	@Parameter
+    private List<CustomTypeMapping> testsCustomTypeMapping;
 	
 
 	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
@@ -238,6 +242,13 @@ public class UtPLSQLMojo extends AbstractMojo
 				fileMapperOptions.setTypeSubExpression(sourcesTypeSubexpression);
 			}
 			
+			if (sourcesCustomTypeMapping != null && sourcesCustomTypeMapping.size() > 0) {
+			    fileMapperOptions.setTypeMappings(new ArrayList<KeyValuePair>());
+			    for (CustomTypeMapping typeMapping : sourcesCustomTypeMapping) {
+			        fileMapperOptions.getTypeMappings().add(new KeyValuePair(typeMapping.getCustomMapping(),typeMapping.getType()));
+			    }
+			}
+			
 			return fileMapperOptions;
 
 		}
@@ -287,6 +298,13 @@ public class UtPLSQLMojo extends AbstractMojo
 			{
 				fileMapperOptions.setTypeSubExpression(testsTypeSubexpression);
 			}
+			
+			if (testsCustomTypeMapping != null && testsCustomTypeMapping.size() > 0) {
+                fileMapperOptions.setTypeMappings(new ArrayList<KeyValuePair>());
+                for (CustomTypeMapping typeMapping : testsCustomTypeMapping) {
+                    fileMapperOptions.getTypeMappings().add(new KeyValuePair(typeMapping.getCustomMapping(),typeMapping.getType()));
+                }
+            }
 			
 			return fileMapperOptions;
 
