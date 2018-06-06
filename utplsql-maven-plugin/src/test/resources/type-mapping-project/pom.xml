@@ -58,10 +58,10 @@
 							</includes>
                     	</source>
                     </sources>
-                    <sourcesRegexExpression>.*(\\|\/)(\w+)(\\|\/)(\w+)(\\|\/)(\w+).(\w{3})</sourcesRegexExpression>
-                    <sourcesOwnerSubexpression>2</sourcesOwnerSubexpression>
-                    <sourcesNameSubexpression>6</sourcesNameSubexpression>
-                    <sourcesTypeSubexpression>4</sourcesTypeSubexpression>
+                    <sourcesRegexExpression>.*/(\w+)/(\w+)/(\w+)\.\w{3}</sourcesRegexExpression>
+                    <sourcesOwnerSubexpression>1</sourcesOwnerSubexpression>
+                    <sourcesNameSubexpression>3</sourcesNameSubexpression>
+                    <sourcesTypeSubexpression>2</sourcesTypeSubexpression>
                     <sourcesCustomTypeMapping>
                     	<customTypeMapping>
                     		<type>package body</type>
@@ -77,10 +77,10 @@
 							</includes>
                     	</test>
                     </tests>
-                    <testsRegexExpression>.*(\\|\/)(\w+)(\\|\/)(\w+)(\\|\/)(\w+).(\w{3})</testsRegexExpression>
-                    <testsOwnerSubexpression>2</testsOwnerSubexpression>
-                    <testsNameSubexpression>6</testsNameSubexpression>
-                    <testsTypeSubexpression>4</testsTypeSubexpression>
+                    <testsRegexExpression>.*/(\w+)/(\w+)/(\w+)\.\w{3}</testsRegexExpression>
+                    <testsOwnerSubexpression>1</testsOwnerSubexpression>
+                    <testsNameSubexpression>3</testsNameSubexpression>
+                    <testsTypeSubexpression>2</testsTypeSubexpression>
                     <testsCustomTypeMapping>
                     	<customTypeMapping>
                     		<type>package body</type>
