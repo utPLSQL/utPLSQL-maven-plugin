@@ -16,6 +16,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.utplsql.api.DBHelper;
 import org.utplsql.api.FileMapperOptions;
+import org.utplsql.api.JavaApiVersionInfo;
 import org.utplsql.api.KeyValuePair;
 import org.utplsql.api.TestRunner;
 import org.utplsql.api.Version;
@@ -124,6 +125,7 @@ public class UtPLSQLMojo extends AbstractMojo
 	@Override
 	public void execute() throws MojoExecutionException
 	{
+	    getLog().debug("Java Api Version = "+JavaApiVersionInfo.getVersion());
 		loadDefaultCredentials();
 		
 		Connection connection = null;
@@ -134,6 +136,7 @@ public class UtPLSQLMojo extends AbstractMojo
 			
 			// Create the Connection to the Database
 			connection = DriverManager.getConnection(url, user, password);
+			getLog().info("utPLSQL Version = "+DBHelper.getDatabaseFrameworkVersion(connection));
 			
 			List<Reporter> reporterList = initReporters(connection);
 
