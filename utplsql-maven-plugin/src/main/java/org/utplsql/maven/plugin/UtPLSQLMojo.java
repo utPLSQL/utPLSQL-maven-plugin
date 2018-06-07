@@ -126,7 +126,7 @@ public class UtPLSQLMojo extends AbstractMojo
 	public void execute() throws MojoExecutionException
 	{
 	    getLog().debug("Java Api Version = "+JavaApiVersionInfo.getVersion());
-		loadDefaultCredentials();
+		loadConfFromEnvironment();
 		
 		Connection connection = null;
 		try 
@@ -190,11 +190,16 @@ public class UtPLSQLMojo extends AbstractMojo
 	}
 	
 	/**
-	 * Load 
+	 * Load some configuration from env variables.
 	 * 
 	 */
-	private void loadDefaultCredentials ()
+	private void loadConfFromEnvironment ()
 	{
+       if (StringUtils.isEmpty(url))
+        {
+            url = System.getProperty("dbUrl");
+        }
+       
 		if (StringUtils.isEmpty(user))
 		{
 			user = System.getProperty("dbUser");
