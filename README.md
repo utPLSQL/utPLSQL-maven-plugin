@@ -41,7 +41,9 @@ You have to be a fully utPLSQL environment available compatible with the Java AP
 * `sourcesNameSubexpression`
   * Object name is identified by the expression with the specified set of brackets    
 * `sourcesTypeSubexpression`
-  * Object Type is identified by the expression with the specified set of brackets    
+  * Object Type is identified by the expression with the specified set of brackets
+* `sourcesCustomTypeMapping`
+  * List of Custom Type Mappings 
    
 * `tests`
   * Path to project test files
@@ -53,7 +55,8 @@ You have to be a fully utPLSQL environment available compatible with the Java AP
   * Object name is identified by the expression with the specified set of brackets  
 * `testsTypeSubexpression`
   * Object Type is identified by the expression with the specified set of brackets
-
+* `testsCustomTypeMapping`
+  * List of Custom Type Mappings
 
 
 ### Sample of use
@@ -111,3 +114,4 @@ The next snippet is a sample of declaration of the pom
 More project samples are available in the src/test/resources directory :
 * simple-project : minimalist test project with standard project directory structure
 * regex-project : override project directory structure and use additional parameters (sourcesRegexExpression, testsRegexExpression, ...) to tell utPLSQL how the project files are to be mapped into database objects.
+* type-mapping-project : This project shows how to use regex and custom type parameters togethers.
