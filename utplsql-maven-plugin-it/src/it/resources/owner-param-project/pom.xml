@@ -1,0 +1,89 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.utplsql</groupId>
+	<artifactId>utplsql-maven-plugin-owner-parameter-test</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+
+	<name>utplsql-maven-plugin IT Owner Parameter</name>
+	<properties>
+		<!-- url, user, password are set with dbUrl, dbUser, dbPass system properties -->
+	</properties>
+
+	<build>
+
+		<plugins>
+			<plugin>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>utplsql-maven-plugin</artifactId>
+				<version>${utplsql-maven-plugin-version}</version>
+				<goals>
+					<goal>test</goal>
+				</goals>
+				<configuration>
+					<!-- Mandatory Attributes -->
+
+					<ignoreFailure>false</ignoreFailure>
+
+					<paths>
+						<path>tests_owner</path>
+					</paths>
+
+					<reporters>
+						<reporter>
+							<name>UT_COVERAGE_SONAR_REPORTER</name>
+							<fileOutput>utplsql/coverage-sonar-reporter.xml</fileOutput>
+							<consoleOutput>true</consoleOutput>
+						</reporter>
+						<reporter>
+							<name>UT_SONAR_TEST_REPORTER</name>
+							<fileOutput>utplsql/sonar-test-reporter.xml</fileOutput>
+							<consoleOutput>true</consoleOutput>
+						</reporter>
+					</reporters>
+
+					<sources>
+						<source>
+							<directory>scripts/sources</directory>
+							<includes>
+								<include>**/*sql</include>
+							</includes>
+						</source>
+					</sources>
+					<sourcesOwner>code_owner</sourcesOwner>
+					<sourcesRegexExpression>.*/\w+/(\w+)/(\w+)\.\w{3}</sourcesRegexExpression>
+					<sourcesNameSubexpression>2</sourcesNameSubexpression>
+					<sourcesTypeSubexpression>1</sourcesTypeSubexpression>
+					<sourcesCustomTypeMapping>
+						<customTypeMapping>
+							<type>package body</type>
+							<customMapping>package_bodies</customMapping>
+						</customTypeMapping>
+					</sourcesCustomTypeMapping>
+
+					<tests>
+						<test>
+							<directory>scripts/test</directory>
+							<includes>
+								<include>**/*sql</include>
+							</includes>
+						</test>
+					</tests>
+					<testsOwner>tests_owner</testsOwner>
+					<testsRegexExpression>.*/\w+/(\w+)/(\w+)\.\w{3}</testsRegexExpression>
+					<testsNameSubexpression>2</testsNameSubexpression>
+					<testsTypeSubexpression>1</testsTypeSubexpression>
+					<testsCustomTypeMapping>
+						<customTypeMapping>
+							<type>package body</type>
+							<customMapping>package_bodies</customMapping>
+						</customTypeMapping>
+					</testsCustomTypeMapping>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

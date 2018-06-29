@@ -15,8 +15,8 @@ env:
     - MAVEN_HOME=/usr/local/maven
     - MAVEN_CFG=$HOME/.m2
     - DB_URL="127.0.0.1:1521:XE"
-    - DB_USER=app
-    - DB_PASS=app
+    - DB_UT3_USER=ut3
+    - DB_UT3_PASS=ut3
     - ORACLE_VERSION="11g-r2-xe"
     - DOCKER_OPTIONS="--shm-size=1g"
 
@@ -29,14 +29,15 @@ cache:
 install:
   - bash .travis/maven_cfg.sh
   - bash .travis/start_db.sh
-  - bash .travis/install_utplsql.sh
+  - bash .travis/install_utplsql.sh $DB_UT3_USER $DB_UT3_PASS
   - bash .travis/install_demo_project.sh
+  - bash .travis/install_demo_owner_project.sh
 
 script:
   - echo "Run Unit tests"
   - mvn test
   - echo "Run Integration tests"
-  - mvn verify -Dmaven.skip.test -DdbUser="${DB_USER}" -DdbPass="${DB_PASS}" -DdbUrl="jdbc:oracle:thin:@${DB_URL}"
+  - mvn verify -Dmaven.skip.test -DdbUser="${DB_UT3_USER}" -DdbPass="${DB_UT3_PASS}" -DdbUrl="jdbc:oracle:thin:@${DB_URL}"
 
 #before_deploy:
 #  - bash .travis/create_release.sh

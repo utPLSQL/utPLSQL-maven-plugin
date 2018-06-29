@@ -66,6 +66,9 @@ public class UtPLSQLMojo extends AbstractMojo
 	protected List<Resource> sources = new ArrayList<>();
 	
 	@Parameter
+	private String sourcesOwner;
+	
+	@Parameter
 	private String sourcesRegexExpression;
 	
 	@Parameter
@@ -84,6 +87,9 @@ public class UtPLSQLMojo extends AbstractMojo
 	
 	@Parameter
 	protected List<Resource> tests = new ArrayList<>();
+	
+	@Parameter
+	private String testsOwner;
 	
 	@Parameter
 	private String testsRegexExpression;
@@ -230,6 +236,11 @@ public class UtPLSQLMojo extends AbstractMojo
 			List<String> scripts = SQLScannerHelper.findSQLs(sources);
 			FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
 			
+			if (StringUtils.isNotEmpty(sourcesOwner)) 
+			{
+				fileMapperOptions.setObjectOwner(sourcesOwner);
+			}
+			
 			if (StringUtils.isNotEmpty(sourcesRegexExpression)) 
 			{
 				fileMapperOptions.setRegexPattern(sourcesRegexExpression);
@@ -250,7 +261,7 @@ public class UtPLSQLMojo extends AbstractMojo
 				fileMapperOptions.setTypeSubExpression(sourcesTypeSubexpression);
 			}
 			
-			if (sourcesCustomTypeMapping != null && sourcesCustomTypeMapping.size() > 0) {
+			if (sourcesCustomTypeMapping != null && !sourcesCustomTypeMapping.isEmpty()) {
 			    fileMapperOptions.setTypeMappings(new ArrayList<KeyValuePair>());
 			    for (CustomTypeMapping typeMapping : sourcesCustomTypeMapping) {
 			        fileMapperOptions.getTypeMappings().add(new KeyValuePair(typeMapping.getCustomMapping(),typeMapping.getType()));
@@ -287,6 +298,11 @@ public class UtPLSQLMojo extends AbstractMojo
 			List<String> scripts = SQLScannerHelper.findSQLs(tests);
 			FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
 			
+			if (StringUtils.isNotEmpty(testsOwner)) 
+			{
+				fileMapperOptions.setObjectOwner(testsOwner);
+			}
+			
 			if (StringUtils.isNotEmpty(testsRegexExpression)) 
 			{
 				fileMapperOptions.setRegexPattern(testsRegexExpression);
@@ -307,7 +323,7 @@ public class UtPLSQLMojo extends AbstractMojo
 				fileMapperOptions.setTypeSubExpression(testsTypeSubexpression);
 			}
 			
-			if (testsCustomTypeMapping != null && testsCustomTypeMapping.size() > 0) {
+			if (testsCustomTypeMapping != null && !testsCustomTypeMapping.isEmpty()) {
                 fileMapperOptions.setTypeMappings(new ArrayList<KeyValuePair>());
                 for (CustomTypeMapping typeMapping : testsCustomTypeMapping) {
                     fileMapperOptions.getTypeMappings().add(new KeyValuePair(typeMapping.getCustomMapping(),typeMapping.getType()));
