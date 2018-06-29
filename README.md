@@ -34,6 +34,8 @@ You have to be a fully utPLSQL environment available compatible with the Java AP
   
 * `sources`
   * Path to project source files
+* `sourcesOwner`
+  * Owner of the tested code
 * `sourcesRegexExpression`
   * utPLSQL will convert file paths into database objects using the following regular expression
 * `sourcesOwnerSubexpression`
@@ -47,6 +49,8 @@ You have to be a fully utPLSQL environment available compatible with the Java AP
    
 * `tests`
   * Path to project test files
+* `testsOwner`
+  * Owner of the testing code
 * `testsRegexExpression`
   * utPLSQL will convert file paths into database objects using the following regular expression
 * `testsOwnerSubexpression`
@@ -59,13 +63,44 @@ You have to be a fully utPLSQL environment available compatible with the Java AP
   * List of Custom Type Mappings
 
 
+### Comparaison with the CLI
+
+| CLI short parameter | CLI long parameter | maven XML path |
+| --- | --- | --- |
+| -c | --color | |
+| | --failure-exit-code | |
+| | | ignoreFailure |
+| -f | --format | reporters.reporter.name |
+| -o | | reporters.reporter.fileOutput |
+| -s | | reporters.reporter.consoleOutput |
+| -p | --path | paths.path |
+| -scc | --skip-compatibility-check | skipCompatibilityCheck |
+| -exclude | | excludeObject |
+| -include | | includeObject |
+| | | |
+| -source_path | | sources.source.directory |
+| -owner | | sourcesOwner |
+| -regex_expression | | sourcesRegexExpression |
+| -type_mapping | | list of testsCustomTypeMapping.customTypeMapping |
+| -owner_subexpression | | sourcesOwnerSubexpression |
+| -type_subexpression | | sourcesTypeSubexpression |
+| -name_subexpression | | sourcesNameSubexpression |
+| | | |
+| -test_path | | tests.test.directory |
+| -owner | | testsOwner |
+| -regex_expression | | testsRegexExpression |
+| -type_mapping | | list of testsCustomTypeMapping.customTypeMapping |
+| -owner_subexpression | | testsOwnerSubexpression |
+| -type_subexpression | | testsTypeSubexpression |
+| -name_subexpression | | testsNameSubexpression |
+
 ### Sample of use
 The next snippet is a sample of declaration of the pom
 ```xml
 	<plugin>
 		<groupId>org.utplsql</groupId>
 		<artifactId>utplsql-maven-plugin</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>3.1.0</version>
 		<goals>
 			<goal>test</goal>
 		</goals>
@@ -73,7 +108,10 @@ The next snippet is a sample of declaration of the pom
 			<dbUrl>url_of_connection</dbUrl>
 			<dbUser>user</dbUser>
 			<dbPass>password</dbPass>
-			<failOnErrors>false</failOnErrors>
+			<ignoreFailure>false</ignoreFailure>
+			<paths>
+				<path>schema_name</path>
+			</paths>
 			<reporters>
 				<reporter>
 					<name>UT_COVERAGE_SONAR_REPORTER</name>
@@ -115,3 +153,5 @@ More project samples are available in the src/test/resources directory :
 * simple-project : minimalist test project with standard project directory structure
 * regex-project : override project directory structure and use additional parameters (sourcesRegexExpression, testsRegexExpression, ...) to tell utPLSQL how the project files are to be mapped into database objects.
 * type-mapping-project : This project shows how to use regex and custom type parameters togethers.
+* owner-param-project : This project demonstrates how to use sourcesOwner and testsOwner parameters.
+

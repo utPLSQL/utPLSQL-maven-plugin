@@ -17,14 +17,25 @@ curl -L -O "https://github.com/utPLSQL/utPLSQL/releases/download/$UTPLSQL_VERSIO
 cat > install.sh.tmp <<EOF
 tar -xzf ${UTPLSQL_FILE}.tar.gz && rm ${UTPLSQL_FILE}.tar.gz
 cd ${UTPLSQL_FILE}/source
-sqlplus -S -L sys/oracle@//127.0.0.1:1521/xe AS SYSDBA @install_headless.sql ut3 ut3 users
+sqlplus -S -L sys/oracle@//127.0.0.1:1521/xe AS SYSDBA @install_headless.sql $1 $2 users
+
+sqlplus -S -L sys/oracle@//127.0.0.1:1521/xe AS SYSDBA << SQL
+grant execute any procedure to $1;
+grant create any procedure to $1;
+grant execute on dbms_lob to $1;
+grant execute on dbms_sql to $1;
+grant execute on dbms_xmlgen to $1;
+grant execute on dbms_lock to $1;  
+
+
+exit
+SQL
 EOF
 
 # Copy utPLSQL files to the container and install it.
 docker cp ./$UTPLSQL_FILE.tar.gz $ORACLE_VERSION:/$UTPLSQL_FILE.tar.gz
 # docker cp ./$UTPLSQL_FILE $ORACLE_VERSION:/$UTPLSQL_FILE
 docker cp ./install.sh.tmp $ORACLE_VERSION:/install.sh
-docker cp ./create_api_user.sh $ORACLE_VERSION:/create_api_user.sh
 
 # Remove temporary files.
 # rm $UTPLSQL_FILE.tar.gz
@@ -33,4 +44,3 @@ rm install.sh.tmp
 
 # Execute the utPLSQL installation inside the container.
 docker exec $ORACLE_VERSION bash install.sh
-docker exec $ORACLE_VERSION bash create_api_user.sh

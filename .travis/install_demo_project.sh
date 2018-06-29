@@ -3,6 +3,8 @@ set -ev
 
 PROJECT_FILES_SRC="utplsql-maven-plugin-it/src/it/resources/simple-project"
 PROJECT_FILES="resources"
+DB_USER=app
+DB_PASS=app
 
 cat > demo_project.sh.tmp <<EOF
 sqlplus -S -L sys/oracle@//127.0.0.1:1521/xe AS SYSDBA <<SQL
