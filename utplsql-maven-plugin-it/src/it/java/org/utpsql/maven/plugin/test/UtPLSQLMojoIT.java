@@ -37,7 +37,6 @@ public class UtPLSQLMojoIT
         //verifier.deleteArtifact( model.getGroupId(), model.getArtifactId(), model.getVersion(), "pom" );
    
         // install plugin
-        verifier.addCliOption("-N");
         verifier.setAutoclean(false);
         verifier.addCliOption("-Dmaven.skip.test=true");
         verifier.addCliOption("-DskipITs");
