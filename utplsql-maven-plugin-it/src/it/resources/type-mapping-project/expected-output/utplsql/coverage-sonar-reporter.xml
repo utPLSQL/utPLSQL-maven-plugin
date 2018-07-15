@@ -1,0 +1,12 @@
+<coverage version="1">
+<file path="scripts/sources/app/package_bodies/PKG_TEST_ME.sql">
+<lineToCover lineNumber="8" covered="true"/>
+<lineToCover lineNumber="9" covered="true"/>
+<lineToCover lineNumber="10" covered="true"/>
+<lineToCover lineNumber="11" covered="true"/>
+<lineToCover lineNumber="13" covered="true"/>
+<lineToCover lineNumber="19" covered="true"/>
+<lineToCover lineNumber="22" covered="true"/>
+<lineToCover lineNumber="23" covered="true"/>
+</file>
+</coverage>

@@ -18,3 +18,5 @@
 log/
 target/
 .mvn
+log.txt
+**/pom.xml.versionsBackup

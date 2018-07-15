@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ev
 
-PROJECT_FILES_SRC="utplsql-maven-plugin/src/test/resources/simple-project"
+PROJECT_FILES_SRC="utplsql-maven-plugin-it/src/it/resources/simple-project"
 PROJECT_FILES="resources"
 
 cat > demo_project.sh.tmp <<EOF
