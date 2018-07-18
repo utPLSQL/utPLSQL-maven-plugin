@@ -117,7 +117,7 @@ public class UtPLSQLMojoIT {
 	@Test
 	public void testOwnerParameterProject() throws Exception {
 		try {
-			final String PROJECT_NAME = "type-mapping-project";
+			final String PROJECT_NAME = "owner-param-project";
 			File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
 			Verifier verifier;
@@ -132,6 +132,27 @@ public class UtPLSQLMojoIT {
 
 			checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml",
 					"utplsql/coverage-sonar-reporter.xml");
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail("Unexpected Exception running the test : " + e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testMinimalistProject() throws Exception {
+		try {
+			final String PROJECT_NAME = "minimalist-project";
+			File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+
+			Verifier verifier;
+			verifier = new Verifier(testProject.getAbsolutePath());
+			verifier.addCliOption("-N");
+			verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
+			verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
+			verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
+			verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
+
+			verifier.executeGoal("test");
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail("Unexpected Exception running the test : " + e.getMessage());
