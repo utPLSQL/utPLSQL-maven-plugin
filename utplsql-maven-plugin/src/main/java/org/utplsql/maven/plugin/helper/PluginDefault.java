@@ -1,5 +1,6 @@
 package org.utplsql.maven.plugin.helper;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -21,10 +22,10 @@ public class PluginDefault
 	private static final String LOG_FILE = "l";
 
 	// Source Directory
-	private static final String SOURCE_DIRECTORY = "src/main/plsql";
+	public static final String SOURCE_DIRECTORY = "src/main/plsql";
 
 	// Test Directory
-	private static final String TEST_DIRECTORY = "src/test/plsql";
+	public static final String TEST_DIRECTORY = "src/test/plsql";
 
 	private PluginDefault()
 	{
@@ -36,9 +37,9 @@ public class PluginDefault
 	 * 
 	 * @return a {@link Resource}
 	 */
-	public static Resource buildDefaultSource()
+	public static Resource buildDefaultSource(File baseDir)
 	{
-		return buildDirectory(SOURCE_DIRECTORY, "**/*.*");
+		return buildDirectory(baseDir,SOURCE_DIRECTORY, "**/*.*");
 	}
 
 	/**
@@ -46,15 +47,15 @@ public class PluginDefault
 	 * 
 	 * @return a {@link Resource}
 	 */
-	public static Resource buildDefaultTest()
+	public static Resource buildDefaultTest(File baseDir)
 	{
-		return buildDirectory(TEST_DIRECTORY, "**/*.pkg");
+		return buildDirectory(baseDir, TEST_DIRECTORY, "**/*.pkg");
 	}
 
-	private static Resource buildDirectory(String directory, String includes)
+	private static Resource buildDirectory(File baseDir, String directory, String includes)
 	{
 		Resource resource = new Resource();
-		resource.setDirectory(directory);
+		resource.setDirectory(baseDir.getAbsolutePath()+"/"+directory);
 		resource.setIncludes(Arrays.asList(includes));
 		return resource;
 	}

@@ -27,15 +27,15 @@ public class SQLScannerHelper {
      * @param resouces
      * @return
      */
-    public static List<String> findSQLs(List<Resource> resources) {
-        List<String> founds = new ArrayList<>();
+    public static List<String> findSQLs(File baseDir,List<Resource> resources) {
+        List<String> founds = new ArrayList<String>();
 
         for (Resource resource : resources) {
             // Build Scanner
             DirectoryScanner scanner = buildScanner(resource);
             scanner.scan();
             for (String basename : scanner.getIncludedFiles()) {
-                founds.add(new File(scanner.getBasedir(), basename).getPath());
+                founds.add(baseDir.toURI().relativize(new File(scanner.getBasedir(), basename).toURI()).getPath());
             }
 
             // Append all scanned objects
