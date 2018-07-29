@@ -46,6 +46,7 @@ script:
   - mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify -Dmaven.skip.test -DdbUser="${DB_UT3_USER}" -DdbPass="${DB_UT3_PASS}" -DdbUrl="jdbc:oracle:thin:@${DB_URL}"
   - mvn sonar:sonar
 
+
 #before_deploy:
 #  - bash .travis/create_release.sh
 #  - if [ ! -z "$TRAVIS_TAG" ]; then VERSION=$(tr -d "/v/" <<<$TRAVIS_TAG); mvn org.codehaus.mojo:versions-maven-plugin:2.1:set -DnewVersion=${VERSION}; fi
