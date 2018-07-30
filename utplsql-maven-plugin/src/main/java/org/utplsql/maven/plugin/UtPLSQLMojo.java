@@ -208,13 +208,13 @@ public class UtPLSQLMojo extends AbstractMojo {
 			if (sources.isEmpty()) {
 				File defaultSourceDirectory = new File(project.getBasedir(),PluginDefault.SOURCE_DIRECTORY);
 				if (defaultSourceDirectory.exists()) {
-					sources.add(PluginDefault.buildDefaultSource(project.getBasedir()));
+					sources.add(PluginDefault.buildDefaultSource());
 				} else {
 					return new FileMapperOptions(new ArrayList<String>());
 				}
 			}
 
-			List<String> scripts = SQLScannerHelper.findSQLs(project.getBasedir(),sources);
+			List<String> scripts = SQLScannerHelper.findSQLs(project.getBasedir(),sources,PluginDefault.SOURCE_DIRECTORY, PluginDefault.SOURCE_FILE_PATTERN);
 			FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
 
 			if (StringUtils.isNotEmpty(sourcesOwner)) {
@@ -263,15 +263,15 @@ public class UtPLSQLMojo extends AbstractMojo {
 		try {
 			// Check if this element is empty
 		    if (tests.isEmpty()) {
-                File defaultTestDirecyory = new File(project.getBasedir(),PluginDefault.TEST_DIRECTORY);
-                if (defaultTestDirecyory.exists()) {
-                    tests.add(PluginDefault.buildDefaultTest(project.getBasedir()));
+                File defaultTestDirectory = new File(project.getBasedir(),PluginDefault.TEST_DIRECTORY);
+                if (defaultTestDirectory.exists()) {
+                    tests.add(PluginDefault.buildDefaultTest());
                 } else {
                     return new FileMapperOptions(new ArrayList<String>());
                 }
             }
 
-			List<String> scripts = SQLScannerHelper.findSQLs(project.getBasedir(),tests);
+			List<String> scripts = SQLScannerHelper.findSQLs(project.getBasedir(),tests,PluginDefault.TEST_DIRECTORY, PluginDefault.TEST_FILE_PATTERN);
 			FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
 
 			if (StringUtils.isNotEmpty(testsOwner)) {

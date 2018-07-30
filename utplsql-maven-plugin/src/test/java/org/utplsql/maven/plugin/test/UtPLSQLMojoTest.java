@@ -158,4 +158,57 @@ public class UtPLSQLMojoTest {
 		assertTrue(tests.getFilePaths().contains("src/test/plsql/f2.pkg"));
 
 	}
+	
+	/**
+	 * 	testSourcesAndTestsParameterHaveNotDirectoryTag.
+	 * 
+	 *	Given 	: a pom.xml with source and test tag not containing a directory tag.
+	 * 	When  	: pom is read and buildSourcesOptions / buildTestsOptions are run
+	 * 	Then 	: it should find all sources/tests files in default directories
+	 */
+	@Test
+	public void testSourcesAndTestsParameterHaveNotDirectoryTag() throws Exception {
+		UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule.lookupConfiguredMojo(new File("src/test/resources/partialSourceAndTestTag/missingDirectory/"), "test");
+		Assert.assertNotNull(utplsqlMojo);
+		
+		// check sources
+		FileMapperOptions sources = Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
+		assertEquals(2, sources.getFilePaths().size());
+		assertTrue(sources.getFilePaths().contains("src/main/plsql/f1.sql"));
+		assertTrue(sources.getFilePaths().contains("src/main/plsql/foo/f2.sql"));
+		
+		// check tests
+		FileMapperOptions tests = Whitebox.invokeMethod(utplsqlMojo, "buildTestsOptions");
+		assertEquals(3, tests.getFilePaths().size());
+		assertTrue(tests.getFilePaths().contains("src/test/plsql/foo/f1.pkg"));
+		assertTrue(tests.getFilePaths().contains("src/test/plsql/f2.pkg"));
+		assertTrue(tests.getFilePaths().contains("src/test/plsql/foo/f1.sql"));
+	}
+	
+	/**
+	 * 	testSourcesAndTestsParameterHaveNotDirectoryTag.
+	 * 
+	 *	Given 	: a pom.xml with source and test tag not containing a directory tag.
+	 * 	When  	: pom is read and buildSourcesOptions / buildTestsOptions are run
+	 * 	Then 	: it should find all sources/tests files in default directories
+	 */
+	@Test
+	public void testSourcesAndTestsParameterHaveNotIncludesTag() throws Exception {
+		UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule.lookupConfiguredMojo(new File("src/test/resources/partialSourceAndTestTag/missingIncludes/"), "test");
+		Assert.assertNotNull(utplsqlMojo);
+		
+		// check sources
+		FileMapperOptions sources = Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
+		assertEquals(2, sources.getFilePaths().size());
+		assertTrue(sources.getFilePaths().contains("src/main/foo/f1.sql"));
+		assertTrue(sources.getFilePaths().contains("src/main/foo/foo/f2.sql"));
+		
+		// check tests
+		FileMapperOptions tests = Whitebox.invokeMethod(utplsqlMojo, "buildTestsOptions");
+		assertEquals(2, tests.getFilePaths().size());
+		assertTrue(tests.getFilePaths().contains("src/test/bar/foo/f1.pkg"));
+		assertTrue(tests.getFilePaths().contains("src/test/bar/f2.pkg"));
+	}
+	
+	
 }

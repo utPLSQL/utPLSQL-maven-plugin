@@ -26,6 +26,16 @@ public class PluginDefault
 
 	// Test Directory
 	public static final String TEST_DIRECTORY = "src/test/plsql";
+	
+	/**
+	 * Default source file pattern.
+	 */
+	public static final String SOURCE_FILE_PATTERN = "**/*.*";
+	
+	/**
+	 * Default test file pattern.
+	 */
+	public static final String TEST_FILE_PATTERN = "**/*.pkg";
 
 	private PluginDefault()
 	{
@@ -37,9 +47,9 @@ public class PluginDefault
 	 * 
 	 * @return a {@link Resource}
 	 */
-	public static Resource buildDefaultSource(File baseDir)
+	public static Resource buildDefaultSource()
 	{
-		return buildDirectory(baseDir,SOURCE_DIRECTORY, "**/*.*");
+		return buildDirectory(SOURCE_DIRECTORY, SOURCE_FILE_PATTERN);
 	}
 
 	/**
@@ -47,15 +57,15 @@ public class PluginDefault
 	 * 
 	 * @return a {@link Resource}
 	 */
-	public static Resource buildDefaultTest(File baseDir)
+	public static Resource buildDefaultTest()
 	{
-		return buildDirectory(baseDir, TEST_DIRECTORY, "**/*.pkg");
+		return buildDirectory(TEST_DIRECTORY, TEST_FILE_PATTERN);
 	}
 
-	private static Resource buildDirectory(File baseDir, String directory, String includes)
+	private static Resource buildDirectory(String directory, String includes)
 	{
 		Resource resource = new Resource();
-		resource.setDirectory(baseDir.getAbsolutePath()+"/"+directory);
+		resource.setDirectory(directory);
 		resource.setIncludes(Arrays.asList(includes));
 		return resource;
 	}
