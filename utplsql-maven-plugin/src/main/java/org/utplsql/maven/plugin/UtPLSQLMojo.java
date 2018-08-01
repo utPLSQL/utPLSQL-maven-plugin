@@ -16,6 +16,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.utils.logging.MessageUtils;
 import org.utplsql.api.DBHelper;
 import org.utplsql.api.FileMapperOptions;
 import org.utplsql.api.JavaApiVersionInfo;
@@ -61,14 +62,14 @@ public class UtPLSQLMojo extends AbstractMojo {
 	protected boolean skipCompatibilityCheck;
 
 	@Parameter
-	protected List<ReporterParameter> reporters = new ArrayList<ReporterParameter>();
+	protected List<ReporterParameter> reporters = new ArrayList<>();
 
 	@Parameter
-	protected List<String> paths = new ArrayList<String>();
+	protected List<String> paths = new ArrayList<>();
 
 	// Sources Configuration
 	@Parameter
-	protected List<Resource> sources = new ArrayList<Resource>();
+	protected List<Resource> sources = new ArrayList<>();
 
 	@Parameter
 	private String sourcesOwner;
@@ -117,8 +118,8 @@ public class UtPLSQLMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${maven.test.failure.ignore}")
 	protected boolean ignoreFailure;
 
-	// Color in the console, loaded by environment variables
-	private boolean colorConsole = PluginDefault.resolveColor();
+	// Color in the console, bases on maven logging configuration
+	private boolean colorConsole = MessageUtils.isColorEnabled();
 
 	// Reporter Writer
 	private ReporterWriter reporterWriter;

@@ -1,8 +1,6 @@
 package org.utplsql.maven.plugin.helper;
 
-import java.io.File;
 import java.util.Arrays;
-import java.util.Map;
 
 import org.apache.maven.model.Resource;
 
@@ -14,13 +12,6 @@ import org.apache.maven.model.Resource;
  */
 public class PluginDefault
 {
-
-	private static final String STYLE_COLOR_PROPERTY = "style.color";
-
-	private static final String BATCH_MODE = "B";
-
-	private static final String LOG_FILE = "l";
-
 	// Source Directory
 	public static final String SOURCE_DIRECTORY = "src/main/plsql";
 
@@ -69,32 +60,4 @@ public class PluginDefault
 		resource.setIncludes(Arrays.asList(includes));
 		return resource;
 	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static boolean resolveColor()
-	{
-		final Map<String, String> env = System.getenv();
-		String color = env.get(STYLE_COLOR_PROPERTY);
-
-		if ("always".equals(color))
-		{
-			return true;
-		}
-
-		if ("never".equals(color))
-		{
-			return false;
-		}
-
-		if (env.containsKey(BATCH_MODE) || env.containsKey(LOG_FILE))
-		{
-			return false;
-		}
-
-		return false;
-	}
-
 }
