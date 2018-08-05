@@ -7,6 +7,12 @@ services:
 jdk:
   - oraclejdk8
 
+addons:
+  sonarcloud:
+    organization: utplsql
+    token:
+      secure: ${SONAR_TOKEN}
+
 env:
   global:
     - DOCKER_CFG=$HOME/.docker
@@ -35,9 +41,11 @@ install:
 
 script:
   - echo "Run Unit tests"
-  - mvn test
+  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent test
   - echo "Run Integration tests"
-  - mvn verify -Dmaven.skip.test -DdbUser="${DB_UT3_USER}" -DdbPass="${DB_UT3_PASS}" -DdbUrl="jdbc:oracle:thin:@${DB_URL}"
+  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify -Dmaven.skip.test -DdbUser="${DB_UT3_USER}" -DdbPass="${DB_UT3_PASS}" -DdbUrl="jdbc:oracle:thin:@${DB_URL}"
+  - mvn sonar:sonar
+
 
 #before_deploy:
 #  - bash .travis/create_release.sh

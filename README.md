@@ -1,3 +1,6 @@
+[![Build status](https://travis-ci.org/utPLSQL/utPLSQL-maven-plugin.svg?branch=develop)](https://travis-ci.org/utPLSQL/utPLSQL-maven-plugin)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.utplsql%3Autplsql-maven-plugin-parent&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.utplsql%3Autplsql-maven-plugin-parent)
+
 # utPLSQL-maven-plugin
 A maven plugin for running Unit Tests with utPLSQL v3+
 
@@ -97,6 +100,20 @@ You have to be a fully utPLSQL environment available compatible with the Java AP
 ### Sample of use
 The next snippet is a sample of declaration of the pom
 ```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.my_org</groupId>
+    <artifactId>my-artifact-name</artifactId>
+    <version>1.0.0</version>
+
+    <properties>
+        <dbUrl>url_of_connection</dbUrl>
+        <dbUser>user</dbUser>
+        <dbPass>password</dbPass>
+    </properties>
 	<plugin>
 		<groupId>org.utplsql</groupId>
 		<artifactId>utplsql-maven-plugin</artifactId>
@@ -105,9 +122,6 @@ The next snippet is a sample of declaration of the pom
 			<goal>test</goal>
 		</goals>
 		<configuration>
-			<dbUrl>url_of_connection</dbUrl>
-			<dbUser>user</dbUser>
-			<dbPass>password</dbPass>
 			<ignoreFailure>false</ignoreFailure>
 			<paths>
 				<path>schema_name</path>
@@ -147,6 +161,7 @@ The next snippet is a sample of declaration of the pom
 			</tests>                  
 		</configuration>
 	</plugin>
+</project>
 ```
 
 More project samples are available in the src/test/resources directory :
