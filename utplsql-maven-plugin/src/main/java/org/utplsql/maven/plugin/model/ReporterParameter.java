@@ -12,7 +12,7 @@ public class ReporterParameter
 	private String fileOutput;
 
 	// Writes the report to console
-	private boolean consoleOutput;
+	private Boolean consoleOutput;
 
 	/**
 	 * 
@@ -55,13 +55,17 @@ public class ReporterParameter
 	{
 		this.fileOutput = fileOutput;
 	}
+	
+	public Boolean getConsoleOutput() {
+	    return consoleOutput;
+	}
 
 	/**
 	 * @return the consoleOutput
 	 */
-	public boolean isConsoleOutput()
+	public Boolean isConsoleOutput()
 	{
-		return consoleOutput;
+		return null != consoleOutput && consoleOutput;
 	}
 
 	/**

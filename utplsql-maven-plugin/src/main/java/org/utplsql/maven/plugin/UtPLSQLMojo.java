@@ -332,6 +332,11 @@ public class UtPLSQLMojo extends AbstractMojo {
 			Reporter reporter = reporterFactory.createReporter(reporterParameter.getName());
 			reporter.init(connection);
 			reporterList.add(reporter);
+			
+			// Turns the console output on by default if both file and console output are empty.
+			if (!reporterParameter.isFileOutput() && null == reporterParameter.getConsoleOutput()) {
+			    reporterParameter.setConsoleOutput(true);
+			}
 
 			// Only added the reporter if at least one of the output is required
 			if (StringUtils.isNotBlank(reporterParameter.getFileOutput()) || reporterParameter.isConsoleOutput()) {

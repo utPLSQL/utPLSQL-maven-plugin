@@ -174,13 +174,16 @@ public class UtPLSQLMojoIT {
 				// Path separator is set to "/" to ensure windows / linux / mac compatibility
 				Stream<String> stream = Files
 						.lines(Paths.get("target", "test-classes", projectName, "target", filename));
-				String outputContent = stream.map(line -> line.replaceAll("(duration=\"[0-9\\.]*\")", "duration=\"1\""))
+				
+				String outputContent = stream
+				        .map(line -> line.replaceAll("(encoding=\"[^\"]*\")", "encoding=\"WINDOWS-1252\""))
+				        .map(line -> line.replaceAll("(duration=\"[0-9\\.]*\")", "duration=\"1\""))
 						.map(line -> line.replaceAll("\\\\", "/"))
 						.map(line -> line.replaceAll("\r", "").replaceAll("\n", "")).collect(Collectors.joining("\n"));
 
 				stream.close();
-				Assert.assertEquals("The files differ!", outputContent,
-						FileUtils.readFileToString(expectedOutputFile, "utf-8").replace("\r", ""));
+				Assert.assertEquals("The files differ!", 
+				        FileUtils.readFileToString(expectedOutputFile, "utf-8").replace("\r", ""), outputContent);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
