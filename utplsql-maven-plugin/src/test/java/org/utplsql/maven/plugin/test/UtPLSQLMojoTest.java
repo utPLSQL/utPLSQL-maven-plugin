@@ -1,21 +1,47 @@
 package org.utplsql.maven.plugin.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.File;
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.MojoRule;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
+import org.utplsql.api.DBHelper;
 import org.utplsql.api.FileMapperOptions;
+import org.utplsql.api.Version;
+import org.utplsql.api.reporter.Reporter;
+import org.utplsql.api.reporter.ReporterFactory;
 import org.utplsql.maven.plugin.UtPLSQLMojo;
+import org.utplsql.maven.plugin.model.ReporterParameter;
+import org.utplsql.maven.plugin.reporter.ReporterWriter;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({
+    DBHelper.class,
+    ReporterFactory.class})
 public class UtPLSQLMojoTest {
 
 	@Rule
@@ -23,6 +49,24 @@ public class UtPLSQLMojoTest {
 	
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
+	
+	@Mock
+	public Connection mockConnection;
+	
+	@Mock
+	public Version mockVersion;
+	
+	@Mock
+	public ReporterFactory mockReporterFactory;
+		
+	@Before
+	public void setUp() throws Exception {
+	    mockStatic(DBHelper.class);
+	    when(DBHelper.getDatabaseFrameworkVersion(mockConnection)).thenReturn(mockVersion);
+	    
+	    mockStatic(ReporterFactory.class);
+	    when(ReporterFactory.createEmpty()).thenReturn(mockReporterFactory);
+	}
 	
 	/**
 	 * 	testInvalidSourcesDirectory.
@@ -210,5 +254,48 @@ public class UtPLSQLMojoTest {
 		assertTrue(tests.getFilePaths().contains("src/test/bar/f2.pkg"));
 	}
 	
+	@Test
+	public void testDefaultConsoleBehaviour() throws Exception {
+	    UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule.lookupConfiguredMojo(new File("src/test/resources/defaultConsoleOutputBehaviour/"), "test");
+        Assert.assertNotNull(utplsqlMojo);
+        
+        List<Reporter> reporterList = new ArrayList<>();
+        when(mockReporterFactory.createReporter(anyString())).thenAnswer(invocation -> {
+            Reporter mockReporter = mock(Reporter.class);
+            reporterList.add(mockReporter);
+            return mockReporter;
+        });
+        
+        Whitebox.invokeMethod(utplsqlMojo, "initReporters", mockConnection);
+                
+        // Assert that we called the create reporter with the correct parameters.
+        verify(mockReporterFactory, times(2)).createReporter("UT_DOCUMENTATION_REPORTER");
+        verify(mockReporterFactory).createReporter("UT_COVERAGE_SONAR_REPORTER");
+        verify(mockReporterFactory).createReporter("UT_SONAR_TEST_REPORTER");    
+        verifyNoMoreInteractions(mockReporterFactory);
+        
+        // Assert that all reporters have been initialized.
+        for (Reporter mockReporter : reporterList) {
+            verify(mockReporter).init(mockConnection);
+            verifyNoMoreInteractions(mockReporter);
+        }
+        
+        // Assert that we added only the necessary reporters to the writer.
+        ReporterWriter reporterWritter = Whitebox.getInternalState(utplsqlMojo, "reporterWriter");
+        List<Pair<Reporter, ReporterParameter>> listReporters = Whitebox.getInternalState(reporterWritter, "listReporters");
+        assertEquals(3, listReporters.size());
+        
+        ReporterParameter reporterParameter1 = listReporters.get(0).getRight();
+        assertTrue(reporterParameter1.isConsoleOutput());
+        assertFalse(reporterParameter1.isFileOutput());
+        
+        ReporterParameter reporterParameter2 = listReporters.get(1).getRight();
+        assertFalse(reporterParameter2.isConsoleOutput());
+        assertTrue(reporterParameter2.isFileOutput());
+        
+        ReporterParameter reporterParameter3 = listReporters.get(2).getRight();
+        assertTrue(reporterParameter3.isConsoleOutput());
+        assertTrue(reporterParameter3.isFileOutput());
+	}
 	
 }
