@@ -266,7 +266,7 @@ public class UtPLSQLMojoTest {
             return mockReporter;
         });
         
-        Whitebox.invokeMethod(utplsqlMojo, "initReporters", mockConnection);
+        Whitebox.invokeMethod(utplsqlMojo, "initReporters", mockConnection, mockVersion, mockReporterFactory);
                 
         // Assert that we called the create reporter with the correct parameters.
         verify(mockReporterFactory, times(2)).createReporter("UT_DOCUMENTATION_REPORTER");
@@ -296,6 +296,29 @@ public class UtPLSQLMojoTest {
         ReporterParameter reporterParameter3 = listReporters.get(2).getRight();
         assertTrue(reporterParameter3.isConsoleOutput());
         assertTrue(reporterParameter3.isFileOutput());
+	}
+	
+	@Test
+	public void testAddDefaultReporter() throws Exception {
+	    UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule.lookupConfiguredMojo(new File("src/test/resources/defaultConsoleOutputBehaviour/"), "test");
+        Assert.assertNotNull(utplsqlMojo);
+        
+        List<Reporter> reporterList = new ArrayList<>();
+        when(mockReporterFactory.createReporter(anyString())).thenAnswer(invocation -> {
+            Reporter mockReporter = mock(Reporter.class);
+            when(mockReporter.getTypeName()).thenReturn(invocation.getArgument(0));
+            reporterList.add(mockReporter);
+            return mockReporter;
+        });
+        
+        List<ReporterParameter> reporterParameters = Whitebox.getInternalState(utplsqlMojo, "reporters");
+        reporterParameters.clear();
+        
+        Whitebox.invokeMethod(utplsqlMojo, "initReporters", mockConnection, mockVersion, mockReporterFactory);
+        
+        assertEquals(1, reporterList.size());
+        assertEquals("UT_DOCUMENTATION_REPORTER", reporterList.get(0).getTypeName());
+        verify(reporterList.get(0)).init(mockConnection);
 	}
 	
 }

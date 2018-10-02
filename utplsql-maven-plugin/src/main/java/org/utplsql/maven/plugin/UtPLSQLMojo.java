@@ -24,6 +24,7 @@ import org.utplsql.api.KeyValuePair;
 import org.utplsql.api.TestRunner;
 import org.utplsql.api.Version;
 import org.utplsql.api.exception.SomeTestsFailedException;
+import org.utplsql.api.reporter.CoreReporters;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.api.reporter.ReporterFactory;
 import org.utplsql.maven.plugin.helper.PluginDefault;
@@ -138,21 +139,25 @@ public class UtPLSQLMojo extends AbstractMojo {
 		try {
 			FileMapperOptions sourceMappingOptions = buildSourcesOptions();
 			FileMapperOptions testMappingOptions = buildTestsOptions();
-
-			// Create the Connection to the Database
+			
 			connection = DriverManager.getConnection(url, user, password);
-			getLog().info("utPLSQL Version = " + DBHelper.getDatabaseFrameworkVersion(connection));
-
-			List<Reporter> reporterList = initReporters(connection);
-
+			
+			Version utlVersion = DBHelper.getDatabaseFrameworkVersion(connection);
+            getLog().info("utPLSQL Version = " + utlVersion);
+			
+            List<Reporter> reporterList = initReporters(connection, utlVersion, ReporterFactory.createEmpty());
+			
 			logParameters(sourceMappingOptions, testMappingOptions, reporterList);
 
-			TestRunner runner = new TestRunner().addPathList(paths).addReporterList(reporterList)
-					.sourceMappingOptions(sourceMappingOptions).testMappingOptions(testMappingOptions)
-					.skipCompatibilityCheck(skipCompatibilityCheck).colorConsole(colorConsole)
+			TestRunner runner = new TestRunner()
+			        .addPathList(paths)
+			        .addReporterList(reporterList)
+			        .sourceMappingOptions(sourceMappingOptions)
+					.testMappingOptions(testMappingOptions)
+					.skipCompatibilityCheck(skipCompatibilityCheck)
+					.colorConsole(colorConsole)
 					.failOnErrors(!ignoreFailure);
-
-			// Setting Optional Parameters
+			
 			if (StringUtils.isNotBlank(excludeObject)) {
 				runner.excludeObject(excludeObject);
 			}
@@ -170,9 +175,9 @@ public class UtPLSQLMojo extends AbstractMojo {
 			throw new MojoExecutionException(e.getMessage(), e);
 		} finally {
 			try {
-				// Write Reporters
-				if (connection != null)
+				if (null != connection) {
 					reporterWriter.writeReporters(connection);
+				}
 			} catch (Exception e) {
 				getLog().error(e.getMessage(), e);
 			}
@@ -205,7 +210,6 @@ public class UtPLSQLMojo extends AbstractMojo {
 	 */
 	private FileMapperOptions buildSourcesOptions() throws MojoExecutionException {
 		try {
-			// Check if this element is empty
 			if (sources.isEmpty()) {
 				File defaultSourceDirectory = new File(project.getBasedir(),PluginDefault.SOURCE_DIRECTORY);
 				if (defaultSourceDirectory.exists()) {
@@ -262,7 +266,6 @@ public class UtPLSQLMojo extends AbstractMojo {
 	 */
 	private FileMapperOptions buildTestsOptions() throws MojoExecutionException {
 		try {
-			// Check if this element is empty
 		    if (tests.isEmpty()) {
                 File defaultTestDirectory = new File(project.getBasedir(),PluginDefault.TEST_DIRECTORY);
                 if (defaultTestDirectory.exists()) {
@@ -318,15 +321,18 @@ public class UtPLSQLMojo extends AbstractMojo {
 	 * @return
 	 * @throws SQLException
 	 */
-	private List<Reporter> initReporters(Connection connection) throws SQLException {
-		List<Reporter> reporterList = new ArrayList<>();
+	private List<Reporter> initReporters(
+	        Connection connection, Version utlVersion, ReporterFactory reporterFactory) throws SQLException {
 
-		Version utlVersion = DBHelper.getDatabaseFrameworkVersion(connection);
-
-		// Initialized Reporters
+		List<Reporter> reporterList = new ArrayList<>();		
 		reporterWriter = new ReporterWriter(targetDir, utlVersion);
 
-		ReporterFactory reporterFactory = ReporterFactory.createEmpty();
+		if (reporters.isEmpty()) {
+		    ReporterParameter reporterParameter = new ReporterParameter();
+		    reporterParameter.setConsoleOutput(true);
+		    reporterParameter.setName(CoreReporters.UT_DOCUMENTATION_REPORTER.name());
+		    reporters.add(reporterParameter);
+		}
 
 		for (ReporterParameter reporterParameter : reporters) {
 			Reporter reporter = reporterFactory.createReporter(reporterParameter.getName());
@@ -358,7 +364,6 @@ public class UtPLSQLMojo extends AbstractMojo {
 		Log log = getLog();
 		log.info("Invoking TestRunner with: " + targetDir);
 
-		// Do nothing when the debug is disabled
 		if (!log.isDebugEnabled()) {
 			return;
 		}
