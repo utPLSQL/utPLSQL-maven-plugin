@@ -11,10 +11,9 @@ import org.apache.maven.model.Resource;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 /**
- * Utility to Scan all resources
+ * Utility to scan all resources
  * 
  * @author Alberto Hernández
- *
  */
 public class SQLScannerHelper {
 
@@ -23,46 +22,46 @@ public class SQLScannerHelper {
     }
 
     /**
+     * Scans a directory looking for the matching patterns.
      * 
-     * @param resouces
-     * @return
+     * @param baseDir            the base directory
+     * @param resources          a list of resources
+     * @param defaultDirectory   the default search directory
+     * @param defaultFilePattern the default file pattern
+     * @return a list of the files found
      */
-    public static List<String> findSQLs(File baseDir,List<Resource> resources, String defaultDirectory, String defaultFilePattern) {
+    public static List<String> findSQLs(File baseDir, List<Resource> resources, String defaultDirectory,
+            String defaultFilePattern) {
+
         List<String> founds = new ArrayList<String>();
 
         for (Resource resource : resources) {
-        	if (resource.getDirectory() == null) {
-        		// use default directory if not set.
-        		resource.setDirectory(defaultDirectory);
-        	}
-        	
-        	if (resource.getIncludes().isEmpty()) {
-        		// use default file pattern if not set.
-        		resource.getIncludes().add(defaultFilePattern);
-        	}
-            // Build Scanner
-            DirectoryScanner scanner = buildScanner(baseDir.getPath(),resource);
+
+            if (resource.getDirectory() == null) {
+                resource.setDirectory(defaultDirectory);
+            }
+
+            if (resource.getIncludes().isEmpty()) {
+                resource.getIncludes().add(defaultFilePattern);
+            }
+
+            DirectoryScanner scanner = buildScanner(baseDir.getPath(), resource);
             scanner.scan();
+
             for (String basename : scanner.getIncludedFiles()) {
                 founds.add(baseDir.toURI().relativize(new File(scanner.getBasedir(), basename).toURI()).getPath());
             }
 
-            // Append all scanned objects
             founds.addAll(Arrays.asList());
         }
 
         return founds;
     }
 
-    /**
-     * Build a scanner in forder to Find all Resource files
-     * 
-     * @param resource
-     * @return
-     */
-    private static DirectoryScanner buildScanner(String baseDir,Resource resource) {
+    private static DirectoryScanner buildScanner(String baseDir, Resource resource) {
+
         if (resource != null) {
-            File fileBaseDir = new File(baseDir,resource.getDirectory());
+            File fileBaseDir = new File(baseDir, resource.getDirectory());
             if (!fileBaseDir.exists() || !fileBaseDir.isDirectory() || !fileBaseDir.canRead()) {
                 throw new IllegalArgumentException(
                         format("Invalid <directory> %s in resource. Check your pom.xml", resource.getDirectory()));
@@ -74,7 +73,7 @@ public class SQLScannerHelper {
             scanner.setExcludes(resource.getExcludes().toArray(new String[0]));
             return scanner;
         }
+
         throw new IllegalArgumentException();
     }
-
 }

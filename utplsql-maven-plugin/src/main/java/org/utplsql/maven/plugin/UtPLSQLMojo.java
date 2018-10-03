@@ -36,238 +36,219 @@ import org.utplsql.maven.plugin.reporter.ReporterWriter;
  * This class expose the {@link TestRunner} interface to Maven.
  * 
  * @author Alberto Hernández
- *
  */
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST)
 public class UtPLSQLMojo extends AbstractMojo {
-	
-	@Parameter(readonly = true, defaultValue = "${project}")
-	private MavenProject project;
-	
-	@Parameter(property = "dbUrl")
-	protected String url;
 
-	@Parameter(property = "dbUser")
-	protected String user;
+    @Parameter(readonly = true, defaultValue = "${project}")
+    private MavenProject project;
 
-	@Parameter(property = "dbPass")
-	protected String password;
+    @Parameter(property = "dbUrl")
+    protected String url;
 
-	@Parameter
-	protected String includeObject;
+    @Parameter(property = "dbUser")
+    protected String user;
 
-	@Parameter
-	protected String excludeObject;
+    @Parameter(property = "dbPass")
+    protected String password;
 
-	@Parameter(defaultValue = "false")
-	protected boolean skipCompatibilityCheck;
+    @Parameter
+    protected String includeObject;
 
-	@Parameter
-	protected List<ReporterParameter> reporters = new ArrayList<>();
+    @Parameter
+    protected String excludeObject;
 
-	@Parameter
-	protected List<String> paths = new ArrayList<>();
+    @Parameter(defaultValue = "false")
+    protected boolean skipCompatibilityCheck;
 
-	// Sources Configuration
-	@Parameter
-	protected List<Resource> sources = new ArrayList<>();
+    @Parameter
+    protected List<ReporterParameter> reporters = new ArrayList<>();
 
-	@Parameter
-	private String sourcesOwner;
+    @Parameter
+    protected List<String> paths = new ArrayList<>();
 
-	@Parameter
-	private String sourcesRegexExpression;
+    // Sources Configuration
+    @Parameter
+    protected List<Resource> sources = new ArrayList<>();
 
-	@Parameter
-	private Integer sourcesOwnerSubexpression;
+    @Parameter
+    private String sourcesOwner;
 
-	@Parameter
-	private Integer sourcesNameSubexpression;
+    @Parameter
+    private String sourcesRegexExpression;
 
-	@Parameter
-	private Integer sourcesTypeSubexpression;
+    @Parameter
+    private Integer sourcesOwnerSubexpression;
 
-	@Parameter
-	private List<CustomTypeMapping> sourcesCustomTypeMapping;
+    @Parameter
+    private Integer sourcesNameSubexpression;
 
-	// Tests Configuration
+    @Parameter
+    private Integer sourcesTypeSubexpression;
 
-	@Parameter
-	protected List<Resource> tests = new ArrayList<>();
+    @Parameter
+    private List<CustomTypeMapping> sourcesCustomTypeMapping;
 
-	@Parameter
-	private String testsOwner;
+    // Tests Configuration
+    @Parameter
+    protected List<Resource> tests = new ArrayList<>();
 
-	@Parameter
-	private String testsRegexExpression;
+    @Parameter
+    private String testsOwner;
 
-	@Parameter
-	private Integer testsOwnerSubexpression;
+    @Parameter
+    private String testsRegexExpression;
 
-	@Parameter
-	private Integer testsNameSubexpression;
+    @Parameter
+    private Integer testsOwnerSubexpression;
 
-	@Parameter
-	private Integer testsTypeSubexpression;
+    @Parameter
+    private Integer testsNameSubexpression;
 
-	@Parameter
-	private List<CustomTypeMapping> testsCustomTypeMapping;
+    @Parameter
+    private Integer testsTypeSubexpression;
 
-	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
-	protected String targetDir;
+    @Parameter
+    private List<CustomTypeMapping> testsCustomTypeMapping;
 
-	@Parameter(defaultValue = "${maven.test.failure.ignore}")
-	protected boolean ignoreFailure;
+    @Parameter(defaultValue = "${project.build.directory}", readonly = true)
+    protected String targetDir;
 
-	// Color in the console, bases on maven logging configuration
-	private boolean colorConsole = MessageUtils.isColorEnabled();
+    @Parameter(defaultValue = "${maven.test.failure.ignore}")
+    protected boolean ignoreFailure;
 
-	// Reporter Writer
-	private ReporterWriter reporterWriter;
+    // Color in the console, bases on Maven logging configuration.
+    private boolean colorConsole = MessageUtils.isColorEnabled();
 
-	/**
-	 * 
-	 * Execute the plugin
-	 * 
-	 */
-	@Override
-	public void execute() throws MojoExecutionException {
-		getLog().debug("Java Api Version = " + JavaApiVersionInfo.getVersion());
-		loadConfFromEnvironment();
+    private ReporterWriter reporterWriter;
 
-		Connection connection = null;
-		try {
-			FileMapperOptions sourceMappingOptions = buildSourcesOptions();
-			FileMapperOptions testMappingOptions = buildTestsOptions();
-			
-			connection = DriverManager.getConnection(url, user, password);
-			
-			Version utlVersion = DBHelper.getDatabaseFrameworkVersion(connection);
+    /**
+     * Executes the plugin.
+     */
+    @Override
+    public void execute() throws MojoExecutionException {
+
+        getLog().debug("Java Api Version = " + JavaApiVersionInfo.getVersion());
+        loadConfFromEnvironment();
+
+        Connection connection = null;
+        try {
+            FileMapperOptions sourceMappingOptions = buildSourcesOptions();
+            FileMapperOptions testMappingOptions = buildTestsOptions();
+
+            connection = DriverManager.getConnection(url, user, password);
+
+            Version utlVersion = DBHelper.getDatabaseFrameworkVersion(connection);
             getLog().info("utPLSQL Version = " + utlVersion);
-			
+
             List<Reporter> reporterList = initReporters(connection, utlVersion, ReporterFactory.createEmpty());
-			
-			logParameters(sourceMappingOptions, testMappingOptions, reporterList);
 
-			TestRunner runner = new TestRunner()
-			        .addPathList(paths)
-			        .addReporterList(reporterList)
-			        .sourceMappingOptions(sourceMappingOptions)
-					.testMappingOptions(testMappingOptions)
-					.skipCompatibilityCheck(skipCompatibilityCheck)
-					.colorConsole(colorConsole)
-					.failOnErrors(!ignoreFailure);
-			
-			if (StringUtils.isNotBlank(excludeObject)) {
-				runner.excludeObject(excludeObject);
-			}
-			if (StringUtils.isNotBlank(includeObject)) {
-				runner.includeObject(includeObject);
-			}
+            logParameters(sourceMappingOptions, testMappingOptions, reporterList);
 
-			runner.run(connection);
+            TestRunner runner = new TestRunner()
+                    .addPathList(paths)
+                    .addReporterList(reporterList)
+                    .sourceMappingOptions(sourceMappingOptions)
+                    .testMappingOptions(testMappingOptions)
+                    .skipCompatibilityCheck(skipCompatibilityCheck)
+                    .colorConsole(colorConsole)
+                    .failOnErrors(!ignoreFailure);
 
-		} catch (SomeTestsFailedException e) {
-			getLog().error(e);
-			throw new MojoExecutionException(e.getMessage());
-		} catch (SQLException e) {
-			getLog().error(e);
-			throw new MojoExecutionException(e.getMessage(), e);
-		} finally {
-			try {
-				if (null != connection) {
-					reporterWriter.writeReporters(connection);
-				}
-			} catch (Exception e) {
-				getLog().error(e.getMessage(), e);
-			}
-		}
-	}
+            if (StringUtils.isNotBlank(excludeObject)) {
+                runner.excludeObject(excludeObject);
+            }
+            if (StringUtils.isNotBlank(includeObject)) {
+                runner.includeObject(includeObject);
+            }
 
-	/**
-	 * Load some configuration from env variables.
-	 * 
-	 */
-	private void loadConfFromEnvironment() {
-		if (StringUtils.isEmpty(url)) {
-			url = System.getProperty("dbUrl");
-		}
+            runner.run(connection);
 
-		if (StringUtils.isEmpty(user)) {
-			user = System.getProperty("dbUser");
-		}
+        } catch (SomeTestsFailedException e) {
+            getLog().error(e);
+            throw new MojoExecutionException(e.getMessage());
+        } catch (SQLException e) {
+            getLog().error(e);
+            throw new MojoExecutionException(e.getMessage(), e);
+        } finally {
+            try {
+                if (null != connection) {
+                    reporterWriter.writeReporters(connection);
+                }
+            } catch (Exception e) {
+                getLog().error(e.getMessage(), e);
+            }
+        }
+    }
 
-		if (StringUtils.isEmpty(password)) {
-			password = System.getProperty("dbPass");
-		}
-	}
+    private void loadConfFromEnvironment() {
+        if (StringUtils.isEmpty(url)) {
+            url = System.getProperty("dbUrl");
+        }
 
-	/**
-	 * 
-	 * @param resources
-	 * @return
-	 * @throws MojoExecutionException
-	 */
-	private FileMapperOptions buildSourcesOptions() throws MojoExecutionException {
-		try {
-			if (sources.isEmpty()) {
-				File defaultSourceDirectory = new File(project.getBasedir(),PluginDefault.SOURCE_DIRECTORY);
-				if (defaultSourceDirectory.exists()) {
-					sources.add(PluginDefault.buildDefaultSource());
-				} else {
-					return new FileMapperOptions(new ArrayList<String>());
-				}
-			}
+        if (StringUtils.isEmpty(user)) {
+            user = System.getProperty("dbUser");
+        }
 
-			List<String> scripts = SQLScannerHelper.findSQLs(project.getBasedir(),sources,PluginDefault.SOURCE_DIRECTORY, PluginDefault.SOURCE_FILE_PATTERN);
-			FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
+        if (StringUtils.isEmpty(password)) {
+            password = System.getProperty("dbPass");
+        }
+    }
 
-			if (StringUtils.isNotEmpty(sourcesOwner)) {
-				fileMapperOptions.setObjectOwner(sourcesOwner);
-			}
+    private FileMapperOptions buildSourcesOptions() throws MojoExecutionException {
+        try {
+            if (sources.isEmpty()) {
+                File defaultSourceDirectory = new File(project.getBasedir(), PluginDefault.SOURCE_DIRECTORY);
+                if (defaultSourceDirectory.exists()) {
+                    sources.add(PluginDefault.buildDefaultSource());
+                } else {
+                    return new FileMapperOptions(new ArrayList<String>());
+                }
+            }
 
-			if (StringUtils.isNotEmpty(sourcesRegexExpression)) {
-				fileMapperOptions.setRegexPattern(sourcesRegexExpression);
-			}
+            List<String> scripts = SQLScannerHelper.findSQLs(project.getBasedir(), sources,
+                    PluginDefault.SOURCE_DIRECTORY, PluginDefault.SOURCE_FILE_PATTERN);
+            FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
 
-			if (sourcesOwnerSubexpression != null) {
-				fileMapperOptions.setOwnerSubExpression(sourcesOwnerSubexpression);
-			}
+            if (StringUtils.isNotEmpty(sourcesOwner)) {
+                fileMapperOptions.setObjectOwner(sourcesOwner);
+            }
 
-			if (sourcesNameSubexpression != null) {
-				fileMapperOptions.setNameSubExpression(sourcesNameSubexpression);
-			}
+            if (StringUtils.isNotEmpty(sourcesRegexExpression)) {
+                fileMapperOptions.setRegexPattern(sourcesRegexExpression);
+            }
 
-			if (sourcesTypeSubexpression != null) {
-				fileMapperOptions.setTypeSubExpression(sourcesTypeSubexpression);
-			}
+            if (sourcesOwnerSubexpression != null) {
+                fileMapperOptions.setOwnerSubExpression(sourcesOwnerSubexpression);
+            }
 
-			if (sourcesCustomTypeMapping != null && !sourcesCustomTypeMapping.isEmpty()) {
-				fileMapperOptions.setTypeMappings(new ArrayList<KeyValuePair>());
-				for (CustomTypeMapping typeMapping : sourcesCustomTypeMapping) {
-					fileMapperOptions.getTypeMappings()
-							.add(new KeyValuePair(typeMapping.getCustomMapping(), typeMapping.getType()));
-				}
-			}
+            if (sourcesNameSubexpression != null) {
+                fileMapperOptions.setNameSubExpression(sourcesNameSubexpression);
+            }
 
-			return fileMapperOptions;
+            if (sourcesTypeSubexpression != null) {
+                fileMapperOptions.setTypeSubExpression(sourcesTypeSubexpression);
+            }
 
-		} catch (Exception e) {
-			throw new MojoExecutionException("Invalid <SOURCES> in your pom.xml",e);
-		}
+            if (sourcesCustomTypeMapping != null && !sourcesCustomTypeMapping.isEmpty()) {
+                fileMapperOptions.setTypeMappings(new ArrayList<KeyValuePair>());
+                for (CustomTypeMapping typeMapping : sourcesCustomTypeMapping) {
+                    fileMapperOptions.getTypeMappings()
+                            .add(new KeyValuePair(typeMapping.getCustomMapping(), typeMapping.getType()));
+                }
+            }
 
-	}
+            return fileMapperOptions;
 
-	/**
-	 * 
-	 * @param resources
-	 * @return
-	 * @throws MojoExecutionException
-	 */
-	private FileMapperOptions buildTestsOptions() throws MojoExecutionException {
-		try {
-		    if (tests.isEmpty()) {
-                File defaultTestDirectory = new File(project.getBasedir(),PluginDefault.TEST_DIRECTORY);
+        } catch (Exception e) {
+            throw new MojoExecutionException("Invalid <SOURCES> in your pom.xml", e);
+        }
+
+    }
+
+    private FileMapperOptions buildTestsOptions() throws MojoExecutionException {
+        try {
+            if (tests.isEmpty()) {
+                File defaultTestDirectory = new File(project.getBasedir(), PluginDefault.TEST_DIRECTORY);
                 if (defaultTestDirectory.exists()) {
                     tests.add(PluginDefault.buildDefaultTest());
                 } else {
@@ -275,105 +256,94 @@ public class UtPLSQLMojo extends AbstractMojo {
                 }
             }
 
-			List<String> scripts = SQLScannerHelper.findSQLs(project.getBasedir(),tests,PluginDefault.TEST_DIRECTORY, PluginDefault.TEST_FILE_PATTERN);
-			FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
+            List<String> scripts = SQLScannerHelper.findSQLs(project.getBasedir(), tests, PluginDefault.TEST_DIRECTORY,
+                    PluginDefault.TEST_FILE_PATTERN);
+            FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
 
-			if (StringUtils.isNotEmpty(testsOwner)) {
-				fileMapperOptions.setObjectOwner(testsOwner);
-			}
+            if (StringUtils.isNotEmpty(testsOwner)) {
+                fileMapperOptions.setObjectOwner(testsOwner);
+            }
 
-			if (StringUtils.isNotEmpty(testsRegexExpression)) {
-				fileMapperOptions.setRegexPattern(testsRegexExpression);
-			}
+            if (StringUtils.isNotEmpty(testsRegexExpression)) {
+                fileMapperOptions.setRegexPattern(testsRegexExpression);
+            }
 
-			if (testsOwnerSubexpression != null) {
-				fileMapperOptions.setOwnerSubExpression(testsOwnerSubexpression);
-			}
+            if (testsOwnerSubexpression != null) {
+                fileMapperOptions.setOwnerSubExpression(testsOwnerSubexpression);
+            }
 
-			if (testsNameSubexpression != null) {
-				fileMapperOptions.setNameSubExpression(testsNameSubexpression);
-			}
+            if (testsNameSubexpression != null) {
+                fileMapperOptions.setNameSubExpression(testsNameSubexpression);
+            }
 
-			if (testsTypeSubexpression != null) {
-				fileMapperOptions.setTypeSubExpression(testsTypeSubexpression);
-			}
+            if (testsTypeSubexpression != null) {
+                fileMapperOptions.setTypeSubExpression(testsTypeSubexpression);
+            }
 
-			if (testsCustomTypeMapping != null && !testsCustomTypeMapping.isEmpty()) {
-				fileMapperOptions.setTypeMappings(new ArrayList<KeyValuePair>());
-				for (CustomTypeMapping typeMapping : testsCustomTypeMapping) {
-					fileMapperOptions.getTypeMappings()
-							.add(new KeyValuePair(typeMapping.getCustomMapping(), typeMapping.getType()));
-				}
-			}
+            if (testsCustomTypeMapping != null && !testsCustomTypeMapping.isEmpty()) {
+                fileMapperOptions.setTypeMappings(new ArrayList<KeyValuePair>());
+                for (CustomTypeMapping typeMapping : testsCustomTypeMapping) {
+                    fileMapperOptions.getTypeMappings()
+                            .add(new KeyValuePair(typeMapping.getCustomMapping(), typeMapping.getType()));
+                }
+            }
 
-			return fileMapperOptions;
+            return fileMapperOptions;
 
-		} catch (Exception e) {
-			throw new MojoExecutionException("Invalid <TESTS> in your pom.xml: " + e.getMessage());
-		}
+        } catch (Exception e) {
+            throw new MojoExecutionException("Invalid <TESTS> in your pom.xml: " + e.getMessage());
+        }
 
-	}
+    }
 
-	/**
-	 * Init all the reporters
-	 * 
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 */
-	private List<Reporter> initReporters(
-	        Connection connection, Version utlVersion, ReporterFactory reporterFactory) throws SQLException {
+    private List<Reporter> initReporters(Connection connection, Version utlVersion, ReporterFactory reporterFactory)
+            throws SQLException {
 
-		List<Reporter> reporterList = new ArrayList<>();		
-		reporterWriter = new ReporterWriter(targetDir, utlVersion);
+        List<Reporter> reporterList = new ArrayList<>();
+        reporterWriter = new ReporterWriter(targetDir, utlVersion);
 
-		if (reporters.isEmpty()) {
-		    ReporterParameter reporterParameter = new ReporterParameter();
-		    reporterParameter.setConsoleOutput(true);
-		    reporterParameter.setName(CoreReporters.UT_DOCUMENTATION_REPORTER.name());
-		    reporters.add(reporterParameter);
-		}
+        if (reporters.isEmpty()) {
+            ReporterParameter reporterParameter = new ReporterParameter();
+            reporterParameter.setConsoleOutput(true);
+            reporterParameter.setName(CoreReporters.UT_DOCUMENTATION_REPORTER.name());
+            reporters.add(reporterParameter);
+        }
 
-		for (ReporterParameter reporterParameter : reporters) {
-			Reporter reporter = reporterFactory.createReporter(reporterParameter.getName());
-			reporter.init(connection);
-			reporterList.add(reporter);
-			
-			// Turns the console output on by default if both file and console output are empty.
-			if (!reporterParameter.isFileOutput() && null == reporterParameter.getConsoleOutput()) {
-			    reporterParameter.setConsoleOutput(true);
-			}
+        for (ReporterParameter reporterParameter : reporters) {
+            Reporter reporter = reporterFactory.createReporter(reporterParameter.getName());
+            reporter.init(connection);
+            reporterList.add(reporter);
 
-			// Only added the reporter if at least one of the output is required
-			if (StringUtils.isNotBlank(reporterParameter.getFileOutput()) || reporterParameter.isConsoleOutput()) {
-				reporterWriter.addReporter(reporterParameter, reporter);
-			}
-		}
+            // Turns the console output on by default if both file and console output are
+            // empty.
+            if (!reporterParameter.isFileOutput() && null == reporterParameter.getConsoleOutput()) {
+                reporterParameter.setConsoleOutput(true);
+            }
 
-		return reporterList;
-	}
+            // Only added the reporter if at least one of the output is required
+            if (StringUtils.isNotBlank(reporterParameter.getFileOutput()) || reporterParameter.isConsoleOutput()) {
+                reporterWriter.addReporter(reporterParameter, reporter);
+            }
+        }
 
-	/**
-	 * 
-	 * @param sourceMappingOptions
-	 * @param testMappingOptions
-	 * @param reporterList
-	 */
-	private void logParameters(FileMapperOptions sourceMappingOptions, FileMapperOptions testMappingOptions,
-			List<Reporter> reporterList) {
-		Log log = getLog();
-		log.info("Invoking TestRunner with: " + targetDir);
+        return reporterList;
+    }
 
-		if (!log.isDebugEnabled()) {
-			return;
-		}
+    private void logParameters(FileMapperOptions sourceMappingOptions, FileMapperOptions testMappingOptions,
+            List<Reporter> reporterList) {
+        Log log = getLog();
+        log.info("Invoking TestRunner with: " + targetDir);
 
-		log.debug("Invoking TestRunner with: ");
-		log.debug("reporters=");
-		reporterList.forEach((Reporter r) -> log.debug(r.getTypeName()));
-		log.debug("sources=");
-		sourceMappingOptions.getFilePaths().forEach(log::debug);
-		log.debug("tests=");
-		testMappingOptions.getFilePaths().forEach(log::debug);
-	}
+        if (!log.isDebugEnabled()) {
+            return;
+        }
+
+        log.debug("Invoking TestRunner with: ");
+        log.debug("reporters=");
+        reporterList.forEach((Reporter r) -> log.debug(r.getTypeName()));
+        log.debug("sources=");
+        sourceMappingOptions.getFilePaths().forEach(log::debug);
+        log.debug("tests=");
+        testMappingOptions.getFilePaths().forEach(log::debug);
+    }
 }

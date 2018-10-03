@@ -2,87 +2,100 @@ package org.utplsql.maven.plugin.model;
 
 import org.codehaus.plexus.util.StringUtils;
 
-public class ReporterParameter
-{
+/**
+ * Represents a reporter parameter in the pom file.
+ * {@code
+ * <reporter>
+ *     <name>...</name>
+ *     <fileOutput>...</fileOutput>
+ *     <consoleOutput>...</consoleOutput>
+ * </reporter>
+ * }
+ * 
+ * @author Alberto Hernández
+ */
+public class ReporterParameter {
 
-	// Name of the registered reported in UtPLSQL
-	private String name;
+    private String name;
+    private String fileOutput;
+    private Boolean consoleOutput;
 
-	// File Output of the reporter
-	private String fileOutput;
+    /**
+     * Creates a new reporter parameter.
+     */
+    public ReporterParameter() {
+        super();
+    }
 
-	// Writes the report to console
-	private Boolean consoleOutput;
+    /**
+     * Returns the reporter name.
+     * 
+     * @return the reporter name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * 
-	 */
-	public ReporterParameter()
-	{
-		super();
-	}
+    /**
+     * Sets the reporter name.
+     * 
+     * @param name the reporter name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @return the name
-	 */
-	public String getName()
-	{
-		return name;
-	}
+    /**
+     * Returns reporter output file.
+     * 
+     * @return the output file name
+     */
+    public String getFileOutput() {
+        return fileOutput;
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name)
-	{
-		this.name = name;
-	}
+    /**
+     * Returns whether the file output is enabled or not.
+     * 
+     * @return true if the file output is enabled, false otherwise
+     */
+    public boolean isFileOutput() {
+        return StringUtils.isNotBlank(fileOutput);
+    }
 
-	/**
-	 * @return the fileOutput
-	 */
-	public String getFileOutput()
-	{
-		return fileOutput;
-	}
+    /**
+     * Sets the output file.
+     * 
+     * @param fileOutput the output file name
+     */
+    public void setFileOutput(String fileOutput) {
+        this.fileOutput = fileOutput;
+    }
 
-	/**
-	 * @param fileOutput
-	 *            the fileOutput to set
-	 */
-	public void setFileOutput(String fileOutput)
-	{
-		this.fileOutput = fileOutput;
-	}
-	
-	public Boolean getConsoleOutput() {
-	    return consoleOutput;
-	}
+    /**
+     * Returns the console output option.
+     * 
+     * @return the console output option
+     */
+    public Boolean getConsoleOutput() {
+        return consoleOutput;
+    }
 
-	/**
-	 * @return the consoleOutput
-	 */
-	public Boolean isConsoleOutput()
-	{
-		return null != consoleOutput && consoleOutput;
-	}
+    /**
+     * Returns whether the console output should be enabled or not.
+     * 
+     * @return true if console output is enable, false otherwise
+     */
+    public Boolean isConsoleOutput() {
+        return null != consoleOutput && consoleOutput;
+    }
 
-	/**
-	 * @param consoleOutput
-	 *            the consoleOutput to set
-	 */
-	public void setConsoleOutput(boolean consoleOutput)
-	{
-		this.consoleOutput = consoleOutput;
-	}
-
-	/**
-	 * @return the consoleOutput
-	 */
-	public boolean isFileOutput()
-	{
-		return StringUtils.isNotBlank(fileOutput);
-	}
-
+    /**
+     * Sets the console output option.
+     * 
+     * @param consoleOutput the console output option
+     */
+    public void setConsoleOutput(boolean consoleOutput) {
+        this.consoleOutput = consoleOutput;
+    }
 }
