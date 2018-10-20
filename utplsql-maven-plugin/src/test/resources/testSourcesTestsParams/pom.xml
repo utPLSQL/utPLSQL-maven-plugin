@@ -1,101 +1,103 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
+    <groupId>org.utplsql</groupId>
+    <artifactId>utplsql-maven-plugin-test</artifactId>
+    <version>3.1.0-SNAPSHOT</version>
 
-	<groupId>org.utplsql</groupId>
-	<artifactId>utplsql-maven-plugin-test</artifactId>
-	<version>3.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<packaging>pom</packaging>
+    <name>utplsql-maven-plugin Maven Plugin Test</name>
 
-	<name>utplsql-maven-plugin Maven Plugin Test</name>
+    <url>http://utplsql.org</url>
 
-	<url>http://utplsql.org</url>
+    <properties>
+        <dbUrl>jdbc:oracle:thin:@180.129.3.101:1521:xe</dbUrl>
+        <dbUser>ut3</dbUser>
+        <dbPass>XNtxj8eEgA6X6b6f</dbPass>
+    </properties>
 
-	<properties>
-		<dbUrl>jdbc:oracle:thin:@180.129.3.101:1521:xe</dbUrl>
-		<dbUser>ut3</dbUser>
-		<dbPass>XNtxj8eEgA6X6b6f</dbPass>
-	</properties>
+    <build>
 
-	<build>
+        <directory>../../../target/</directory>
 
-		<directory>../../../target/</directory>
-		<plugins>
-			<plugin>
-				<groupId>org.utplsql</groupId>
-				<artifactId>utplsql-maven-plugin</artifactId>
-				<version>{project.version}</version>
-				<goals>
-					<goal>test</goal>
-				</goals>
-				<configuration>
-					<!-- Mandatory Attributes -->
+        <plugins>
+            <plugin>
+                <groupId>org.utplsql</groupId>
+                <artifactId>utplsql-maven-plugin</artifactId>
+                <version>{project.version}</version>
 
-					<ignoreFailure>false</ignoreFailure>
+                <goals>
+                    <goal>test</goal>
+                </goals>
 
-					<paths>
-						<path>:plsql</path>
-					</paths>
+                <configuration>
 
-					<reporters>
-						<reporter>
-							<name>UT_COVERAGE_SONAR_REPORTER</name>
-							<fileOutput>utplsql/coverage-sonar-reporter.xml</fileOutput>
-							<consoleOutput>true</consoleOutput>
-						</reporter>
-						<reporter>
-							<name>UT_SONAR_TEST_REPORTER</name>
-							<fileOutput>utplsql/sonar-test-reporter.xml</fileOutput>
-							<consoleOutput>true</consoleOutput>
-						</reporter>
-					</reporters>
+                    <ignoreFailure>false</ignoreFailure>
 
-					<sources>
-						<source>
-							<directory>srcs</directory>
-							<includes>
-								<include>**/*sql</include>
-							</includes>
-						</source>
-					</sources>
-					<sourcesOwner>code_owner</sourcesOwner>
-					<sourcesRegexExpression>.*/\w+/(\w+)/(\w+)\.\w{3}</sourcesRegexExpression>
-					<sourcesNameSubexpression>9</sourcesNameSubexpression>
-					<sourcesTypeSubexpression>1</sourcesTypeSubexpression>
-					<sourcesOwnerSubexpression>4</sourcesOwnerSubexpression>
-					<sourcesCustomTypeMapping>
-						<customTypeMapping>
-							<type>foo</type>
-							<customMapping>bar</customMapping>
-						</customTypeMapping>
-					</sourcesCustomTypeMapping>
+                    <paths>
+                        <path>:plsql</path>
+                    </paths>
 
-					<tests>
-						<test>
-							<directory>te/st</directory>
-							<includes>
-								<include>**/*.spc</include>
-								<include>**/*.bdy</include>
-							</includes>
-						</test>
-					</tests>
-					<testsOwner>tests_owner</testsOwner>
-					<testsRegexExpression>.*/\w+/(\w+)/(\w+)\.\w{3}</testsRegexExpression>
-					<testsOwnerSubexpression>24</testsOwnerSubexpression>
-					<testsNameSubexpression>54</testsNameSubexpression>
-					<testsTypeSubexpression>21</testsTypeSubexpression>
-					<testsCustomTypeMapping>
-						<customTypeMapping>
-							<type>abc</type>
-							<customMapping>def</customMapping>
-						</customTypeMapping>
-					</testsCustomTypeMapping>
+                    <reporters>
+                        <reporter>
+                            <name>UT_COVERAGE_SONAR_REPORTER</name>
+                            <fileOutput>utplsql/coverage-sonar-reporter.xml</fileOutput>
+                            <consoleOutput>true</consoleOutput>
+                        </reporter>
+                        <reporter>
+                            <name>UT_SONAR_TEST_REPORTER</name>
+                            <fileOutput>utplsql/sonar-test-reporter.xml</fileOutput>
+                            <consoleOutput>true</consoleOutput>
+                        </reporter>
+                    </reporters>
 
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+                    <sources>
+                        <source>
+                            <directory>srcs</directory>
+                            <includes>
+                                <include>**/*sql</include>
+                            </includes>
+                        </source>
+                    </sources>
+
+                    <sourcesOwner>code_owner</sourcesOwner>
+                    <sourcesRegexExpression>.*/\w+/(\w+)/(\w+)\.\w{3}</sourcesRegexExpression>
+                    <sourcesNameSubexpression>9</sourcesNameSubexpression>
+                    <sourcesTypeSubexpression>1</sourcesTypeSubexpression>
+                    <sourcesOwnerSubexpression>4</sourcesOwnerSubexpression>
+                    <sourcesCustomTypeMapping>
+                        <customTypeMapping>
+                            <type>foo</type>
+                            <customMapping>bar</customMapping>
+                        </customTypeMapping>
+                    </sourcesCustomTypeMapping>
+
+                    <tests>
+                        <test>
+                            <directory>te/st</directory>
+                            <includes>
+                                <include>**/*.spc</include>
+                                <include>**/*.bdy</include>
+                            </includes>
+                        </test>
+                    </tests>
+
+                    <testsOwner>tests_owner</testsOwner>
+                    <testsRegexExpression>.*/\w+/(\w+)/(\w+)\.\w{3}</testsRegexExpression>
+                    <testsOwnerSubexpression>24</testsOwnerSubexpression>
+                    <testsNameSubexpression>54</testsNameSubexpression>
+                    <testsTypeSubexpression>21</testsTypeSubexpression>
+                    <testsCustomTypeMapping>
+                        <customTypeMapping>
+                            <type>abc</type>
+                            <customMapping>def</customMapping>
+                        </customTypeMapping>
+                    </testsCustomTypeMapping>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -21,174 +21,174 @@ import org.junit.Test;
 
 public class UtPLSQLMojoIT {
 
-	private static String pluginVersion = null;
+    private static String pluginVersion = null;
 
-	@BeforeClass
-	public static void setUp() throws VerificationException, IOException, XmlPullParserException {
-		// Read plugin pom file
-		MavenXpp3Reader reader = new MavenXpp3Reader();
-		Model model = reader.read(new FileReader("../pom.xml"));
+    @BeforeClass
+    public static void setUp() throws VerificationException, IOException, XmlPullParserException {
+        // Read plugin pom file
+        MavenXpp3Reader reader = new MavenXpp3Reader();
+        Model model = reader.read(new FileReader("../pom.xml"));
 
-		File pomFile = new File("../");
-		Verifier verifier = new Verifier(pomFile.getAbsolutePath());
+        File pomFile = new File("../");
+        Verifier verifier = new Verifier(pomFile.getAbsolutePath());
 
-		// install plugin
-		verifier.setAutoclean(false);
-		verifier.addCliOption("-Dmaven.skip.test=true");
-		verifier.addCliOption("-DskipITs");
-		verifier.executeGoal("install");
+        // install plugin
+        verifier.setAutoclean(false);
+        verifier.addCliOption("-Dmaven.skip.test=true");
+        verifier.addCliOption("-DskipITs");
+        verifier.executeGoal("install");
 
-		pluginVersion = model.getVersion();
-	}
+        pluginVersion = model.getVersion();
+    }
 
-	@Test
-	public void testSimpleProject() throws Exception {
+    @Test
+    public void testSimpleProject() throws Exception {
 
-		try {
-			final String PROJECT_NAME = "simple-project";
-			File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+        try {
+            final String PROJECT_NAME = "simple-project";
+            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
-			Verifier verifier;
-			verifier = new Verifier(testProject.getAbsolutePath());
-			verifier.addCliOption("-N");
-			verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
-			verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
-			verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
-			verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
+            Verifier verifier;
+            verifier = new Verifier(testProject.getAbsolutePath());
+            verifier.addCliOption("-N");
+            verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
+            verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
+            verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
+            verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
 
-			verifier.executeGoal("test");
+            verifier.executeGoal("test");
 
-			checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml",
-					"utplsql/coverage-sonar-reporter.xml");
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail("Unexpected Exception running the test of Definition " + e.getMessage());
-		}
-	}
+            checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml",
+                    "utplsql/coverage-sonar-reporter.xml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("Unexpected Exception running the test of Definition " + e.getMessage());
+        }
+    }
 
-	@Test
-	public void testRegexProject() throws Exception {
-		try {
-			final String PROJECT_NAME = "regex-project";
-			File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+    @Test
+    public void testRegexProject() throws Exception {
+        try {
+            final String PROJECT_NAME = "regex-project";
+            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
-			Verifier verifier;
-			verifier = new Verifier(testProject.getAbsolutePath());
-			verifier.addCliOption("-N");
-			verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
-			verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
-			verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
-			verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
+            Verifier verifier;
+            verifier = new Verifier(testProject.getAbsolutePath());
+            verifier.addCliOption("-N");
+            verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
+            verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
+            verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
+            verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
 
-			verifier.executeGoal("test");
+            verifier.executeGoal("test");
 
-			checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml",
-					"utplsql/coverage-sonar-reporter.xml");
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail("Unexpected Exception running the test : " + e.getMessage());
-		}
-	}
+            checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml",
+                    "utplsql/coverage-sonar-reporter.xml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("Unexpected Exception running the test : " + e.getMessage());
+        }
+    }
 
-	@Test
-	public void testTypeMappingProject() throws Exception {
-		try {
-			final String PROJECT_NAME = "type-mapping-project";
-			File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+    @Test
+    public void testTypeMappingProject() throws Exception {
+        try {
+            final String PROJECT_NAME = "type-mapping-project";
+            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
-			Verifier verifier;
-			verifier = new Verifier(testProject.getAbsolutePath());
-			verifier.addCliOption("-N");
-			verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
-			verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
-			verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
-			verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
+            Verifier verifier;
+            verifier = new Verifier(testProject.getAbsolutePath());
+            verifier.addCliOption("-N");
+            verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
+            verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
+            verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
+            verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
 
-			verifier.executeGoal("test");
+            verifier.executeGoal("test");
 
-			checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml",
-					"utplsql/coverage-sonar-reporter.xml");
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail("Unexpected Exception running the test : " + e.getMessage());
-		}
-	}
+            checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml",
+                    "utplsql/coverage-sonar-reporter.xml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("Unexpected Exception running the test : " + e.getMessage());
+        }
+    }
 
-	@Test
-	public void testOwnerParameterProject() throws Exception {
-		try {
-			final String PROJECT_NAME = "owner-param-project";
-			File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+    @Test
+    public void testOwnerParameterProject() throws Exception {
+        try {
+            final String PROJECT_NAME = "owner-param-project";
+            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
-			Verifier verifier;
-			verifier = new Verifier(testProject.getAbsolutePath());
-			verifier.addCliOption("-N");
-			verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
-			verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
-			verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
-			verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
+            Verifier verifier;
+            verifier = new Verifier(testProject.getAbsolutePath());
+            verifier.addCliOption("-N");
+            verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
+            verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
+            verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
+            verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
 
-			verifier.executeGoal("test");
+            verifier.executeGoal("test");
 
-			checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml",
-					"utplsql/coverage-sonar-reporter.xml");
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail("Unexpected Exception running the test : " + e.getMessage());
-		}
-	}
-	
-	@Test
-	public void testMinimalistProject() throws Exception {
-		try {
-			final String PROJECT_NAME = "minimalist-project";
-			File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+            checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml",
+                    "utplsql/coverage-sonar-reporter.xml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("Unexpected Exception running the test : " + e.getMessage());
+        }
+    }
 
-			Verifier verifier;
-			verifier = new Verifier(testProject.getAbsolutePath());
-			verifier.addCliOption("-N");
-			verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
-			verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
-			verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
-			verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
+    @Test
+    public void testMinimalistProject() throws Exception {
+        try {
+            final String PROJECT_NAME = "minimalist-project";
+            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
-			verifier.executeGoal("test");
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail("Unexpected Exception running the test : " + e.getMessage());
-		}
-	}
+            Verifier verifier;
+            verifier = new Verifier(testProject.getAbsolutePath());
+            verifier.addCliOption("-N");
+            verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
+            verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
+            verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
+            verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
 
-	/**
-	 * 
-	 * @param files
-	 */
-	private void checkReportsGenerated(String projectName, String... files) {
-		for (String filename : files) {
-			File outputFile = new File("target/test-classes/" + projectName + "/target", filename);
-			File expectedOutputFile = new File("target/test-classes/" + projectName + "/expected-output", filename);
+            verifier.executeGoal("test");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("Unexpected Exception running the test : " + e.getMessage());
+        }
+    }
 
-			Assert.assertTrue("The reporter for " + filename + " was not generated", outputFile.exists());
-			try {
-				// Duration is set to 1 before comparing contents as it is always different.
-				// Path separator is set to "/" to ensure windows / linux / mac compatibility
-				Stream<String> stream = Files
-						.lines(Paths.get("target", "test-classes", projectName, "target", filename));
-				
-				String outputContent = stream
-				        .map(line -> line.replaceAll("(encoding=\"[^\"]*\")", "encoding=\"WINDOWS-1252\""))
-				        .map(line -> line.replaceAll("(duration=\"[0-9\\.]*\")", "duration=\"1\""))
-						.map(line -> line.replaceAll("\\\\", "/"))
-						.map(line -> line.replaceAll("\r", "").replaceAll("\n", "")).collect(Collectors.joining("\n"));
+    /**
+     * 
+     * @param files
+     */
+    private void checkReportsGenerated(String projectName, String... files) {
+        for (String filename : files) {
+            File outputFile = new File("target/test-classes/" + projectName + "/target", filename);
+            File expectedOutputFile = new File("target/test-classes/" + projectName + "/expected-output", filename);
 
-				stream.close();
-				Assert.assertEquals("The files differ!", 
-				        FileUtils.readFileToString(expectedOutputFile, "utf-8").replace("\r", ""), outputContent);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				Assert.fail("Unexpected Exception running the test : " + e.getMessage());
-			}
-		}
-	}
+            Assert.assertTrue("The reporter for " + filename + " was not generated", outputFile.exists());
+            try {
+                // Duration is set to 1 before comparing contents as it is always different.
+                // Path separator is set to "/" to ensure windows / linux / mac compatibility
+                Stream<String> stream = Files
+                        .lines(Paths.get("target", "test-classes", projectName, "target", filename));
+
+                String outputContent = stream
+                        .map(line -> line.replaceAll("(encoding=\"[^\"]*\")", "encoding=\"WINDOWS-1252\""))
+                        .map(line -> line.replaceAll("(duration=\"[0-9\\.]*\")", "duration=\"1\""))
+                        .map(line -> line.replaceAll("\\\\", "/"))
+                        .map(line -> line.replaceAll("\r", "").replaceAll("\n", "")).collect(Collectors.joining("\n"));
+
+                stream.close();
+                Assert.assertEquals("The files differ!",
+                        FileUtils.readFileToString(expectedOutputFile, "utf-8").replace("\r", ""), outputContent);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                Assert.fail("Unexpected Exception running the test : " + e.getMessage());
+            }
+        }
+    }
 }

@@ -1,80 +1,81 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
+    <groupId>org.utplsql</groupId>
+    <artifactId>utplsql-maven-plugin-test</artifactId>
+    <version>3.1.0-SNAPSHOT</version>
 
-	<groupId>org.utplsql</groupId>
-	<artifactId>utplsql-maven-plugin-test</artifactId>
-	<version>3.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<packaging>pom</packaging>
+    <name>utplsql-maven-plugin Maven Plugin Test</name>
 
-	<name>utplsql-maven-plugin Maven Plugin Test</name>
+    <url>http://utplsql.org</url>
 
-	<url>http://utplsql.org</url>
+    <properties>
+        <dbUrl>jdbc:oracle:thin:@180.129.3.101:1521:xe</dbUrl>
+        <dbUser>ut3</dbUser>
+        <dbPass>XNtxj8eEgA6X6b6f</dbPass>
+        <project.basedir>/</project.basedir>
+    </properties>
 
-	<properties>
-		<dbUrl>jdbc:oracle:thin:@180.129.3.101:1521:xe</dbUrl>
-		<dbUser>ut3</dbUser>
-		<dbPass>XNtxj8eEgA6X6b6f</dbPass>
-		<project.basedir>/</project.basedir>
-	</properties>
+    <build>
 
-	<build>
+        <plugins>
+            <plugin>
+                <groupId>org.utplsql</groupId>
+                <artifactId>utplsql-maven-plugin</artifactId>
+                <version>{project.version}</version>
 
-		<plugins>
-			<plugin>
-				<groupId>org.utplsql</groupId>
-				<artifactId>utplsql-maven-plugin</artifactId>
-				<version>{project.version}</version>
-				<goals>
-					<goal>test</goal>
-				</goals>
-				<configuration>
-					<!-- Mandatory Attributes -->
+                <goals>
+                    <goal>test</goal>
+                </goals>
 
-					<ignoreFailure>false</ignoreFailure>
+                <configuration>
 
-					<paths>
-						<path>:plsql</path>
-					</paths>
+                    <ignoreFailure>false</ignoreFailure>
 
-					<reporters>
-						<reporter>
-							<name>UT_COVERAGE_SONAR_REPORTER</name>
-							<fileOutput>utplsql/coverage-sonar-reporter.xml</fileOutput>
-							<consoleOutput>true</consoleOutput>
-						</reporter>
-						<reporter>
-							<name>UT_SONAR_TEST_REPORTER</name>
-							<fileOutput>utplsql/sonar-test-reporter.xml</fileOutput>
-							<consoleOutput>true</consoleOutput>
-						</reporter>
-					</reporters>
+                    <paths>
+                        <path>:plsql</path>
+                    </paths>
 
-					<sources>
-						<source>
-							<includes>
-								<include>**/*sql</include>
-							</includes>
-						</source>
-					</sources>
-					<tests>
-						<test>
-							<includes>
-								<include>**/*sql</include>
-								
-							</includes>
-						</test>
-						<test>
-							<includes>
-								<include>**/*.pkg</include>
-							</includes>
-						</test>
-					</tests>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+                    <reporters>
+                        <reporter>
+                            <name>UT_COVERAGE_SONAR_REPORTER</name>
+                            <fileOutput>utplsql/coverage-sonar-reporter.xml</fileOutput>
+                            <consoleOutput>true</consoleOutput>
+                        </reporter>
+                        <reporter>
+                            <name>UT_SONAR_TEST_REPORTER</name>
+                            <fileOutput>utplsql/sonar-test-reporter.xml</fileOutput>
+                            <consoleOutput>true</consoleOutput>
+                        </reporter>
+                    </reporters>
+
+                    <sources>
+                        <source>
+                            <includes>
+                                <include>**/*sql</include>
+                            </includes>
+                        </source>
+                    </sources>
+
+                    <tests>
+                        <test>
+                            <includes>
+                                <include>**/*sql</include>
+
+                            </includes>
+                        </test>
+                        <test>
+                            <includes>
+                                <include>**/*.pkg</include>
+                            </includes>
+                        </test>
+                    </tests>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
