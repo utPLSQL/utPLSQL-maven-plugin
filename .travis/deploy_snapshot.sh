@@ -2,7 +2,8 @@
 set -ev
 
 DATE=`date +%Y%m%d%H%M`
-OLD_VERSION=`mvn -q org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -DforceStdout -Dexpression=project.version`
+#using this solution to get version into variable: https://stackoverflow.com/a/26514030/1470603
+OLD_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 VERSION=`sed "s/-SNAPSHOT/-${DATE}-SNAPSHOT/g" <<<"${OLD_VERSION}"`
 
 echo "Changing snapshot version, OLD: ${OLD_VERSION} NEW: ${VERSION}"
