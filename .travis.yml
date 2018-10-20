@@ -56,12 +56,12 @@ deploy:
   - provider: script
     script: ./travis/deploy_snapshot.sh
     on:
-      repo: utPLSQL/utplsql-maven-plugin
+      repo: utPLSQL/utPLSQL-maven-plugin
       branch: develop
   - provider: script
     script: ./travis/deploy_release.sh
     on:
-      repo: utPLSQL/utplsql-maven-plugin
+      repo: utPLSQL/utPLSQL-maven-plugin
       branch: master
       tags: true
 
