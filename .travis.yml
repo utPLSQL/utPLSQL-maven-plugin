@@ -49,8 +49,8 @@ script:
   - mvn sonar:sonar
 
 before_deploy:
-  - bash $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
-  - bash $GPG_OWNERTRUST  | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+  - $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - $GPG_OWNERTRUST  | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
 
 deploy:
   - provider: script
