@@ -20,8 +20,6 @@ env:
     - CACHE_DIR=$HOME/.cache
     - MAVEN_HOME=/usr/local/maven
     - MAVEN_CFG=$HOME/.m2
-    - MAVEN_HELP_PLUGIN="org.apache.maven.plugins:maven-help-plugin:3.1.0"
-    - MAVEN_VERSION_PLUGIN="org.codehaus.mojo:versions-maven-plugin:2.7"
     - DB_URL="127.0.0.1:1521:XE"
     - DB_UT3_USER=ut3
     - DB_UT3_PASS=ut3
