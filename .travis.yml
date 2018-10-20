@@ -55,13 +55,13 @@ before_deploy:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: ./travis/deploy_snapshot.sh
+    script: .travis/deploy_snapshot.sh
     on:
       repo: utPLSQL/utPLSQL-maven-plugin
       branch: develop
   - provider: script
     skip_cleanup: true
-    script: ./travis/deploy_release.sh
+    script: .travis/deploy_release.sh
     on:
       repo: utPLSQL/utPLSQL-maven-plugin
       branch: master
