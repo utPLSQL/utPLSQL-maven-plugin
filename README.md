@@ -1,5 +1,5 @@
 [![Build status](https://travis-ci.org/utPLSQL/utPLSQL-maven-plugin.svg?branch=develop)](https://travis-ci.org/utPLSQL/utPLSQL-maven-plugin)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.utplsql%3Autplsql-maven-plugin-parent&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.utplsql%3Autplsql-maven-plugin-parent)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.utplsql%3Autplsql-maven-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.utplsql%3Autplsql-maven-plugin)
 
 # utPLSQL-maven-plugin
 * A maven plugin for running Unit Tests with utPLSQL v3+.
