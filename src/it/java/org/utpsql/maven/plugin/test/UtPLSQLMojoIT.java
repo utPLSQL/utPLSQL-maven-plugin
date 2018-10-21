@@ -25,17 +25,14 @@ public class UtPLSQLMojoIT {
 
     @BeforeClass
     public static void setUp() throws VerificationException, IOException, XmlPullParserException {
-        // Read plugin pom file
         MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model model = reader.read(new FileReader("../pom.xml"));
+        Model model = reader.read(new FileReader("pom.xml"));
 
-        File pomFile = new File("../");
-        Verifier verifier = new Verifier(pomFile.getAbsolutePath());
+        Verifier verifier = new Verifier(new File("").getAbsolutePath());
 
-        // install plugin
+        // Install Plugin
         verifier.setAutoclean(false);
-        verifier.addCliOption("-Dmaven.skip.test=true");
-        verifier.addCliOption("-DskipITs");
+        verifier.addCliOption("-Dmaven.test.skip=true");
         verifier.executeGoal("install");
 
         pluginVersion = model.getVersion();
@@ -171,7 +168,7 @@ public class UtPLSQLMojoIT {
             Assert.assertTrue("The reporter for " + filename + " was not generated", outputFile.exists());
             try {
                 // Duration is set to 1 before comparing contents as it is always different.
-                // Path separator is set to "/" to ensure windows / linux / mac compatibility
+                // Path separator is set to "/" to ensure windows / linux / mac compatibility.
                 Stream<String> stream = Files
                         .lines(Paths.get("target", "test-classes", projectName, "target", filename));
 

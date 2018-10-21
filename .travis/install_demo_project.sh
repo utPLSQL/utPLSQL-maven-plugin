@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ev
 
-PROJECT_FILES_SRC="utplsql-maven-plugin-it/src/it/resources/simple-project"
+PROJECT_FILES_SRC="src/it/resources/simple-project"
 PROJECT_FILES="resources"
 DB_USER=app
 DB_PASS=app

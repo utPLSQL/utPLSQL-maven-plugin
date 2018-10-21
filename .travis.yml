@@ -40,10 +40,10 @@ install:
   - bash .travis/install_demo_owner_project.sh
 
 script:
-  - echo "Run Unit tests"
+  - echo "Run Unit Tests"
   - mvn org.jacoco:jacoco-maven-plugin:prepare-agent test
-  - echo "Run Integration tests"
-  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify -Dmaven.skip.test -DdbUser="${DB_UT3_USER}" -DdbPass="${DB_UT3_PASS}" -DdbUrl="jdbc:oracle:thin:@${DB_URL}"
+  - echo "Run Integration Tests"
+  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify -Pintegration -DdbUser="${DB_UT3_USER}" -DdbPass="${DB_UT3_PASS}" -DdbUrl="jdbc:oracle:thin:@${DB_URL}"
   - mvn sonar:sonar
 
 before_deploy:
