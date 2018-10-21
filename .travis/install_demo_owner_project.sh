@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ev
 
-PROJECT_FILES_SRC="utplsql-maven-plugin-it/src/it/resources/owner-param-project"
+PROJECT_FILES_SRC="src/it/resources/owner-param-project"
 PROJECT_FILES="resources-owner"
 DB_CODE_USER=CODE_OWNER
 DB_TESTS_USER=TESTS_OWNER
