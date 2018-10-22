@@ -17,7 +17,7 @@ http://docs.oracle.com/middleware/1213/core/MAVEN/config_maven_repo.htm#MAVEN901
 
 Sections 6.1 and 6.5 are the more important ones, and the only ones you need if you're using the latest Maven version.
 
-Follows an example of the necessary changes to your settings.xml:
+Below is an example of changes needed to your `settings.xml` file.
 
 ```xml
 <settings>
