@@ -11,7 +11,8 @@
 * Java SE Runtime Environment 8
 * Maven Version 3.5+
 
-The plugin relies on the utPLSQL Java API for database operations, which has the OJDBC as a maven dependency. To be able to download the Oracle dependencies, you need to configure your access to Oracle's Maven Repository:
+The plugin requires Oracle JDBC driver (ojdbc8) as a maven dependency. 
+In order to download the required driver, you need to configure access to Oracle's Maven Repository in your `settings.xml` file.
 
 http://docs.oracle.com/middleware/1213/core/MAVEN/config_maven_repo.htm#MAVEN9010
 
