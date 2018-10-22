@@ -5,18 +5,49 @@
 * A maven plugin for running Unit Tests with utPLSQL v3+.
 
 ### Compatibility
-* This plugin is compatible with the utPLSQL Java API 3.1.0.
+* This plugin is compatible with utPLSQL 3.1.0+.
 
 ### Prerequisites
 * Java SE Runtime Environment 8
 * Maven Version 3.5+
-* You need to have a compatible version utPLSQL framework installed in the database. Please refer to the Java API documentation for compatibility checks.
 
-The plugin relies on the Java API for database operations, which has the OJDBC as a maven dependency. To be able to download the Oracle dependencies, you need to configure your access to Oracle's Maven Repository:
+The plugin requires Oracle JDBC driver (ojdbc8) as a maven dependency. 
+In order to download the required driver, you need to configure access to Oracle's Maven Repository in your `settings.xml` file.
 
 http://docs.oracle.com/middleware/1213/core/MAVEN/config_maven_repo.htm#MAVEN9010
 
 Sections 6.1 and 6.5 are the more important ones, and the only ones you need if you're using the latest Maven version.
+
+Below is an example of changes needed to your `settings.xml` file.
+
+```xml
+<settings>
+ <servers>
+    <server>
+        <id>maven.oracle.com</id>
+        <username>oracle_tech_net_user_name</username>
+        <password>oracle_tech_net_password</password>
+        <configuration>
+            <basicAuthScope>
+                <host>ANY</host>
+                <port>ANY</port>
+                <realm>OAM 11g</realm>
+            </basicAuthScope>
+            <httpConfiguration>
+                <all>
+                    <params>
+                        <property>
+                        <name>http.protocol.allow-circular-redirects</name>
+                        <value>%b,true</value>
+                        </property>
+                    </params>
+                </all>
+            </httpConfiguration>
+        </configuration>
+    </server>
+ </servers>
+</settings>
+```
 
 ### Usage
 
