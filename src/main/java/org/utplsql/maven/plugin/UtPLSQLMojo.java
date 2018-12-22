@@ -164,10 +164,10 @@ public class UtPLSQLMojo extends AbstractMojo {
             runner.run(connection);
 
         } catch (SomeTestsFailedException e) {
-            getLog().error(e);
-            throw new MojoExecutionException(e.getMessage());
+            if (!this.ignoreFailure) {
+                throw new MojoExecutionException(e.getMessage(), e);
+            }
         } catch (SQLException e) {
-            getLog().error(e);
             throw new MojoExecutionException(e.getMessage(), e);
         } finally {
             try {
