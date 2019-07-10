@@ -44,7 +44,7 @@ script:
   - mvn org.jacoco:jacoco-maven-plugin:prepare-agent test
   - echo "Run Integration Tests"
   - mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify -Pintegration -DdbUser="${DB_UT3_USER}" -DdbPass="${DB_UT3_PASS}" -DdbUrl="jdbc:oracle:thin:@${DB_URL}"
-  - mvn sonar:sonar
+  - mvn sonar:sonar -Dsonar.projectKey=org.utplsql:utplsql-maven-plugin
 
 before_deploy:
   - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
