@@ -2,11 +2,10 @@ package org.utplsql.maven.plugin;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+import oracle.jdbc.pool.OracleDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -135,8 +134,11 @@ public class UtPLSQLMojo extends AbstractMojo {
         try {
             FileMapperOptions sourceMappingOptions = buildSourcesOptions();
             FileMapperOptions testMappingOptions = buildTestsOptions();
-
-            connection = DriverManager.getConnection(url, user, password);
+            OracleDataSource ds = new OracleDataSource();
+            ds.setURL(url);
+            ds.setUser(user);
+            ds.setPassword(password);
+            connection = ds.getConnection();
 
             Version utlVersion = DBHelper.getDatabaseFrameworkVersion(connection);
             getLog().info("utPLSQL Version = " + utlVersion);
@@ -173,6 +175,7 @@ public class UtPLSQLMojo extends AbstractMojo {
             try {
                 if (null != connection) {
                     reporterWriter.writeReporters(connection);
+                    connection.close();
                 }
             } catch (Exception e) {
                 getLog().error(e.getMessage(), e);
