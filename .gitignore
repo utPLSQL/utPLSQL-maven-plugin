@@ -20,6 +20,7 @@ target/
 .mvn
 log.txt
 **/pom.xml.versionsBackup
+dependency-reduced-pom.xml
 
 # Docs
 doc/
