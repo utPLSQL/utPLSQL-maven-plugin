@@ -10,8 +10,7 @@ jdk:
 addons:
   sonarcloud:
     organization: utplsql
-    token:
-      secure: ${SONAR_TOKEN}
+    token: ${SONAR_TOKEN}
 
 env:
   global:
