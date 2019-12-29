@@ -173,16 +173,16 @@ public class UtPLSQLMojoIT {
                         .lines(Paths.get("target", "test-classes", projectName, "target", filename));
 
                 String outputContent = stream
-                        .map(line -> line.replaceAll("(encoding=\"[^\"]*\")", "encoding=\"WINDOWS-1252\""))
+                        .filter(line -> !line.contains("<?xml"))
                         .map(line -> line.replaceAll("(duration=\"[0-9\\.]*\")", "duration=\"1\""))
                         .map(line -> line.replaceAll("\\\\", "/"))
-                        .map(line -> line.replaceAll("\r", "").replaceAll("\n", "")).collect(Collectors.joining("\n"));
+                        .map(line -> line.replaceAll("\r", "").replaceAll("\n", ""))
+                        .collect(Collectors.joining("\n"));
 
                 stream.close();
                 Assert.assertEquals("The files differ!",
                         FileUtils.readFileToString(expectedOutputFile, "utf-8").replace("\r", ""), outputContent);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 Assert.fail("Unexpected Exception running the test : " + e.getMessage());
             }

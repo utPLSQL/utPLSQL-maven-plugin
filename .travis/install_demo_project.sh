@@ -1,35 +1,18 @@
 #!/bin/bash
 set -ev
 
-PROJECT_FILES_SRC="src/it/resources/simple-project"
-PROJECT_FILES="resources"
-DB_USER=app
-DB_PASS=app
+DB_URL="//127.0.0.1:1521/XE"
+SQLPLUS_IMAGE=${DOCKER_REPO}:${ORACLE_VERSION}
+VOLUME="/project"
 
-cat > demo_project.sh.tmp <<EOF
-sqlplus -S -L sys/oracle@//127.0.0.1:1521/xe AS SYSDBA <<SQL
-create user ${DB_USER} identified by ${DB_PASS} quota unlimited on USERS default tablespace USERS;
-grant create session, create procedure, create type, create table, create sequence, create view to ${DB_USER};
-grant select any dictionary to ${DB_USER};
-exit
-SQL
+docker run --rm -v $(pwd):${VOLUME} -w ${VOLUME} --network host --entrypoint sqlplus ${SQLPLUS_IMAGE} \
+    sys/oracle@${DB_URL} as sysdba @.travis/sql/create_users.sql
 
-cd ${PROJECT_FILES}
-sqlplus -S -L ${DB_USER}/${DB_PASS}@//127.0.0.1:1521/xe <<SQL
-whenever sqlerror exit failure rollback
-whenever oserror  exit failure rollback
+docker run --rm -v $(pwd):${VOLUME} -w ${VOLUME} --network host --entrypoint sqlplus ${SQLPLUS_IMAGE} \
+    app/pass@${DB_URL} @.travis/sql/create_app_objects.sql
 
-@scripts/sources/TO_TEST_ME.tab
-@scripts/sources/APP.PKG_TEST_ME.spc
-@scripts/sources/APP.PKG_TEST_ME.bdy
+docker run --rm -v $(pwd):${VOLUME} -w ${VOLUME} --network host --entrypoint sqlplus ${SQLPLUS_IMAGE} \
+    code_owner/pass@${DB_URL} @.travis/sql/create_source_owner_objects.sql
 
-@scripts/tests/APP.TEST_PKG_TEST_ME.spc
-@scripts/tests/APP.TEST_PKG_TEST_ME.bdy
-
-exit
-SQL
-EOF
-
-docker cp ./$PROJECT_FILES_SRC $ORACLE_VERSION:/$PROJECT_FILES
-docker cp ./demo_project.sh.tmp $ORACLE_VERSION:/demo_project.sh
-docker exec $ORACLE_VERSION bash demo_project.sh
+docker run --rm -v $(pwd):${VOLUME} -w ${VOLUME} --network host --entrypoint sqlplus ${SQLPLUS_IMAGE} \
+    tests_owner/pass@${DB_URL} @.travis/sql/create_tests_owner_objects.sql

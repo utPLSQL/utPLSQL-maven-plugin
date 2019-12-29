@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import oracle.jdbc.pool.OracleDataSource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -16,12 +16,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.utils.logging.MessageUtils;
-import org.utplsql.api.DBHelper;
 import org.utplsql.api.FileMapperOptions;
 import org.utplsql.api.JavaApiVersionInfo;
 import org.utplsql.api.KeyValuePair;
 import org.utplsql.api.TestRunner;
 import org.utplsql.api.Version;
+import org.utplsql.api.db.DatabaseInformation;
+import org.utplsql.api.db.DefaultDatabaseInformation;
 import org.utplsql.api.exception.SomeTestsFailedException;
 import org.utplsql.api.reporter.CoreReporters;
 import org.utplsql.api.reporter.Reporter;
@@ -30,6 +31,8 @@ import org.utplsql.maven.plugin.helper.PluginDefault;
 import org.utplsql.maven.plugin.helper.SQLScannerHelper;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 import org.utplsql.maven.plugin.reporter.ReporterWriter;
+
+import oracle.jdbc.pool.OracleDataSource;
 
 /**
  * This class expose the {@link TestRunner} interface to Maven.
@@ -121,6 +124,8 @@ public class UtPLSQLMojo extends AbstractMojo {
 
     private ReporterWriter reporterWriter;
 
+    private DatabaseInformation databaseInformation = new DefaultDatabaseInformation();
+
     /**
      * Executes the plugin.
      */
@@ -140,7 +145,7 @@ public class UtPLSQLMojo extends AbstractMojo {
             ds.setPassword(password);
             connection = ds.getConnection();
 
-            Version utlVersion = DBHelper.getDatabaseFrameworkVersion(connection);
+            Version utlVersion = this.databaseInformation.getUtPlsqlFrameworkVersion(connection);
             getLog().info("utPLSQL Version = " + utlVersion);
 
             List<Reporter> reporterList = initReporters(connection, utlVersion, ReporterFactory.createEmpty());
