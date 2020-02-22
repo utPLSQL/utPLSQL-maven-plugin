@@ -156,6 +156,30 @@ public class UtPLSQLMojoIT {
         }
     }
 
+    @Test
+    public void testTagsProject() throws Exception {
+
+        try {
+            final String PROJECT_NAME = "tags-project";
+            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+
+            Verifier verifier;
+            verifier = new Verifier(testProject.getAbsolutePath());
+            verifier.addCliOption("-N");
+            verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
+            verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
+            verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
+            verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
+
+            verifier.executeGoal("test");
+
+            checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("Unexpected Exception running the test of Definition " + e.getMessage());
+        }
+    }
+
     /**
      * 
      * @param files

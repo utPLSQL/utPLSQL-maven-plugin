@@ -4,7 +4,9 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Resource;
@@ -113,6 +115,9 @@ public class UtPLSQLMojo extends AbstractMojo {
     @Parameter
     private List<CustomTypeMapping> testsCustomTypeMapping;
 
+    @Parameter
+    private Set<String> tags = new LinkedHashSet<>();
+
     @Parameter(defaultValue = "${project.build.directory}", readonly = true)
     protected String targetDir;
 
@@ -159,6 +164,7 @@ public class UtPLSQLMojo extends AbstractMojo {
                     .testMappingOptions(testMappingOptions)
                     .skipCompatibilityCheck(skipCompatibilityCheck)
                     .colorConsole(colorConsole)
+                    .addTags(tags)
                     .failOnErrors(!ignoreFailure);
 
             if (StringUtils.isNotBlank(excludeObject)) {
