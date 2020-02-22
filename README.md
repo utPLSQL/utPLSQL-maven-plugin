@@ -102,6 +102,11 @@ Please refer to the following usage example for the parameters descriptions.
                                 <path>schema_name</path>
                             </paths>
 
+                            <!-- A list of tags to run. -->
+                            <tags>
+                                <tag>test_tag</tag>
+                            </tags>
+
                             <sources>
                                 <source>
                                     <!-- Path to project source files. -->
@@ -231,6 +236,7 @@ More project samples are available in the src/test/resources directory:
 | -o | | reporters.reporter.fileOutput |
 | -s | | reporters.reporter.consoleOutput |
 | -p | --path | paths.path |
+| | --tags | tags.tag |
 | -scc | --skip-compatibility-check | skipCompatibilityCheck |
 | -exclude | | excludeObject |
 | -include | | includeObject |
@@ -250,4 +256,3 @@ More project samples are available in the src/test/resources directory:
 | -owner_subexpression | | testsOwnerSubexpression |
 | -type_subexpression | | testsTypeSubexpression |
 | -name_subexpression | | testsNameSubexpression |
-
