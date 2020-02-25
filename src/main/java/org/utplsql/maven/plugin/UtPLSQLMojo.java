@@ -118,6 +118,12 @@ public class UtPLSQLMojo extends AbstractMojo {
     @Parameter
     private Set<String> tags = new LinkedHashSet<>();
 
+    @Parameter
+    private boolean randomTestOrder;
+
+    @Parameter
+    private Integer randomTestOrderSeed;
+
     @Parameter(defaultValue = "${project.build.directory}", readonly = true)
     protected String targetDir;
 
@@ -165,6 +171,8 @@ public class UtPLSQLMojo extends AbstractMojo {
                     .skipCompatibilityCheck(skipCompatibilityCheck)
                     .colorConsole(colorConsole)
                     .addTags(tags)
+                    .randomTestOrder(randomTestOrder)
+                    .randomTestOrderSeed(randomTestOrderSeed)
                     .failOnErrors(!ignoreFailure);
 
             if (StringUtils.isNotBlank(excludeObject)) {

@@ -102,11 +102,6 @@ Please refer to the following usage example for the parameters descriptions.
                                 <path>schema_name</path>
                             </paths>
 
-                            <!-- A list of tags to run. -->
-                            <tags>
-                                <tag>test_tag</tag>
-                            </tags>
-
                             <sources>
                                 <source>
                                     <!-- Path to project source files. -->
@@ -140,6 +135,16 @@ Please refer to the following usage example for the parameters descriptions.
                             <!-- Skip the utPLSQL version compatibility check. -->
                             <!-- Defaults to: false -->
                             <skipCompatibilityCheck>false</skipCompatibilityCheck>
+
+                            <!-- A list of tags to run. -->
+                            <tags>
+                                <tag>test_tag</tag>
+                            </tags>
+
+                            <!-- Enables random order of test executions. -->
+                            <randomTestOrder>true</randomTestOrder>
+                            <!-- Sets the seed to use for random test execution order. If set, it sets -random to true. -->
+                            <randomTestOrderSeed>5</randomTestOrderSeed>
                             
                             <!-- Comma-separated object list to include in the coverage report. -->
                             <!-- Format: [schema.]package[,[schema.]package ...]. -->
@@ -209,7 +214,6 @@ Please refer to the following usage example for the parameters descriptions.
                                     <customMapping>package_bodies</customMapping>
                                 </customTypeMapping>
                             </testsCustomTypeMapping>
-
                         </configuration>
                     </execution>
                 </executions>
@@ -231,13 +235,15 @@ More project samples are available in the src/test/resources directory:
 | --- | --- | --- |
 | -c | --color | |
 | | --failure-exit-code | |
-| | | ignoreFailure |
+| -p | --path | paths.path |
 | -f | --format | reporters.reporter.name |
 | -o | | reporters.reporter.fileOutput |
 | -s | | reporters.reporter.consoleOutput |
-| -p | --path | paths.path |
-| | --tags | tags.tag |
+| | | ignoreFailure |
 | -scc | --skip-compatibility-check | skipCompatibilityCheck |
+| | --tags | tags.tag |
+| -r | --random-test-order | randomTestOrder |
+| -seed | --random-test-order-seed | randomTestOrderSeed |
 | -exclude | | excludeObject |
 | -include | | includeObject |
 | | | |
