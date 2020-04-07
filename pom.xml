@@ -51,7 +51,6 @@
         <powermock.version>2.0.0-beta.5</powermock.version>
         <ojdbc.version>19.3.0.0</ojdbc.version>
         <jaxb.version>2.3.1</jaxb.version>
-        <jacoco.version>0.8.5</jacoco.version>
     </properties>
 
     <dependencies>
@@ -234,31 +233,6 @@
 
     <profiles>
         <profile>
-            <id>default</id>
-
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>${jacoco.version}</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
             <id>release</id>
 
             <activation>
@@ -386,18 +360,6 @@
                                 <goals>
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>${jacoco.version}</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>prepare-agent-integration</goal>
                                 </goals>
                             </execution>
                         </executions>
