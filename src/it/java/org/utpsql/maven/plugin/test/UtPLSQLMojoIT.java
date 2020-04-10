@@ -156,6 +156,30 @@ public class UtPLSQLMojoIT {
         }
     }
 
+    @Test
+    public void testTagsProject() throws Exception {
+
+        try {
+            final String PROJECT_NAME = "tags-project";
+            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+
+            Verifier verifier;
+            verifier = new Verifier(testProject.getAbsolutePath());
+            verifier.addCliOption("-N");
+            verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
+            verifier.addCliOption("-DdbUrl=" + System.getProperty("dbUrl"));
+            verifier.addCliOption("-DdbUser=" + System.getProperty("dbUser"));
+            verifier.addCliOption("-DdbPass=" + System.getProperty("dbPass"));
+
+            verifier.executeGoal("test");
+
+            checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("Unexpected Exception running the test of Definition " + e.getMessage());
+        }
+    }
+
     /**
      * 
      * @param files
@@ -173,16 +197,16 @@ public class UtPLSQLMojoIT {
                         .lines(Paths.get("target", "test-classes", projectName, "target", filename));
 
                 String outputContent = stream
-                        .map(line -> line.replaceAll("(encoding=\"[^\"]*\")", "encoding=\"WINDOWS-1252\""))
+                        .filter(line -> !line.contains("<?xml"))
                         .map(line -> line.replaceAll("(duration=\"[0-9\\.]*\")", "duration=\"1\""))
                         .map(line -> line.replaceAll("\\\\", "/"))
-                        .map(line -> line.replaceAll("\r", "").replaceAll("\n", "")).collect(Collectors.joining("\n"));
+                        .map(line -> line.replaceAll("\r", "").replaceAll("\n", ""))
+                        .collect(Collectors.joining("\n"));
 
                 stream.close();
                 Assert.assertEquals("The files differ!",
                         FileUtils.readFileToString(expectedOutputFile, "utf-8").replace("\r", ""), outputContent);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 Assert.fail("Unexpected Exception running the test : " + e.getMessage());
             }

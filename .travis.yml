@@ -34,9 +34,8 @@ cache:
 install:
   - bash .travis/maven_cfg.sh
   - bash .travis/start_db.sh
-  - bash .travis/install_utplsql.sh $DB_UT3_USER $DB_UT3_PASS
+  - bash .travis/install_utplsql.sh
   - bash .travis/install_demo_project.sh
-  - bash .travis/install_demo_owner_project.sh
 
 script:
   - echo "Run Unit Tests"
@@ -46,8 +45,8 @@ script:
   - mvn sonar:sonar -Dsonar.projectKey=org.utplsql:utplsql-maven-plugin
 
 before_deploy:
-  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
-  - echo $GPG_OWNERTRUST  | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+  - echo $GPG_SECRET_KEYS | base64 --decode | ${GPG_EXECUTABLE} --import
+  - echo $GPG_OWNERTRUST  | base64 --decode | ${GPG_EXECUTABLE} --import-ownertrust
 
 deploy:
   - provider: script

@@ -46,10 +46,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.version>3.5.0</maven.version>
+        <maven.version>3.5.2</maven.version>
         <java.version>1.8</java.version>
         <powermock.version>2.0.0-beta.5</powermock.version>
-        <ojdbc.version>12.2.0.1</ojdbc.version>
+        <ojdbc.version>19.3.0.0</ojdbc.version>
+        <jaxb.version>2.3.1</jaxb.version>
     </properties>
 
     <dependencies>
@@ -62,23 +63,23 @@
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
-            <version>2.3.1</version>
+            <version>${jaxb.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>2.3.1</version>
+            <version>${jaxb.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.oracle.jdbc</groupId>
+            <groupId>com.oracle.ojdbc</groupId>
             <artifactId>ojdbc8</artifactId>
             <version>${ojdbc.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.oracle.jdbc</groupId>
+            <groupId>com.oracle.ojdbc</groupId>
             <artifactId>orai18n</artifactId>
             <version>${ojdbc.version}</version>
         </dependency>
@@ -86,45 +87,45 @@
         <dependency>
             <groupId>org.utplsql</groupId>
             <artifactId>java-api</artifactId>
-            <version>3.1.2</version>
+            <version>3.1.8</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
-            <version>3.5.2</version>
+            <version>${maven.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
-            <version>3.0.2</version>
+            <version>${maven.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.5.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>3.0.8</version>
+            <version>${maven.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
-            <version>3.5</version>
+            <version>${maven.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>3.3.0</version>
         </dependency>
 
         <!-- Test Dependencies -->
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-compat</artifactId>
-            <version>3.5.2</version>
+            <version>${maven.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -152,14 +153,14 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.8.0</version>
+            <version>3.15.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -169,7 +170,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -179,7 +180,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.1</version>
+                <version>3.2.2</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -199,7 +200,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.5</version>
+                <version>${maven.version}</version>
                 <configuration>
                     <goalPrefix>utplsql</goalPrefix>
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
@@ -245,6 +246,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.1.1</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -257,7 +259,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.0.1</version>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -309,7 +311,7 @@
                 <dependency>
                     <groupId>commons-io</groupId>
                     <artifactId>commons-io</artifactId>
-                    <version>2.5</version>
+                    <version>2.6</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -352,7 +354,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.22.1</version>
+                        <version>2.22.2</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -378,24 +380,5 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-
-        <repository>
-            <id>maven.oracle.com</id>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <url>https://maven.oracle.com</url>
-            <layout>default</layout>
-        </repository>
     </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>maven.oracle.com</id>
-            <url>https://maven.oracle.com</url>
-        </pluginRepository>
-    </pluginRepositories>
 </project>
