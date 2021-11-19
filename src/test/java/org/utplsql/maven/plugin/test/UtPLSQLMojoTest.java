@@ -1,21 +1,5 @@
 package org.utplsql.maven.plugin.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-
-import java.io.File;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.MojoRule;
@@ -37,6 +21,22 @@ import org.utplsql.api.reporter.ReporterFactory;
 import org.utplsql.maven.plugin.UtPLSQLMojo;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 import org.utplsql.maven.plugin.reporter.ReporterWriter;
+
+import java.io.File;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ DBHelper.class, ReporterFactory.class })
@@ -69,7 +69,7 @@ public class UtPLSQLMojoTest {
     /**
      * testInvalidSourcesDirectory.
      * 
-     * Given : a pom.xml with invalid sources directory When : pom is read and
+     * Given : a pom.xml with invalid sources' directory When : pom is read and
      * buildSourcesOptions is run Then : it should throw a MojoExecutionException
      */
     @Test
@@ -90,7 +90,7 @@ public class UtPLSQLMojoTest {
     /**
      * testInvalidTestsDirectory.
      * 
-     * Given : a pom.xml with invalid tests directory When : pom is read and
+     * Given : a pom.xml with invalid tests' directory When : pom is read and
      * buildTestsOptions is run Then : it should throw a MojoExecutionException
      */
     @Test
@@ -121,7 +121,7 @@ public class UtPLSQLMojoTest {
         Assert.assertNotNull(utplsqlMojo);
 
         // TODO : move to another test about reporters
-        List<String> reporters = Whitebox.<List<String>>getInternalState(utplsqlMojo, "reporters");
+        List<String> reporters = Whitebox.getInternalState(utplsqlMojo, "reporters");
         assertEquals(reporters.size(), 2);
 
         // check sources
@@ -270,7 +270,7 @@ public class UtPLSQLMojoTest {
 
         Whitebox.invokeMethod(utplsqlMojo, "initReporters", mockConnection, mockVersion, mockReporterFactory);
 
-        // Assert that we called the create reporter with the correct parameters.
+        // Assert that we called the creation reporter with the correct parameters.
         verify(mockReporterFactory, times(2)).createReporter("UT_DOCUMENTATION_REPORTER");
         verify(mockReporterFactory).createReporter("UT_COVERAGE_SONAR_REPORTER");
         verify(mockReporterFactory).createReporter("UT_SONAR_TEST_REPORTER");

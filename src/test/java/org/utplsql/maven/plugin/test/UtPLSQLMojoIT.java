@@ -39,8 +39,7 @@ public class UtPLSQLMojoIT {
     }
 
     @Test
-    public void testSimpleProject() throws Exception {
-
+    public void testSimpleProject() {
         try {
             final String PROJECT_NAME = "simple-project";
             File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
@@ -64,7 +63,7 @@ public class UtPLSQLMojoIT {
     }
 
     @Test
-    public void testRegexProject() throws Exception {
+    public void testRegexProject() {
         try {
             final String PROJECT_NAME = "regex-project";
             File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
@@ -88,7 +87,7 @@ public class UtPLSQLMojoIT {
     }
 
     @Test
-    public void testTypeMappingProject() throws Exception {
+    public void testTypeMappingProject() {
         try {
             final String PROJECT_NAME = "type-mapping-project";
             File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
@@ -112,7 +111,7 @@ public class UtPLSQLMojoIT {
     }
 
     @Test
-    public void testOwnerParameterProject() throws Exception {
+    public void testOwnerParameterProject() {
         try {
             final String PROJECT_NAME = "owner-param-project";
             File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
@@ -136,7 +135,7 @@ public class UtPLSQLMojoIT {
     }
 
     @Test
-    public void testMinimalistProject() throws Exception {
+    public void testMinimalistProject() {
         try {
             final String PROJECT_NAME = "minimalist-project";
             File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
@@ -157,8 +156,7 @@ public class UtPLSQLMojoIT {
     }
 
     @Test
-    public void testTagsProject() throws Exception {
-
+    public void testTagsProject() {
         try {
             final String PROJECT_NAME = "tags-project";
             File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
@@ -180,10 +178,6 @@ public class UtPLSQLMojoIT {
         }
     }
 
-    /**
-     * 
-     * @param files
-     */
     private void checkReportsGenerated(String projectName, String... files) {
         for (String filename : files) {
             File outputFile = new File("target/test-classes/" + projectName + "/target", filename);
@@ -198,7 +192,7 @@ public class UtPLSQLMojoIT {
 
                 String outputContent = stream
                         .filter(line -> !line.contains("<?xml"))
-                        .map(line -> line.replaceAll("(duration=\"[0-9\\.]*\")", "duration=\"1\""))
+                        .map(line -> line.replaceAll("(duration=\"[0-9.]*\")", "duration=\"1\""))
                         .map(line -> line.replaceAll("\\\\", "/"))
                         .map(line -> line.replaceAll("\r", "").replaceAll("\n", ""))
                         .collect(Collectors.joining("\n"));

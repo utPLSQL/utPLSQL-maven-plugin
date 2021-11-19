@@ -1,15 +1,5 @@
 package org.utplsql.maven.plugin.reporter;
 
-import static java.lang.String.format;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -20,15 +10,25 @@ import org.utplsql.api.outputBuffer.OutputBufferProvider;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.lang.String.format;
+
 public class ReporterWriter {
 
     private static final Log LOG = new SystemStreamLog();
 
-    private List<Pair<Reporter, ReporterParameter>> listReporters;
+    private final List<Pair<Reporter, ReporterParameter>> listReporters;
 
-    private String outputDirectory;
+    private final String outputDirectory;
 
-    private Version databaseVersion;
+    private final Version databaseVersion;
 
     /**
      * Constructor of the reporter writer.
@@ -109,6 +109,5 @@ public class ReporterWriter {
                 }
             }
         }
-
     }
 }
