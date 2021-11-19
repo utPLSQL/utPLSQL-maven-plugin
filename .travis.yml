@@ -5,7 +5,7 @@ services:
   - docker
 
 jdk:
-  - openjdk9
+  - openjdk11
 
 addons:
   sonarcloud:
