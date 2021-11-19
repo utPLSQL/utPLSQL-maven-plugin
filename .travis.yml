@@ -33,9 +33,7 @@ install:
   - bash .travis/install_demo_project.sh
 
 script:
-  - echo "Run Unit Tests"
-  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent test
-  - echo "Run Integration Tests"
+  - echo "Run Verify with Coverage"
   - mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify -Pintegration -DdbUser="${DB_UT3_USER}" -DdbPass="${DB_UT3_PASS}" -DdbUrl="jdbc:oracle:thin:@${DB_URL}"
 
 before_deploy:
@@ -54,7 +52,7 @@ deploy:
     script: bash .travis/deploy_release.sh
     on:
       repo: utPLSQL/utPLSQL-maven-plugin
-      tags: true
+      branch: main
 
 notifications:
   slack:
