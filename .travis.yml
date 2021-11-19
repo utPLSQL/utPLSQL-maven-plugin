@@ -52,7 +52,7 @@ deploy:
     script: bash .travis/deploy_release.sh
     on:
       repo: utPLSQL/utPLSQL-maven-plugin
-      tags: true
+      branch: main
 
 notifications:
   slack:
