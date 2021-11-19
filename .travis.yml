@@ -5,12 +5,7 @@ services:
   - docker
 
 jdk:
-  - openjdk11
-
-addons:
-  sonarcloud:
-    organization: utplsql
-    token: ${SONAR_TOKEN}
+  - openjdk8
 
 env:
   global:
