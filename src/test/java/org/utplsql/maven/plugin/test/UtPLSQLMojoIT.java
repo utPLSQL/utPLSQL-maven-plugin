@@ -1,12 +1,4 @@
-package org.utpsql.maven.plugin.test;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+package org.utplsql.maven.plugin.test;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.it.VerificationException;
@@ -18,6 +10,14 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UtPLSQLMojoIT {
 
@@ -32,7 +32,7 @@ public class UtPLSQLMojoIT {
 
         // Install Plugin
         verifier.setAutoclean(false);
-        verifier.addCliOption("-Dmaven.test.skip=true");
+        verifier.addCliOption("-DskipTests");
         verifier.executeGoal("install");
 
         pluginVersion = model.getVersion();
