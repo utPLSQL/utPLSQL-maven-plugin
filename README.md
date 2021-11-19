@@ -4,52 +4,54 @@
 # utPLSQL-maven-plugin
 * A maven plugin for running Unit Tests with utPLSQL v3+.
 
-### Compatibility
+## Compatibility
 * This plugin is compatible with utPLSQL 3.1.0+.
 
-### Prerequisites
+## Prerequisites
 * Java SE Runtime Environment 8
 * Maven Version 3.5+
 
-The plugin requires Oracle JDBC driver (ojdbc8) as a maven dependency. 
-In order to download the required driver, you need to configure access to Oracle's Maven Repository in your `settings.xml` file.
-
-http://docs.oracle.com/middleware/1213/core/MAVEN/config_maven_repo.htm#MAVEN9010
-
-Sections 6.1 and 6.5 are the more important ones, and the only ones you need if you're using the latest Maven version.
-
-Below is an example of changes needed to your `settings.xml` file.
+The plugin requires Oracle JDBC driver (ojdbc8) as a Maven dependency. 
 
 ```xml
-<settings>
- <servers>
-    <server>
-        <id>maven.oracle.com</id>
-        <username>oracle_tech_net_user_name</username>
-        <password>oracle_tech_net_password</password>
-        <configuration>
-            <basicAuthScope>
-                <host>ANY</host>
-                <port>ANY</port>
-                <realm>OAM 11g</realm>
-            </basicAuthScope>
-            <httpConfiguration>
-                <all>
-                    <params>
-                        <property>
-                        <name>http.protocol.allow-circular-redirects</name>
-                        <value>%b,true</value>
-                        </property>
-                    </params>
-                </all>
-            </httpConfiguration>
-        </configuration>
-    </server>
- </servers>
-</settings>
+<dependency>
+    <groupId>com.oracle.database.jdbc</groupId>
+    <artifactId>ojdbc8</artifactId>
+    <version>21.3.0.0</version>
+</dependency>
 ```
 
-### Usage
+## Usage
+
+### Skipping Tests
+
+To skip running the tests for a particular project, set the **skipUtplsqlTests** property to true.
+
+```xml
+<configuration>
+    <skipUtplsqlTests>true</skipUtplsqlTests>
+</configuration>
+```
+
+You can also skip the tests via the command line by executing the following command:
+
+    mvn install -DskipTests
+
+#### Skipping by Default
+
+If you want to skip tests by default but want the ability to re-enable tests from the command line, you need to go via a properties section in the pom:
+
+```xml
+<configuration>
+    <skipUtplsqlTests>true</skipUtplsqlTests>
+</configuration>
+```
+
+This will allow you to run with all tests disabled by default and to run them with this command:
+
+    mvn install -DskipTests=false
+
+### Usage Example
 
 Please refer to the following usage example for the parameters descriptions.
 
@@ -135,6 +137,10 @@ Please refer to the following usage example for the parameters descriptions.
                             <!-- Skip the utPLSQL version compatibility check. -->
                             <!-- Defaults to: false -->
                             <skipCompatibilityCheck>false</skipCompatibilityCheck>
+
+                            <!-- Skip the tests -->
+                            <!-- Defaults to: false -->
+                            <skipUtplsqlTests>false</skipUtplsqlTests>
 
                             <!-- A list of tags to run. -->
                             <tags>
@@ -229,7 +235,7 @@ More project samples are available in the src/test/resources directory:
 * **type-mapping-project:** this project shows how to use regex and custom type parameters together.
 * **owner-param-project:** this project demonstrates how to use sourcesOwner and testsOwner parameters.
 
-### Comparaison with the CLI
+## Comparaison with the CLI
 
 | CLI short parameter | CLI long parameter | maven XML path |
 | --- | --- | --- |

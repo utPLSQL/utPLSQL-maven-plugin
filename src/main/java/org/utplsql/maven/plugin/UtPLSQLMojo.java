@@ -1,13 +1,6 @@
 package org.utplsql.maven.plugin;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
+import oracle.jdbc.pool.OracleDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -34,11 +27,17 @@ import org.utplsql.maven.plugin.helper.SQLScannerHelper;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 import org.utplsql.maven.plugin.reporter.ReporterWriter;
 
-import oracle.jdbc.pool.OracleDataSource;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class expose the {@link TestRunner} interface to Maven.
- * 
+ *
  * @author Alberto Hernández
  */
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST)
@@ -130,6 +129,9 @@ public class UtPLSQLMojo extends AbstractMojo {
     @Parameter(defaultValue = "${maven.test.failure.ignore}")
     protected boolean ignoreFailure;
 
+    @Parameter(defaultValue = "${skiptUtplsqlTests}")
+    protected boolean skiptUtplsqlTests;
+
     // Color in the console, bases on Maven logging configuration.
     private boolean colorConsole = MessageUtils.isColorEnabled();
 
@@ -142,62 +144,65 @@ public class UtPLSQLMojo extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException {
+        if (skiptUtplsqlTests) {
+            getLog().debug("utPLSQLTests are skipped.");
+        } else {
+            getLog().debug("Java Api Version = " + JavaApiVersionInfo.getVersion());
+            loadConfFromEnvironment();
 
-        getLog().debug("Java Api Version = " + JavaApiVersionInfo.getVersion());
-        loadConfFromEnvironment();
-
-        Connection connection = null;
-        try {
-            FileMapperOptions sourceMappingOptions = buildSourcesOptions();
-            FileMapperOptions testMappingOptions = buildTestsOptions();
-            OracleDataSource ds = new OracleDataSource();
-            ds.setURL(url);
-            ds.setUser(user);
-            ds.setPassword(password);
-            connection = ds.getConnection();
-
-            Version utlVersion = this.databaseInformation.getUtPlsqlFrameworkVersion(connection);
-            getLog().info("utPLSQL Version = " + utlVersion);
-
-            List<Reporter> reporterList = initReporters(connection, utlVersion, ReporterFactory.createEmpty());
-
-            logParameters(sourceMappingOptions, testMappingOptions, reporterList);
-
-            TestRunner runner = new TestRunner()
-                    .addPathList(paths)
-                    .addReporterList(reporterList)
-                    .sourceMappingOptions(sourceMappingOptions)
-                    .testMappingOptions(testMappingOptions)
-                    .skipCompatibilityCheck(skipCompatibilityCheck)
-                    .colorConsole(colorConsole)
-                    .addTags(tags)
-                    .randomTestOrder(randomTestOrder)
-                    .randomTestOrderSeed(randomTestOrderSeed)
-                    .failOnErrors(!ignoreFailure);
-
-            if (StringUtils.isNotBlank(excludeObject)) {
-                runner.excludeObject(excludeObject);
-            }
-            if (StringUtils.isNotBlank(includeObject)) {
-                runner.includeObject(includeObject);
-            }
-
-            runner.run(connection);
-
-        } catch (SomeTestsFailedException e) {
-            if (!this.ignoreFailure) {
-                throw new MojoExecutionException(e.getMessage(), e);
-            }
-        } catch (SQLException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
-        } finally {
+            Connection connection = null;
             try {
-                if (null != connection) {
-                    reporterWriter.writeReporters(connection);
-                    connection.close();
+                FileMapperOptions sourceMappingOptions = buildSourcesOptions();
+                FileMapperOptions testMappingOptions = buildTestsOptions();
+                OracleDataSource ds = new OracleDataSource();
+                ds.setURL(url);
+                ds.setUser(user);
+                ds.setPassword(password);
+                connection = ds.getConnection();
+
+                Version utlVersion = this.databaseInformation.getUtPlsqlFrameworkVersion(connection);
+                getLog().info("utPLSQL Version = " + utlVersion);
+
+                List<Reporter> reporterList = initReporters(connection, utlVersion, ReporterFactory.createEmpty());
+
+                logParameters(sourceMappingOptions, testMappingOptions, reporterList);
+
+                TestRunner runner = new TestRunner()
+                        .addPathList(paths)
+                        .addReporterList(reporterList)
+                        .sourceMappingOptions(sourceMappingOptions)
+                        .testMappingOptions(testMappingOptions)
+                        .skipCompatibilityCheck(skipCompatibilityCheck)
+                        .colorConsole(colorConsole)
+                        .addTags(tags)
+                        .randomTestOrder(randomTestOrder)
+                        .randomTestOrderSeed(randomTestOrderSeed)
+                        .failOnErrors(!ignoreFailure);
+
+                if (StringUtils.isNotBlank(excludeObject)) {
+                    runner.excludeObject(excludeObject);
                 }
-            } catch (Exception e) {
-                getLog().error(e.getMessage(), e);
+                if (StringUtils.isNotBlank(includeObject)) {
+                    runner.includeObject(includeObject);
+                }
+
+                runner.run(connection);
+
+            } catch (SomeTestsFailedException e) {
+                if (!this.ignoreFailure) {
+                    throw new MojoExecutionException(e.getMessage(), e);
+                }
+            } catch (SQLException e) {
+                throw new MojoExecutionException(e.getMessage(), e);
+            } finally {
+                try {
+                    if (null != connection) {
+                        reporterWriter.writeReporters(connection);
+                        connection.close();
+                    }
+                } catch (Exception e) {
+                    getLog().error(e.getMessage(), e);
+                }
             }
         }
     }
@@ -223,7 +228,7 @@ public class UtPLSQLMojo extends AbstractMojo {
                 if (defaultSourceDirectory.exists()) {
                     sources.add(PluginDefault.buildDefaultSource());
                 } else {
-                    return new FileMapperOptions(new ArrayList<String>());
+                    return new FileMapperOptions(new ArrayList<>());
                 }
             }
 
@@ -252,7 +257,7 @@ public class UtPLSQLMojo extends AbstractMojo {
             }
 
             if (sourcesCustomTypeMapping != null && !sourcesCustomTypeMapping.isEmpty()) {
-                fileMapperOptions.setTypeMappings(new ArrayList<KeyValuePair>());
+                fileMapperOptions.setTypeMappings(new ArrayList<>());
                 for (CustomTypeMapping typeMapping : sourcesCustomTypeMapping) {
                     fileMapperOptions.getTypeMappings()
                             .add(new KeyValuePair(typeMapping.getCustomMapping(), typeMapping.getType()));
@@ -274,7 +279,7 @@ public class UtPLSQLMojo extends AbstractMojo {
                 if (defaultTestDirectory.exists()) {
                     tests.add(PluginDefault.buildDefaultTest());
                 } else {
-                    return new FileMapperOptions(new ArrayList<String>());
+                    return new FileMapperOptions(new ArrayList<>());
                 }
             }
 
@@ -303,7 +308,7 @@ public class UtPLSQLMojo extends AbstractMojo {
             }
 
             if (testsCustomTypeMapping != null && !testsCustomTypeMapping.isEmpty()) {
-                fileMapperOptions.setTypeMappings(new ArrayList<KeyValuePair>());
+                fileMapperOptions.setTypeMappings(new ArrayList<>());
                 for (CustomTypeMapping typeMapping : testsCustomTypeMapping) {
                     fileMapperOptions.getTypeMappings()
                             .add(new KeyValuePair(typeMapping.getCustomMapping(), typeMapping.getType()));
@@ -352,7 +357,7 @@ public class UtPLSQLMojo extends AbstractMojo {
     }
 
     private void logParameters(FileMapperOptions sourceMappingOptions, FileMapperOptions testMappingOptions,
-            List<Reporter> reporterList) {
+                               List<Reporter> reporterList) {
         Log log = getLog();
         log.info("Invoking TestRunner with: " + targetDir);
 
