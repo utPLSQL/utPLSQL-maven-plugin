@@ -57,6 +57,7 @@ public class ReporterWriter {
      * Writes the reporters to the output.
      * 
      * @param connection the database connection
+     * @throws MojoExecutionException if any exception happens
      */
     public void writeReporters(Connection connection) throws MojoExecutionException {
         for (Pair<Reporter, ReporterParameter> pair : listReporters) {
