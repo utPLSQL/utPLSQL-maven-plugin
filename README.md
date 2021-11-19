@@ -83,7 +83,7 @@ Please refer to the following usage example for the parameters descriptions.
             <plugin>
                 <groupId>org.utplsql</groupId>
                 <artifactId>utplsql-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.1.5</version>
                 <executions>
                     <execution>
                         <goals>
