@@ -1,4 +1,4 @@
-package org.utplsql.maven.plugin.test;
+package org.utplsql.maven.plugin;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.it.VerificationException;
