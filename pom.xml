@@ -241,6 +241,9 @@
                 <version>1.16.0</version>
                 <configuration>
                     <verbose>true</verbose>
+                    <gitFlowConfig>
+                        <productionBranch>main</productionBranch>
+                    </gitFlowConfig>
                 </configuration>
             </plugin>
         </plugins>
