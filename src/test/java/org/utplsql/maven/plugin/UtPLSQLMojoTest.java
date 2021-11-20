@@ -7,7 +7,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -18,7 +17,6 @@ import org.utplsql.api.FileMapperOptions;
 import org.utplsql.api.Version;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.api.reporter.ReporterFactory;
-import org.utplsql.maven.plugin.UtPLSQLMojo;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 import org.utplsql.maven.plugin.reporter.ReporterWriter;
 
@@ -45,7 +43,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class UtPLSQLMojoTest {
 
     @Rule
-    public MojoRule rule = new MojoRule();
+    public final MojoRule rule = new MojoRule();
 
     @Mock
     public Connection mockConnection;
@@ -69,7 +67,7 @@ public class UtPLSQLMojoTest {
      * testInvalidSourcesDirectory.
      * <p>
      * Given : a pom.xml with invalid sources' directory
-     * When : pom is read andbuildSourcesOptions is run
+     * When : pom is read and buildSourcesOptions is run
      * Then : it should throw a MojoExecutionException
      */
     @Test
@@ -275,8 +273,8 @@ public class UtPLSQLMojoTest {
         }
 
         // Assert that we added only the necessary reporters to the writer.
-        ReporterWriter reporterWritter = Whitebox.getInternalState(utplsqlMojo, "reporterWriter");
-        List<Pair<Reporter, ReporterParameter>> listReporters = Whitebox.getInternalState(reporterWritter, "listReporters");
+        ReporterWriter reporterWriter = Whitebox.getInternalState(utplsqlMojo, "reporterWriter");
+        List<Pair<Reporter, ReporterParameter>> listReporters = Whitebox.getInternalState(reporterWriter, "listReporters");
         assertEquals(3, listReporters.size());
 
         ReporterParameter reporterParameter1 = listReporters.get(0).getRight();

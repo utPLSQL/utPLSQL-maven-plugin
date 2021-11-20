@@ -3,7 +3,6 @@ package org.utplsql.maven.plugin.reporter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.utplsql.api.Version;
 import org.utplsql.api.outputBuffer.OutputBuffer;
 import org.utplsql.api.outputBuffer.OutputBufferProvider;

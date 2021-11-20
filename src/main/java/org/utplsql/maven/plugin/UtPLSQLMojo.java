@@ -67,14 +67,14 @@ public class UtPLSQLMojo extends AbstractMojo {
     protected boolean skipCompatibilityCheck;
 
     @Parameter
-    protected List<ReporterParameter> reporters = new ArrayList<>();
+    protected final List<ReporterParameter> reporters = new ArrayList<>();
 
     @Parameter
-    protected List<String> paths = new ArrayList<>();
+    protected final List<String> paths = new ArrayList<>();
 
     // Sources Configuration
     @Parameter
-    protected List<Resource> sources = new ArrayList<>();
+    protected final List<Resource> sources = new ArrayList<>();
 
     @Parameter
     private String sourcesOwner;
@@ -96,7 +96,7 @@ public class UtPLSQLMojo extends AbstractMojo {
 
     // Tests Configuration
     @Parameter
-    protected List<Resource> tests = new ArrayList<>();
+    protected final List<Resource> tests = new ArrayList<>();
 
     @Parameter
     private String testsOwner;
@@ -244,37 +244,7 @@ public class UtPLSQLMojo extends AbstractMojo {
 
             List<String> scripts = SQLScannerHelper.findSQLs(project.getBasedir(), sources,
                     PluginDefault.SOURCE_DIRECTORY, PluginDefault.SOURCE_FILE_PATTERN);
-            FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
-
-            if (StringUtils.isNotEmpty(sourcesOwner)) {
-                fileMapperOptions.setObjectOwner(sourcesOwner);
-            }
-
-            if (StringUtils.isNotEmpty(sourcesRegexExpression)) {
-                fileMapperOptions.setRegexPattern(sourcesRegexExpression);
-            }
-
-            if (sourcesOwnerSubexpression != null) {
-                fileMapperOptions.setOwnerSubExpression(sourcesOwnerSubexpression);
-            }
-
-            if (sourcesNameSubexpression != null) {
-                fileMapperOptions.setNameSubExpression(sourcesNameSubexpression);
-            }
-
-            if (sourcesTypeSubexpression != null) {
-                fileMapperOptions.setTypeSubExpression(sourcesTypeSubexpression);
-            }
-
-            if (sourcesCustomTypeMapping != null && !sourcesCustomTypeMapping.isEmpty()) {
-                fileMapperOptions.setTypeMappings(new ArrayList<>());
-                for (CustomTypeMapping typeMapping : sourcesCustomTypeMapping) {
-                    fileMapperOptions.getTypeMappings()
-                            .add(new KeyValuePair(typeMapping.getCustomMapping(), typeMapping.getType()));
-                }
-            }
-
-            return fileMapperOptions;
+            return createFileMapperOptions(scripts, sourcesOwner, sourcesRegexExpression, sourcesOwnerSubexpression, sourcesNameSubexpression, sourcesTypeSubexpression, sourcesCustomTypeMapping);
 
         } catch (Exception e) {
             throw new MojoExecutionException("Invalid <SOURCES> in your pom.xml", e);
@@ -295,42 +265,49 @@ public class UtPLSQLMojo extends AbstractMojo {
 
             List<String> scripts = SQLScannerHelper.findSQLs(project.getBasedir(), tests, PluginDefault.TEST_DIRECTORY,
                     PluginDefault.TEST_FILE_PATTERN);
-            FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
-
-            if (StringUtils.isNotEmpty(testsOwner)) {
-                fileMapperOptions.setObjectOwner(testsOwner);
-            }
-
-            if (StringUtils.isNotEmpty(testsRegexExpression)) {
-                fileMapperOptions.setRegexPattern(testsRegexExpression);
-            }
-
-            if (testsOwnerSubexpression != null) {
-                fileMapperOptions.setOwnerSubExpression(testsOwnerSubexpression);
-            }
-
-            if (testsNameSubexpression != null) {
-                fileMapperOptions.setNameSubExpression(testsNameSubexpression);
-            }
-
-            if (testsTypeSubexpression != null) {
-                fileMapperOptions.setTypeSubExpression(testsTypeSubexpression);
-            }
-
-            if (testsCustomTypeMapping != null && !testsCustomTypeMapping.isEmpty()) {
-                fileMapperOptions.setTypeMappings(new ArrayList<>());
-                for (CustomTypeMapping typeMapping : testsCustomTypeMapping) {
-                    fileMapperOptions.getTypeMappings()
-                            .add(new KeyValuePair(typeMapping.getCustomMapping(), typeMapping.getType()));
-                }
-            }
-
-            return fileMapperOptions;
+            return createFileMapperOptions(scripts, testsOwner, testsRegexExpression, testsOwnerSubexpression,
+                    testsNameSubexpression, testsTypeSubexpression, testsCustomTypeMapping);
 
         } catch (Exception e) {
             throw new MojoExecutionException("Invalid <TESTS> in your pom.xml: " + e.getMessage());
         }
 
+    }
+
+    private FileMapperOptions createFileMapperOptions(List<String> scripts, String objectOwner, String regexPattern,
+                                                      Integer ownerSubExpression, Integer nameSubExpression,
+                                                      Integer typeSubExpression, List<CustomTypeMapping> typeMappings) {
+        FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
+
+        if (StringUtils.isNotEmpty(objectOwner)) {
+            fileMapperOptions.setObjectOwner(objectOwner);
+        }
+
+        if (StringUtils.isNotEmpty(regexPattern)) {
+            fileMapperOptions.setRegexPattern(regexPattern);
+        }
+
+        if (ownerSubExpression != null) {
+            fileMapperOptions.setOwnerSubExpression(ownerSubExpression);
+        }
+
+        if (nameSubExpression != null) {
+            fileMapperOptions.setNameSubExpression(nameSubExpression);
+        }
+
+        if (typeSubExpression != null) {
+            fileMapperOptions.setTypeSubExpression(typeSubExpression);
+        }
+
+        if (typeMappings != null && !typeMappings.isEmpty()) {
+            fileMapperOptions.setTypeMappings(new ArrayList<>());
+            for (CustomTypeMapping typeMapping : typeMappings) {
+                fileMapperOptions.getTypeMappings()
+                        .add(new KeyValuePair(typeMapping.getCustomMapping(), typeMapping.getType()));
+            }
+        }
+
+        return fileMapperOptions;
     }
 
     private List<Reporter> initReporters(Connection connection, Version utlVersion, ReporterFactory reporterFactory)
