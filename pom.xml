@@ -239,6 +239,9 @@
                 <groupId>com.amashchenko.maven.plugin</groupId>
                 <artifactId>gitflow-maven-plugin</artifactId>
                 <version>1.16.0</version>
+                <configuration>
+                    <verbose>true</verbose>
+                </configuration>
             </plugin>
         </plugins>
     </build>
