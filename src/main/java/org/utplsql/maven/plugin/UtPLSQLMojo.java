@@ -11,6 +11,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.utils.logging.MessageUtils;
+import org.utplsql.api.DBHelper;
 import org.utplsql.api.FileMapperOptions;
 import org.utplsql.api.JavaApiVersionInfo;
 import org.utplsql.api.KeyValuePair;
@@ -130,8 +131,11 @@ public class UtPLSQLMojo extends AbstractMojo {
     @Parameter(defaultValue = "${maven.test.failure.ignore}")
     protected boolean ignoreFailure;
 
-    @Parameter(defaultValue = "${skipUtplsqlTests}")
+    @Parameter(property = "skipUtplsqlTests", defaultValue = "false")
     protected boolean skipUtplsqlTests;
+
+    @Parameter
+    protected boolean dbmsOutput;
 
     // Color in the console, bases on Maven logging configuration.
     private final boolean colorConsole = MessageUtils.isColorEnabled();
@@ -146,7 +150,7 @@ public class UtPLSQLMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         if (skipUtplsqlTests) {
-            getLog().debug("utPLSQLTests are skipped.");
+            getLog().info("utPLSQLTests are skipped.");
         } else {
             getLog().debug("Java Api Version = " + JavaApiVersionInfo.getVersion());
             loadConfFromEnvironment();
@@ -167,6 +171,11 @@ public class UtPLSQLMojo extends AbstractMojo {
                 List<Reporter> reporterList = initReporters(connection, utlVersion, ReporterFactory.createEmpty());
 
                 logParameters(sourceMappingOptions, testMappingOptions, reporterList);
+
+                if (dbmsOutput) {
+                    DBHelper.enableDBMSOutput(connection);
+                    getLog().info("Enabled dbms_output.");
+                }
 
                 TestRunner runner = new TestRunner()
                         .addPathList(paths)
@@ -199,6 +208,8 @@ public class UtPLSQLMojo extends AbstractMojo {
                 try {
                     if (null != connection) {
                         reporterWriter.writeReporters(connection);
+
+                        DBHelper.disableDBMSOutput(connection);
                         connection.close();
                     }
                 } catch (Exception e) {
@@ -326,7 +337,7 @@ public class UtPLSQLMojo extends AbstractMojo {
             throws SQLException {
 
         List<Reporter> reporterList = new ArrayList<>();
-        reporterWriter = new ReporterWriter(targetDir, utlVersion);
+        reporterWriter = new ReporterWriter(targetDir, utlVersion, getLog());
 
         if (reporters.isEmpty()) {
             ReporterParameter reporterParameter = new ReporterParameter();

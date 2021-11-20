@@ -22,30 +22,31 @@ import static java.lang.String.format;
 
 public class ReporterWriter {
 
-    private static final Log LOG = new SystemStreamLog();
-
     private final List<Pair<Reporter, ReporterParameter>> listReporters;
 
     private final String outputDirectory;
 
     private final Version databaseVersion;
 
+    private final Log log;
+
     /**
      * Constructor of the reporter writer.
-     * 
+     *
      * @param outputDirectory the reporter output directory
      * @param databaseVersion the utPLSQL framework version
+     * @param log             the Maven log
      */
-    public ReporterWriter(String outputDirectory, Version databaseVersion) {
+    public ReporterWriter(String outputDirectory, Version databaseVersion, Log log) {
         this.listReporters = new ArrayList<>();
         this.outputDirectory = outputDirectory;
         this.databaseVersion = databaseVersion;
-
+        this.log = log;
     }
 
     /**
      * Adds a new reporter to the writter.
-     * 
+     *
      * @param parameter the reporter parameter
      * @param reporter  the reporter Object
      */
@@ -55,7 +56,7 @@ public class ReporterWriter {
 
     /**
      * Writes the reporters to the output.
-     * 
+     *
      * @param connection the database connection
      * @throws MojoExecutionException if any exception happens
      */
@@ -82,19 +83,19 @@ public class ReporterWriter {
                 }
 
                 if (!file.getParentFile().exists()) {
-                    LOG.debug("Creating directory for reporter file " + file.getAbsolutePath());
+                    log.debug("Creating directory for reporter file " + file.getAbsolutePath());
                     file.getParentFile().mkdirs();
                 }
 
                 fout = new FileOutputStream(file);
-                LOG.info(format("Writing report %s to %s", reporter.getTypeName(), file.getAbsolutePath()));
+                log.info(format("Writing report %s to %s", reporter.getTypeName(), file.getAbsolutePath()));
 
                 // Added to the Report
                 printStreams.add(new PrintStream(fout));
             }
 
             if (reporterParameter.isConsoleOutput()) {
-                LOG.info(format("Writing report %s to Console", reporter.getTypeName()));
+                log.info(format("Writing report %s to Console", reporter.getTypeName()));
                 printStreams.add(System.out);
             }
             buffer.printAvailable(connection, printStreams);
@@ -105,7 +106,7 @@ public class ReporterWriter {
                 try {
                     fout.close();
                 } catch (IOException e) {
-                    LOG.info(format("Failed to closing the reporting %s", reporterParameter.getClass()));
+                    log.info(format("Failed to closing the reporting %s", reporterParameter.getClass()));
                 }
             }
         }

@@ -2,16 +2,15 @@
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.utplsql%3Autplsql-maven-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.utplsql%3Autplsql-maven-plugin)
 
 # utPLSQL-maven-plugin
-* A maven plugin for running Unit Tests with utPLSQL v3+.
+A maven plugin for running Unit Tests with utPLSQL v3+.
 
 ## Compatibility
-* This plugin is compatible with utPLSQL 3.1.0+.
+This plugin is compatible with utPLSQL 3.1.0+.
 
 ## Prerequisites
 * Java SE Runtime Environment 8
 * Maven Version 3.5+
-
-The plugin requires Oracle JDBC driver (ojdbc8) as a Maven dependency. 
+* Oracle JDBC driver 
 
 ```xml
 <dependency>
@@ -49,11 +48,11 @@ If you want to skip tests by default but want the ability to re-enable tests fro
 
 This will allow you to run with all tests disabled by default and to run them with this command:
 
-    mvn install -DskipTests=false
+    mvn install -DskipUtplsqlTests=false
 
-### Usage Example
+### Configuration
 
-Please refer to the following usage example for the parameters descriptions.
+Please refer to the following usage example for the parameters descriptions:
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -90,7 +89,6 @@ Please refer to the following usage example for the parameters descriptions.
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                        
                             <!-- REQUIRED PARAMETERS -->
                             
                             <!-- A list of tests suite paths. -->
@@ -141,6 +139,10 @@ Please refer to the following usage example for the parameters descriptions.
                             <!-- Skip the tests -->
                             <!-- Defaults to: false -->
                             <skipUtplsqlTests>false</skipUtplsqlTests>
+
+                            <!-- Enables DBMS_OUTPUT -->
+                            <!-- Defaults to: false -->
+                            <dbmsOutput>false</dbmsOutput>
 
                             <!-- A list of tags to run. -->
                             <tags>
@@ -230,14 +232,14 @@ Please refer to the following usage example for the parameters descriptions.
 ```
 
 More project samples are available in the src/test/resources directory:
-* **simple-project:** minimalist test project with standard project directory structure.
-* **regex-project:** overrides project directory structure and use additional parameters (sourcesRegexExpression, testsRegexExpression, ...), to tell utPLSQL how project files should be mapped into database objects.
-* **type-mapping-project:** this project shows how to use regex and custom type parameters together.
-* **owner-param-project:** this project demonstrates how to use sourcesOwner and testsOwner parameters.
+* **simple-project:** Minimalist test project with standard project directory structure.
+* **regex-project:** Overrides project directory structure and use additional parameters (sourcesRegexExpression, testsRegexExpression, ...), to tell utPLSQL how project files should be mapped into database objects.
+* **type-mapping-project:** Example how to use regex and custom type parameters together.
+* **owner-param-project:** Demonstrates how to use sourcesOwner and testsOwner parameters.
 
-## Comparaison with the CLI
+## Comparison with utPLSQL CLI
 
-| CLI short parameter | CLI long parameter | maven XML path |
+| CLI short parameter | CLI long parameter | Maven XML path |
 | --- | --- | --- |
 | -c | --color | |
 | | --failure-exit-code | |
@@ -248,6 +250,7 @@ More project samples are available in the src/test/resources directory:
 | | | ignoreFailure |
 | -scc | --skip-compatibility-check | skipCompatibilityCheck |
 | | --tags | tags.tag |
+| -D | --dbms_output | dbmsOutput |
 | -r | --random-test-order | randomTestOrder |
 | -seed | --random-test-order-seed | randomTestOrderSeed |
 | -exclude | | excludeObject |
