@@ -1,18 +1,18 @@
 package org.utplsql.maven.plugin.helper;
 
-import static java.lang.String.format;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.maven.model.Resource;
 import org.codehaus.plexus.util.DirectoryScanner;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static java.lang.String.format;
+
 /**
  * Utility to scan all resources
- * 
+ *
  * @author Alberto Hernández
  */
 public class SQLScannerHelper {
@@ -23,17 +23,15 @@ public class SQLScannerHelper {
 
     /**
      * Scans a directory looking for the matching patterns.
-     * 
+     *
      * @param baseDir            the base directory
      * @param resources          a list of resources
      * @param defaultDirectory   the default search directory
      * @param defaultFilePattern the default file pattern
      * @return a list of the files found
      */
-    public static List<String> findSQLs(File baseDir, List<Resource> resources, String defaultDirectory,
-            String defaultFilePattern) {
-
-        List<String> founds = new ArrayList<String>();
+    public static List<String> findSQLs(File baseDir, List<Resource> resources, String defaultDirectory, String defaultFilePattern) {
+        List<String> founds = new ArrayList<>();
 
         for (Resource resource : resources) {
 
@@ -52,7 +50,7 @@ public class SQLScannerHelper {
                 founds.add(baseDir.toURI().relativize(new File(scanner.getBasedir(), basename).toURI()).getPath());
             }
 
-            founds.addAll(Arrays.asList());
+            founds.addAll(Collections.emptyList());
         }
 
         return founds;

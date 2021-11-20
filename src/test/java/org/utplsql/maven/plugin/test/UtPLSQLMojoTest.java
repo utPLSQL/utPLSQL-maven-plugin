@@ -1,21 +1,5 @@
 package org.utplsql.maven.plugin.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-
-import java.io.File;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.MojoRule;
@@ -38,8 +22,26 @@ import org.utplsql.maven.plugin.UtPLSQLMojo;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 import org.utplsql.maven.plugin.reporter.ReporterWriter;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.PrintStream;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ DBHelper.class, ReporterFactory.class })
+@PrepareForTest({DBHelper.class, ReporterFactory.class})
 public class UtPLSQLMojoTest {
 
     @Rule
@@ -68,8 +70,8 @@ public class UtPLSQLMojoTest {
 
     /**
      * testInvalidSourcesDirectory.
-     * 
-     * Given : a pom.xml with invalid sources directory When : pom is read and
+     * <p>
+     * Given : a pom.xml with invalid sources' directory When : pom is read and
      * buildSourcesOptions is run Then : it should throw a MojoExecutionException
      */
     @Test
@@ -84,13 +86,12 @@ public class UtPLSQLMojoTest {
         thrown.expectMessage("Invalid <SOURCES> in your pom.xml");
 
         Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
-
     }
 
     /**
      * testInvalidTestsDirectory.
-     * 
-     * Given : a pom.xml with invalid tests directory When : pom is read and
+     * <p>
+     * Given : a pom.xml with invalid tests' directory When : pom is read and
      * buildTestsOptions is run Then : it should throw a MojoExecutionException
      */
     @Test
@@ -109,7 +110,7 @@ public class UtPLSQLMojoTest {
 
     /**
      * testSourcesTestsParameters.
-     * 
+     * <p>
      * Given : a pom.xml with sources and tests with a lot of parameters When : pom
      * is read and buildSourcesOptions / buildTestsOptions are run Then : it should
      * fill all parameters correctly
@@ -121,7 +122,7 @@ public class UtPLSQLMojoTest {
         Assert.assertNotNull(utplsqlMojo);
 
         // TODO : move to another test about reporters
-        List<String> reporters = Whitebox.<List<String>>getInternalState(utplsqlMojo, "reporters");
+        List<String> reporters = Whitebox.getInternalState(utplsqlMojo, "reporters");
         assertEquals(reporters.size(), 2);
 
         // check sources
@@ -150,12 +151,11 @@ public class UtPLSQLMojoTest {
         assertEquals(1, tests.getTypeMappings().size());
         assertEquals("def", tests.getTypeMappings().get(0).getKey());
         assertEquals("abc", tests.getTypeMappings().get(0).getValue());
-
     }
 
     /**
      * testSourcesAndTestsParameterDoesNotExist.
-     * 
+     * <p>
      * Given : a pom.xml with no sources / tests tags and default directory does not
      * exist. When : pom is read and buildSourcesOptions / buildTestsOptions are run
      * Then : it should not find any source files
@@ -177,7 +177,7 @@ public class UtPLSQLMojoTest {
 
     /**
      * testSourcesAndTestsParameterDoesNotExistButDefaultDirectoryExists.
-     * 
+     * <p>
      * Given : a pom.xml with no sources / tests tags but default directory exists.
      * When : pom is read and buildSourcesOptions / buildTestsOptions are run Then :
      * it should find all sources/tests files in default directories
@@ -199,12 +199,11 @@ public class UtPLSQLMojoTest {
         assertEquals(2, tests.getFilePaths().size());
         assertTrue(tests.getFilePaths().contains("src/test/plsql/foo/f1.pkg"));
         assertTrue(tests.getFilePaths().contains("src/test/plsql/f2.pkg"));
-
     }
 
     /**
      * testSourcesAndTestsParameterHaveNotDirectoryTag.
-     * 
+     * <p>
      * Given : a pom.xml with source and test tag not containing a directory tag.
      * When : pom is read and buildSourcesOptions / buildTestsOptions are run Then :
      * it should find all sources/tests files in default directories
@@ -231,7 +230,7 @@ public class UtPLSQLMojoTest {
 
     /**
      * testSourcesAndTestsParameterHaveNotDirectoryTag.
-     * 
+     * <p>
      * Given : a pom.xml with source and test tag not containing a directory tag.
      * When : pom is read and buildSourcesOptions / buildTestsOptions are run Then :
      * it should find all sources/tests files in default directories
@@ -270,7 +269,7 @@ public class UtPLSQLMojoTest {
 
         Whitebox.invokeMethod(utplsqlMojo, "initReporters", mockConnection, mockVersion, mockReporterFactory);
 
-        // Assert that we called the create reporter with the correct parameters.
+        // Assert that we called the creation reporter with the correct parameters.
         verify(mockReporterFactory, times(2)).createReporter("UT_DOCUMENTATION_REPORTER");
         verify(mockReporterFactory).createReporter("UT_COVERAGE_SONAR_REPORTER");
         verify(mockReporterFactory).createReporter("UT_SONAR_TEST_REPORTER");
@@ -284,8 +283,7 @@ public class UtPLSQLMojoTest {
 
         // Assert that we added only the necessary reporters to the writer.
         ReporterWriter reporterWritter = Whitebox.getInternalState(utplsqlMojo, "reporterWriter");
-        List<Pair<Reporter, ReporterParameter>> listReporters = 
-                Whitebox.getInternalState(reporterWritter, "listReporters");
+        List<Pair<Reporter, ReporterParameter>> listReporters = Whitebox.getInternalState(reporterWritter, "listReporters");
         assertEquals(3, listReporters.size());
 
         ReporterParameter reporterParameter1 = listReporters.get(0).getRight();
@@ -323,5 +321,21 @@ public class UtPLSQLMojoTest {
         assertEquals(1, reporterList.size());
         assertEquals("UT_DOCUMENTATION_REPORTER", reporterList.get(0).getTypeName());
         verify(reporterList.get(0)).init(mockConnection);
+    }
+
+    @Test
+    public void testSkipUtplsqlTests() throws Exception {
+        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+                .lookupConfiguredMojo(new File("src/test/resources/skipUtplsqlTests/"), "test");
+        Assert.assertNotNull(utplsqlMojo);
+
+        final ByteArrayOutputStream console = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(console));
+
+        utplsqlMojo.execute();
+
+        String standardOutput = console.toString();
+
+        Assert.assertTrue(standardOutput.contains("utPLSQLTests are skipped."));
     }
 }

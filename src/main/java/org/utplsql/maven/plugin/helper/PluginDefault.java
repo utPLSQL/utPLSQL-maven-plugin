@@ -1,8 +1,8 @@
 package org.utplsql.maven.plugin.helper;
 
-import java.util.Arrays;
-
 import org.apache.maven.model.Resource;
+
+import java.util.Collections;
 
 /**
  * This class provides methods to retrieve the list of resources in the default
@@ -57,7 +57,7 @@ public class PluginDefault {
     private static Resource buildDirectory(String directory, String includes) {
         Resource resource = new Resource();
         resource.setDirectory(directory);
-        resource.setIncludes(Arrays.asList(includes));
+        resource.setIncludes(Collections.singletonList(includes));
         return resource;
     }
 }
