@@ -33,7 +33,6 @@ public class PluginDefault {
     public static final String TEST_FILE_PATTERN = "**/*.pkg";
 
     private PluginDefault() {
-        // NA
     }
 
     /**
