@@ -1,0 +1,26 @@
+# Eclipse
+.classpath
+.project
+.settings/
+ 
+# Intellij
+.idea/
+*.iml
+*.iws
+ 
+# Mac
+.DS_Store
+
+# Bash
+*.swp
+ 
+# Maven
+log/
+target/
+.mvn
+log.txt
+**/pom.xml.versionsBackup
+dependency-reduced-pom.xml
+
+# Docs
+doc/
