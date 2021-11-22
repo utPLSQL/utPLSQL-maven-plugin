@@ -23,12 +23,18 @@ jobs:
           ORACLE_PASSWORD: oracle
         ports:
           - 1521:1521
-        options: -v ${{ github.workspace }}/init_scripts:/container-entrypoint-initdb.d --health-cmd healthcheck.sh --health-interval 10s --health-timeout 5s --health-retries 10
+        volumes:
+          - ${{ github.workspace }}/init_scripts:/container-entrypoint-initdb.d
+        options: >-
+          --health-cmd healthcheck.sh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Verify MySQL connection from host
+      - name: Oracle
         run: docker logs "${{ job.services.oracle.id }}"
 
       - name: Set up JDK 8
