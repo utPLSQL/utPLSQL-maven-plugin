@@ -23,22 +23,14 @@ jobs:
           ORACLE_PASSWORD: oracle
         ports:
           - 1521:1521
-        volumes:
-          - ${{ github.workspace }}/init_scripts:/container-entrypoint-initdb.d
         options: >-
           --health-cmd healthcheck.sh
           --health-interval 10s
           --health-timeout 5s
           --health-retries 10
-          --name oraclexe
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Restart Oracle container
-        uses: docker://docker
-        with:
-          args: docker restart oraclexe
 
       - name: Oracle container logs
         run: docker logs "${{ job.services.oracle.id }}"
@@ -57,5 +49,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Maven verify
-        run: mvn verify
+      - name: Maven test
+        run: mvn test
