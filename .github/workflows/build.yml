@@ -24,11 +24,7 @@ jobs:
           ORACLE_PASSWORD: oracle
         ports:
           - 1521:1521
-        options: >-
-          --health-cmd healthcheck.sh
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
+        options: -v ${{ github.workspace }}/.github/init_scripts:/container-entrypoint-initdb.d --health-cmd healthcheck.sh --health-interval 10s --health-timeout 5s --health-retries 10
 
     steps:
       - uses: actions/checkout@v2
@@ -47,5 +43,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Maven test
-        run: mvn test
+      - name: Maven verify
+        run: mvn verify
