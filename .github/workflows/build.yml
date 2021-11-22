@@ -30,12 +30,18 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 10
+          --name oraclexe
 
     steps:
+      - uses: actions/checkout@v2
+
+      - name: Restart Oracle container
+        uses: docker://docker
+        with:
+          args: docker restart oraclexe
+
       - name: Oracle container logs
         run: docker logs "${{ job.services.oracle.id }}"
-
-      - uses: actions/checkout@v2
 
       - name: Set up JDK 8
         uses: actions/setup-java@v2
