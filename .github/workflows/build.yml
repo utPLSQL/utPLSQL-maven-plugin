@@ -1,4 +1,4 @@
-name: Maven Test
+name: Build
 
 # Controls when the workflow will run
 on:
