@@ -24,7 +24,7 @@ jobs:
           ORACLE_PASSWORD: oracle
         ports:
           - 1521:1521
-        options: -v ${{ github.workspace }}/.github/init_scripts:/container-entrypoint-initdb.d --health-cmd healthcheck.sh --health-interval 10s --health-timeout 5s --health-retries 10
+        options: -v ${{ github.workspace }}/container-entrypoint-initdb.d:/container-entrypoint-initdb.d --health-cmd healthcheck.sh --health-interval 10s --health-timeout 5s --health-retries 10
 
     steps:
       - uses: actions/checkout@v2
