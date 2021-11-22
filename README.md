@@ -1,4 +1,4 @@
-[![Build status](https://travis-ci.org/utPLSQL/utPLSQL-maven-plugin.svg?branch=develop)](https://travis-ci.org/utPLSQL/utPLSQL-maven-plugin)
+![Build status](https://github.com/utPLSQL/utPLSQL-maven-plugin/actions/workflows/maven-test.yml/badge.svg)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.utplsql%3Autplsql-maven-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.utplsql%3Autplsql-maven-plugin)
 
 # utPLSQL-maven-plugin
