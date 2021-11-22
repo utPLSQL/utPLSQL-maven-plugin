@@ -32,10 +32,10 @@ jobs:
           --health-retries 10
 
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Oracle
+      - name: Oracle container logs
         run: docker logs "${{ job.services.oracle.id }}"
+
+      - uses: actions/checkout@v2
 
       - name: Set up JDK 8
         uses: actions/setup-java@v2
