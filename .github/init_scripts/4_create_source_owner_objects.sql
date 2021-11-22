@@ -1,3 +1,23 @@
+ALTER SESSION SET CURRENT_SCHEMA = CODE_OWNER;
+
+--
+-- This is a table used to demonstrate the UNIT test framework.
+--
+CREATE TABLE TO_TEST_ME
+(
+  SNAME VARCHAR2(10)
+);
+/
+
+--
+-- This package is used TO demonstrate the utPL/SQL possibilities 
+--
+CREATE OR REPLACE PACKAGE CODE_OWNER.PKG_TEST_ME AS
+  FUNCTION FC_TEST_ME(PPARAM1 IN VARCHAR2) RETURN NUMBER;
+  PROCEDURE PR_TEST_ME(PSNAME IN VARCHAR2);
+END PKG_TEST_ME;
+/
+
 CREATE OR REPLACE PACKAGE BODY PKG_TEST_ME IS
   --
   -- This 
