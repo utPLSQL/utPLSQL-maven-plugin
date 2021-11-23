@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -129,6 +130,22 @@ public class UtPLSQLMojoIT {
             verifier.executeGoal("test");
 
             checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Unexpected Exception running the test of Definition " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSkipUtplsqlTests() {
+        try {
+            final String PROJECT_NAME = "skip-project";
+            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+
+            Verifier verifier = createVerifier(testProject);
+            verifier.executeGoal("test");
+
+            assertFalse(new File("target/test-classes/" + PROJECT_NAME + "/target").exists());
         } catch (Exception e) {
             e.printStackTrace();
             fail("Unexpected Exception running the test of Definition " + e.getMessage());
