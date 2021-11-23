@@ -52,5 +52,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Maven test
-        run: mvn test
+      - name: Maven verify
+        run: mvn verify
