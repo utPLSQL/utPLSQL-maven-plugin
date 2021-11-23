@@ -50,7 +50,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Maven deploy to Maven Central
+      - name: Maven deploy release
         run: mvn deploy -Prelease
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
