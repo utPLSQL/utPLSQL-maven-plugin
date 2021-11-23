@@ -54,7 +54,3 @@ jobs:
 
       - name: Maven verify
         run:   mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify
-
-      - name: Sonar
-        run:  mvn sonar:sonar -Dsonar.projectKey=org.utplsql:utplsql-maven-plugin
-
