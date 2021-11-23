@@ -1,3 +1,5 @@
+#!/bin/bash
+
 UTPLSQL_DOWNLOAD_URL=$(curl --silent https://api.github.com/repos/utPLSQL/utPLSQL/releases/latest | awk '/browser_download_url/ { print $2 }' | grep ".zip\"" | sed 's/"//g')
 
 curl -Lk "${UTPLSQL_DOWNLOAD_URL}" -o utPLSQL.zip
