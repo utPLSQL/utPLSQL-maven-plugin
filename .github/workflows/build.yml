@@ -35,6 +35,9 @@ jobs:
       - name: Oracle container logs
         run: docker logs "${{ job.services.oracle.id }}"
 
+      - name: Install utPLSQL
+        run: sh ${{ github.workspace }}/github_scripts/install_utplsql.sh
+
       - name: Set up JDK 8
         uses: actions/setup-java@v2
         with:
