@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Oracle container logs
+      - name: Print Oracle container logs
         run: docker logs "${{ job.services.oracle.id }}"
 
       - name: Install utPLSQL
