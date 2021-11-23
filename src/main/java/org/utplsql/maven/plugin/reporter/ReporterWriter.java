@@ -60,7 +60,9 @@ public class ReporterWriter {
      * @throws MojoExecutionException if any exception happens
      */
     public void writeReporters(Connection connection) throws MojoExecutionException {
+        log.debug("Write Reporters");
         for (Pair<Reporter, ReporterParameter> pair : listReporters) {
+            log.debug("Write writeReports " + pair.getRight().getName());
             writeReports(connection, pair.getLeft(), pair.getRight());
         }
     }

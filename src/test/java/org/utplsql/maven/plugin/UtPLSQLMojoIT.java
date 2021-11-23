@@ -192,6 +192,7 @@ public class UtPLSQLMojoIT {
         Verifier verifier;
         verifier = new Verifier(testProject.getAbsolutePath());
         verifier.addCliOption("-N");
+        verifier.addCliOption("-X");
         verifier.addCliOption("-Dutplsql-maven-plugin-version=" + pluginVersion);
         verifier.addCliOption("-DdbUrl=jdbc:oracle:thin:@127.0.0.1:1521:XE");
         verifier.addCliOption("-DdbUser=UT3");
