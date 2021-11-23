@@ -4,6 +4,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * Represents a reporter parameter in the pom file.
+ *
  * {@code
  * <reporter>
  *     <name>...</name>
@@ -11,7 +12,7 @@ import org.codehaus.plexus.util.StringUtils;
  *     <consoleOutput>...</consoleOutput>
  * </reporter>
  * }
- * 
+ *
  * @author Alberto Hernández
  */
 public class ReporterParameter {
@@ -21,15 +22,8 @@ public class ReporterParameter {
     private Boolean consoleOutput;
 
     /**
-     * Creates a new reporter parameter.
-     */
-    public ReporterParameter() {
-        super();
-    }
-
-    /**
      * Returns the reporter name.
-     * 
+     *
      * @return the reporter name
      */
     public String getName() {
@@ -38,7 +32,7 @@ public class ReporterParameter {
 
     /**
      * Sets the reporter name.
-     * 
+     *
      * @param name the reporter name
      */
     public void setName(String name) {
@@ -47,7 +41,7 @@ public class ReporterParameter {
 
     /**
      * Returns reporter output file.
-     * 
+     *
      * @return the output file name
      */
     public String getFileOutput() {
@@ -56,7 +50,7 @@ public class ReporterParameter {
 
     /**
      * Returns whether the file output is enabled or not.
-     * 
+     *
      * @return true if the file output is enabled, false otherwise
      */
     public boolean isFileOutput() {
@@ -65,7 +59,7 @@ public class ReporterParameter {
 
     /**
      * Sets the output file.
-     * 
+     *
      * @param fileOutput the output file name
      */
     public void setFileOutput(String fileOutput) {
@@ -74,7 +68,7 @@ public class ReporterParameter {
 
     /**
      * Returns the console output option.
-     * 
+     *
      * @return the console output option
      */
     public Boolean getConsoleOutput() {
@@ -83,7 +77,7 @@ public class ReporterParameter {
 
     /**
      * Returns whether the console output should be enabled or not.
-     * 
+     *
      * @return true if console output is enable, false otherwise
      */
     public Boolean isConsoleOutput() {
@@ -92,7 +86,7 @@ public class ReporterParameter {
 
     /**
      * Sets the console output option.
-     * 
+     *
      * @param consoleOutput the console output option
      */
     public void setConsoleOutput(boolean consoleOutput) {

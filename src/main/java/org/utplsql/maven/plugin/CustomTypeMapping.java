@@ -2,6 +2,7 @@ package org.utplsql.maven.plugin;
 
 /**
  * Bean used by Maven to populate its model.
+ *
  * {@code
  * <customTypeMapping>
  *     <type>...</type>

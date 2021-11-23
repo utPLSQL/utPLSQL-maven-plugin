@@ -15,10 +15,9 @@ import static java.lang.String.format;
  *
  * @author Alberto Hernández
  */
-public class SQLScannerHelper {
+public class SqlScannerHelper {
 
-    private SQLScannerHelper() {
-        // NA
+    private SqlScannerHelper() {
     }
 
     /**
@@ -30,7 +29,7 @@ public class SQLScannerHelper {
      * @param defaultFilePattern the default file pattern
      * @return a list of the files found
      */
-    public static List<String> findSQLs(File baseDir, List<Resource> resources, String defaultDirectory, String defaultFilePattern) {
+    public static List<String> findSqlScripts(File baseDir, List<Resource> resources, String defaultDirectory, String defaultFilePattern) {
         List<String> founds = new ArrayList<>();
 
         for (Resource resource : resources) {
@@ -61,8 +60,7 @@ public class SQLScannerHelper {
         if (resource != null) {
             File fileBaseDir = new File(baseDir, resource.getDirectory());
             if (!fileBaseDir.exists() || !fileBaseDir.isDirectory() || !fileBaseDir.canRead()) {
-                throw new IllegalArgumentException(
-                        format("Invalid <directory> %s in resource. Check your pom.xml", resource.getDirectory()));
+                throw new IllegalArgumentException(format("Invalid <directory> %s in resource. Check your pom.xml", resource.getDirectory()));
             }
 
             DirectoryScanner scanner = new DirectoryScanner();

@@ -5,8 +5,7 @@ import org.utplsql.api.reporter.Reporter;
 /**
  * This class is an enumeration of all the known reporter in {@code utPLSQL}.
  * Furthermore, it defines the default output file for each {@link Reporter}.
- * In case the output file is set to {@code -}, it will mean the stdout of the
- * process.
+ * In case the output file is set to {@code -}, it will mean the stdout of the process.
  * 
  * @author Alberto Hernández
  */

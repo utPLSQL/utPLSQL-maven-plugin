@@ -65,14 +65,11 @@ public class ReporterWriter {
         }
     }
 
-    private void writeReports(Connection connection, Reporter reporter, ReporterParameter reporterParameter)
-            throws MojoExecutionException {
-        List<PrintStream> printStreams = new ArrayList<>();
-        FileOutputStream fout = null;
-
-        //
+    private void writeReports(Connection connection, Reporter reporter, ReporterParameter reporterParameter) throws MojoExecutionException {
+        FileOutputStream fileOutputStream = null;
         try {
             OutputBuffer buffer = OutputBufferProvider.getCompatibleOutputBuffer(databaseVersion, reporter, connection);
+            List<PrintStream> printStreams = new ArrayList<>();
 
             if (reporterParameter.isFileOutput()) {
 
@@ -86,11 +83,11 @@ public class ReporterWriter {
                     file.getParentFile().mkdirs();
                 }
 
-                fout = new FileOutputStream(file);
+                fileOutputStream = new FileOutputStream(file);
                 log.info(format("Writing report %s to %s", reporter.getTypeName(), file.getAbsolutePath()));
 
                 // Added to the Report
-                printStreams.add(new PrintStream(fout));
+                printStreams.add(new PrintStream(fileOutputStream));
             }
 
             if (reporterParameter.isConsoleOutput()) {
@@ -101,9 +98,9 @@ public class ReporterWriter {
         } catch (Exception e) {
             throw new MojoExecutionException("Unexpected error opening file ouput ", e);
         } finally {
-            if (fout != null) {
+            if (fileOutputStream != null) {
                 try {
-                    fout.close();
+                    fileOutputStream.close();
                 } catch (IOException e) {
                     log.info(format("Failed to closing the reporting %s", reporterParameter.getClass()));
                 }

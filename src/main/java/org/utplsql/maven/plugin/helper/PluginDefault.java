@@ -5,9 +5,8 @@ import org.apache.maven.model.Resource;
 import java.util.Collections;
 
 /**
- * This class provides methods to retrieve the list of resources in the default
- * {@literal <source> and <test>} directories.
- * 
+ * This class provides methods to retrieve the list of resources in the default {@literal <source> and <test>} directories.
+ *
  * @author Alberto Hernández
  */
 public class PluginDefault {
@@ -37,7 +36,7 @@ public class PluginDefault {
 
     /**
      * This method returns {@link Resource} for the default {@code source} directory
-     * 
+     *
      * @return a {@link Resource}
      */
     public static Resource buildDefaultSource() {
@@ -46,7 +45,7 @@ public class PluginDefault {
 
     /**
      * This method returns {@link Resource} for the default {@code test} directory
-     * 
+     *
      * @return a {@link Resource}
      */
     public static Resource buildDefaultTest() {

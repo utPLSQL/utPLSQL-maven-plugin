@@ -24,7 +24,7 @@ import org.utplsql.api.reporter.CoreReporters;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.api.reporter.ReporterFactory;
 import org.utplsql.maven.plugin.helper.PluginDefault;
-import org.utplsql.maven.plugin.helper.SQLScannerHelper;
+import org.utplsql.maven.plugin.helper.SqlScannerHelper;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 import org.utplsql.maven.plugin.reporter.ReporterWriter;
 
@@ -72,7 +72,10 @@ public class UtPLSQLMojo extends AbstractMojo {
     @Parameter
     protected final List<String> paths = new ArrayList<>();
 
-    // Sources Configuration
+    /**
+     * Sources Configuration
+     */
+
     @Parameter
     protected final List<Resource> sources = new ArrayList<>();
 
@@ -94,7 +97,9 @@ public class UtPLSQLMojo extends AbstractMojo {
     @Parameter
     private List<CustomTypeMapping> sourcesCustomTypeMapping;
 
-    // Tests Configuration
+    /**
+     * Tests Configuration
+     */
     @Parameter
     protected final List<Resource> tests = new ArrayList<>();
 
@@ -137,7 +142,9 @@ public class UtPLSQLMojo extends AbstractMojo {
     @Parameter
     protected boolean dbmsOutput;
 
-    // Color in the console, bases on Maven logging configuration.
+    /**
+     * Color in the console, bases on Maven logging configuration.
+     */
     private final boolean colorConsole = MessageUtils.isColorEnabled();
 
     private ReporterWriter reporterWriter;
@@ -242,9 +249,10 @@ public class UtPLSQLMojo extends AbstractMojo {
                 }
             }
 
-            List<String> scripts = SQLScannerHelper.findSQLs(project.getBasedir(), sources,
+            List<String> scripts = SqlScannerHelper.findSqlScripts(project.getBasedir(), sources,
                     PluginDefault.SOURCE_DIRECTORY, PluginDefault.SOURCE_FILE_PATTERN);
-            return createFileMapperOptions(scripts, sourcesOwner, sourcesRegexExpression, sourcesOwnerSubexpression, sourcesNameSubexpression, sourcesTypeSubexpression, sourcesCustomTypeMapping);
+            return createFileMapperOptions(scripts, sourcesOwner, sourcesRegexExpression, sourcesOwnerSubexpression,
+                    sourcesNameSubexpression, sourcesTypeSubexpression, sourcesCustomTypeMapping);
 
         } catch (Exception e) {
             throw new MojoExecutionException("Invalid <SOURCES> in your pom.xml", e);
@@ -263,7 +271,7 @@ public class UtPLSQLMojo extends AbstractMojo {
                 }
             }
 
-            List<String> scripts = SQLScannerHelper.findSQLs(project.getBasedir(), tests, PluginDefault.TEST_DIRECTORY,
+            List<String> scripts = SqlScannerHelper.findSqlScripts(project.getBasedir(), tests, PluginDefault.TEST_DIRECTORY,
                     PluginDefault.TEST_FILE_PATTERN);
             return createFileMapperOptions(scripts, testsOwner, testsRegexExpression, testsOwnerSubexpression,
                     testsNameSubexpression, testsTypeSubexpression, testsCustomTypeMapping);
@@ -342,8 +350,7 @@ public class UtPLSQLMojo extends AbstractMojo {
         return reporterList;
     }
 
-    private void logParameters(FileMapperOptions sourceMappingOptions, FileMapperOptions testMappingOptions,
-                               List<Reporter> reporterList) {
+    private void logParameters(FileMapperOptions sourceMappingOptions, FileMapperOptions testMappingOptions, List<Reporter> reporterList) {
         Log log = getLog();
         log.info("Invoking TestRunner with: " + targetDir);
 
