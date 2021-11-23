@@ -213,7 +213,7 @@ public class UtPLSQLMojo extends AbstractMojo {
                 throw new MojoExecutionException(e.getMessage(), e);
             } finally {
                 try {
-                    if (null != connection) {
+                    if (connection != null) {
                         reporterWriter.writeReporters(connection);
 
                         DBHelper.disableDBMSOutput(connection);
@@ -337,7 +337,7 @@ public class UtPLSQLMojo extends AbstractMojo {
             reporterList.add(reporter);
 
             // Turns the console output on by default if both file and console output are empty.
-            if (!reporterParameter.isFileOutput() && null == reporterParameter.getConsoleOutput()) {
+            if (!reporterParameter.isFileOutput() && reporterParameter.getConsoleOutput() == null) {
                 reporterParameter.setConsoleOutput(true);
             }
 
