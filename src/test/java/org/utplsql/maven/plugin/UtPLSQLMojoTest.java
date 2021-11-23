@@ -115,7 +115,7 @@ public class UtPLSQLMojoTest {
 
         // TODO : move to another test about reporters
         List<String> reporters = Whitebox.getInternalState(utplsqlMojo, "reporters");
-        assertEquals(reporters.size(), 2);
+        assertEquals(2, reporters.size());
 
         // check sources
         FileMapperOptions sources = Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
