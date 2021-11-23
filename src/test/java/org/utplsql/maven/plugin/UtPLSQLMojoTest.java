@@ -3,7 +3,6 @@ package org.utplsql.maven.plugin;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.MojoRule;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,6 +28,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -64,7 +65,7 @@ public class UtPLSQLMojoTest {
     }
 
     /**
-     * testInvalidSourcesDirectory.
+     * Invalid Sources Directory
      * <p>
      * Given : a pom.xml with invalid sources' directory
      * When : pom is read and buildSourcesOptions is run
@@ -74,15 +75,15 @@ public class UtPLSQLMojoTest {
     public void testInvalidSourcesDirectory() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalidTestsSourcesDirectories/"), "test");
-        Assert.assertNotNull(utplsqlMojo);
+        assertNotNull(utplsqlMojo);
 
-        MojoExecutionException exception = Assert.assertThrows(MojoExecutionException.class, () -> Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions"));
+        MojoExecutionException exception = assertThrows(MojoExecutionException.class, () -> Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions"));
 
-        Assert.assertEquals("Invalid <SOURCES> in your pom.xml", exception.getMessage());
+        assertEquals("Invalid <SOURCES> in your pom.xml", exception.getMessage());
     }
 
     /**
-     * testInvalidTestsDirectory.
+     * Invalid Tests Directory
      * <p>
      * Given : a pom.xml with invalid tests' directory
      * When : pom is read and buildTestsOptions is run
@@ -92,15 +93,15 @@ public class UtPLSQLMojoTest {
     public void testInvalidTestsDirectory() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalidTestsSourcesDirectories/"), "test");
-        Assert.assertNotNull(utplsqlMojo);
+        assertNotNull(utplsqlMojo);
 
-        MojoExecutionException exception = Assert.assertThrows(MojoExecutionException.class, () -> Whitebox.invokeMethod(utplsqlMojo, "buildTestsOptions"));
+        MojoExecutionException exception = assertThrows(MojoExecutionException.class, () -> Whitebox.invokeMethod(utplsqlMojo, "buildTestsOptions"));
 
-        Assert.assertEquals("Invalid <TESTS> in your pom.xml: Invalid <directory> bar in resource. Check your pom.xml", exception.getMessage());
+        assertEquals("Invalid <TESTS> in your pom.xml: Invalid <directory> bar in resource. Check your pom.xml", exception.getMessage());
     }
 
     /**
-     * testSourcesTestsParameters.
+     * Sources Tests Parameters
      * <p>
      * Given : a pom.xml with sources and tests with a lot of parameters
      * When : pom is read and buildSourcesOptions / buildTestsOptions are run
@@ -110,7 +111,7 @@ public class UtPLSQLMojoTest {
     public void testSourcesTestsParameters() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/testSourcesTestsParams/"), "test");
-        Assert.assertNotNull(utplsqlMojo);
+        assertNotNull(utplsqlMojo);
 
         // TODO : move to another test about reporters
         List<String> reporters = Whitebox.getInternalState(utplsqlMojo, "reporters");
@@ -122,9 +123,9 @@ public class UtPLSQLMojoTest {
         assertEquals("srcs/foo.sql", sources.getFilePaths().get(0));
         assertEquals("code_owner", sources.getObjectOwner());
         assertEquals(".*/\\w+/(\\w+)/(\\w+)\\.\\w{3}", sources.getRegexPattern());
-        assertEquals(new Integer(9), sources.getNameSubExpression());
-        assertEquals(new Integer(1), sources.getTypeSubExpression());
-        assertEquals(new Integer(4), sources.getOwnerSubExpression());
+        assertEquals(Integer.valueOf(9), sources.getNameSubExpression());
+        assertEquals(Integer.valueOf(1), sources.getTypeSubExpression());
+        assertEquals(Integer.valueOf(4), sources.getOwnerSubExpression());
         assertEquals(1, sources.getTypeMappings().size());
         assertEquals("bar", sources.getTypeMappings().get(0).getKey());
         assertEquals("foo", sources.getTypeMappings().get(0).getValue());
@@ -136,16 +137,16 @@ public class UtPLSQLMojoTest {
         assertTrue(tests.getFilePaths().contains("te/st/spec.spc"));
         assertEquals("tests_owner", tests.getObjectOwner());
         assertEquals(".*/\\w+/(\\w+)/(\\w+)\\.\\w{3}", tests.getRegexPattern());
-        assertEquals(new Integer(54), tests.getNameSubExpression());
-        assertEquals(new Integer(21), tests.getTypeSubExpression());
-        assertEquals(new Integer(24), tests.getOwnerSubExpression());
+        assertEquals(Integer.valueOf(54), tests.getNameSubExpression());
+        assertEquals(Integer.valueOf(21), tests.getTypeSubExpression());
+        assertEquals(Integer.valueOf(24), tests.getOwnerSubExpression());
         assertEquals(1, tests.getTypeMappings().size());
         assertEquals("def", tests.getTypeMappings().get(0).getKey());
         assertEquals("abc", tests.getTypeMappings().get(0).getValue());
     }
 
     /**
-     * testSourcesAndTestsParameterDoesNotExist.
+     * Sources and Tests Parameter does not exist
      * <p>
      * Given : a pom.xml with no sources / tests tags and default directory does not exist.
      * When : pom is read and buildSourcesOptions / buildTestsOptions are run
@@ -155,7 +156,7 @@ public class UtPLSQLMojoTest {
     public void testSourcesAndTestsParameterDoesNotExist() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule.lookupConfiguredMojo(
                 new File("src/test/resources/unit-tests/testNoSourcesTestsParams/directoryDoesNotExist/"), "test");
-        Assert.assertNotNull(utplsqlMojo);
+        assertNotNull(utplsqlMojo);
 
         // check sources
         FileMapperOptions sources = Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
@@ -167,7 +168,7 @@ public class UtPLSQLMojoTest {
     }
 
     /**
-     * testSourcesAndTestsParameterDoesNotExistButDefaultDirectoryExists.
+     * Sources and Tests Parameter does not exist but Default Directory exists
      * <p>
      * Given : a pom.xml with no sources / tests tags but default directory exists.
      * When : pom is read and buildSourcesOptions / buildTestsOptions are run
@@ -177,7 +178,7 @@ public class UtPLSQLMojoTest {
     public void testSourcesAndTestsParameterDoesNotExistButDefaultDirectoryExists() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/testNoSourcesTestsParams/directoryExists/"), "test");
-        Assert.assertNotNull(utplsqlMojo);
+        assertNotNull(utplsqlMojo);
 
         // check sources
         FileMapperOptions sources = Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
@@ -193,7 +194,7 @@ public class UtPLSQLMojoTest {
     }
 
     /**
-     * testSourcesAndTestsParameterHaveNotDirectoryTag.
+     * Sources and Tests Parameter have not Directory Tag
      * <p>
      * Given : a pom.xml with source and test tag not containing a directory tag.
      * When : pom is read and buildSourcesOptions / buildTestsOptions are run
@@ -203,7 +204,7 @@ public class UtPLSQLMojoTest {
     public void testSourcesAndTestsParameterHaveNotDirectoryTag() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partialSourceAndTestTag/missingDirectory/"), "test");
-        Assert.assertNotNull(utplsqlMojo);
+        assertNotNull(utplsqlMojo);
 
         // check sources
         FileMapperOptions sources = Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
@@ -220,7 +221,7 @@ public class UtPLSQLMojoTest {
     }
 
     /**
-     * testSourcesAndTestsParameterHaveNotDirectoryTag.
+     * Sources and Tests Parameter have not Directory Tag
      * <p>
      * Given : a pom.xml with source and test tag not containing a directory tag.
      * When : pom is read and buildSourcesOptions / buildTestsOptions are run
@@ -230,7 +231,7 @@ public class UtPLSQLMojoTest {
     public void testSourcesAndTestsParameterHaveNotIncludesTag() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partialSourceAndTestTag/missingIncludes/"), "test");
-        Assert.assertNotNull(utplsqlMojo);
+        assertNotNull(utplsqlMojo);
 
         // check sources
         FileMapperOptions sources = Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
@@ -245,11 +246,14 @@ public class UtPLSQLMojoTest {
         assertTrue(tests.getFilePaths().contains("src/test/bar/f2.pkg"));
     }
 
+    /**
+     * Default Console Behaviour
+     */
     @Test
     public void testDefaultConsoleBehaviour() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/defaultConsoleOutputBehaviour/"), "test");
-        Assert.assertNotNull(utplsqlMojo);
+        assertNotNull(utplsqlMojo);
 
         List<Reporter> reporterList = new ArrayList<>();
         when(mockReporterFactory.createReporter(anyString())).thenAnswer(invocation -> {
@@ -290,11 +294,14 @@ public class UtPLSQLMojoTest {
         assertTrue(reporterParameter3.isFileOutput());
     }
 
+    /**
+     * Add Default Reporter
+     */
     @Test
     public void testAddDefaultReporter() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/defaultConsoleOutputBehaviour/"), "test");
-        Assert.assertNotNull(utplsqlMojo);
+        assertNotNull(utplsqlMojo);
 
         List<Reporter> reporterList = new ArrayList<>();
         when(mockReporterFactory.createReporter(anyString())).thenAnswer(invocation -> {
@@ -314,11 +321,14 @@ public class UtPLSQLMojoTest {
         verify(reporterList.get(0)).init(mockConnection);
     }
 
+    /**
+     * Skip utPLSQL Tests
+     */
     @Test
     public void testSkipUtplsqlTests() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/skipUtplsqlTests/"), "test");
-        Assert.assertNotNull(utplsqlMojo);
+        assertNotNull(utplsqlMojo);
 
         final ByteArrayOutputStream console = new ByteArrayOutputStream();
         System.setOut(new PrintStream(console));
@@ -327,6 +337,6 @@ public class UtPLSQLMojoTest {
 
         String standardOutput = console.toString();
 
-        Assert.assertTrue(standardOutput.contains("utPLSQLTests are skipped."));
+        assertTrue(standardOutput.contains("utPLSQLTests are skipped."));
     }
 }
