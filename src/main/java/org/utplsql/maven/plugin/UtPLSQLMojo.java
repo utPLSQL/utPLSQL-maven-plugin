@@ -354,19 +354,17 @@ public class UtPLSQLMojo extends AbstractMojo {
         Log log = getLog();
         log.info("Invoking TestRunner with: " + targetDir);
 
-        if (!log.isDebugEnabled()) {
-            return;
+        if (log.isDebugEnabled()) {
+            log.debug("Invoking TestRunner with: ");
+
+            log.debug("reporters=");
+            reporterList.forEach((Reporter r) -> log.debug(r.getTypeName()));
+
+            log.debug("sources=");
+            sourceMappingOptions.getFilePaths().forEach(log::debug);
+
+            log.debug("tests=");
+            testMappingOptions.getFilePaths().forEach(log::debug);
         }
-
-        log.debug("Invoking TestRunner with: ");
-
-        log.debug("reporters=");
-        reporterList.forEach((Reporter r) -> log.debug(r.getTypeName()));
-
-        log.debug("sources=");
-        sourceMappingOptions.getFilePaths().forEach(log::debug);
-
-        log.debug("tests=");
-        testMappingOptions.getFilePaths().forEach(log::debug);
     }
 }
