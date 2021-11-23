@@ -33,10 +33,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install utPLSQL
-        run: sh ${{ github.workspace }}/github_scripts/install_utplsql.sh
+        run: sh ${{ github.workspace }}/scripts/1_install_utplsql.sh
 
       - name: Install demo project
-        run: sh ${{ github.workspace }}/github_scripts/install_demo_project.sh
+        run: sh ${{ github.workspace }}/scripts/2_install_demo_project.sh
 
       - name: Set up JDK 8
         uses: actions/setup-java@v2

@@ -4,6 +4,5 @@ curl -Lk "${UTPLSQL_DOWNLOAD_URL}" -o utPLSQL.zip
 
 unzip -q utPLSQL.zip
 
-cd utPLSQL/source
-
-sqlplus sys/oracle@//localhost/XE as sysdba @install_headless.sql UT3 UT3 users
+docker run --rm -v $(pwd)/utPLSQL:/utPLSQL -w /utPLSQL/source --network host \
+    --entrypoint sqlplus truemark/sqlplus sys/oracle@//127.0.0.1:1521/XE as sysdba @install_headless.sql UT3 UT3 users
