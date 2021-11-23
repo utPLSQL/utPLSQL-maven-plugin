@@ -28,6 +28,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Install utPLSQL
         run: sh ${{ github.workspace }}/scripts/1_install_utplsql.sh
@@ -54,15 +56,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Sonar
-        run: mvn verify sonar:sonar -Pcoverage -Dsonar.projectKey=org.utplsql:utplsql-maven-plugin
+      - name: Maven deploy snapshot and run Sonar
+        run: mvn deploy sonar:sonar -Pcoverage -Dsonar.projectKey=org.utplsql:utplsql-maven-plugin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Maven deploy snapshot
-        run: mvn deploy -DskipTests
-        env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
