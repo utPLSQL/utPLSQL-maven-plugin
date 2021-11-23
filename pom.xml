@@ -5,7 +5,7 @@
 
     <groupId>org.utplsql</groupId>
     <artifactId>utplsql-maven-plugin</artifactId>
-    <version>3.1.6.RC2</version>
+    <version>3.1.7.RC2-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>utPLSQL Maven Plugin</name>
