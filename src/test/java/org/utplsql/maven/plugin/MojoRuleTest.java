@@ -32,11 +32,11 @@ public class MojoRuleTest {
      */
     @Test
     public void invalidSourcesDirectory() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalid-sources-directories/"), "test");
-        assertNotNull(utplsqlMojo);
+        assertNotNull(utPlsqlMojo);
 
-        MojoExecutionException exception = assertThrows(MojoExecutionException.class, utplsqlMojo::execute);
+        MojoExecutionException exception = assertThrows(MojoExecutionException.class, utPlsqlMojo::execute);
 
         assertEquals("Directory foo does not exist!", exception.getMessage());
     }
@@ -50,11 +50,11 @@ public class MojoRuleTest {
      */
     @Test
     public void invalidTestsDirectory() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalid-tests-sources-directories/"), "test");
-        assertNotNull(utplsqlMojo);
+        assertNotNull(utPlsqlMojo);
 
-        MojoExecutionException exception = assertThrows(MojoExecutionException.class, utplsqlMojo::execute);
+        MojoExecutionException exception = assertThrows(MojoExecutionException.class, utPlsqlMojo::execute);
 
         assertEquals("Directory bar does not exist!", exception.getMessage());
     }
@@ -68,14 +68,14 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesTestsParameters() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/test-sources-tests-params/"), "test");
-        assertNotNull(utplsqlMojo);
+        assertNotNull(utPlsqlMojo);
 
-        assertEquals(2, utplsqlMojo.reporters.size());
+        assertEquals(2, utPlsqlMojo.reporters.size());
 
         // check sources
-        FileMapperOptions sources = utplsqlMojo.buildSourcesOptions();
+        FileMapperOptions sources = utPlsqlMojo.buildSourcesOptions();
         assertEquals(1, sources.getFilePaths().size());
         assertEquals("srcs/foo.sql", sources.getFilePaths().get(0));
         assertEquals("code_owner", sources.getObjectOwner());
@@ -88,7 +88,7 @@ public class MojoRuleTest {
         assertEquals("foo", sources.getTypeMappings().get(0).getValue());
 
         // check tests
-        FileMapperOptions tests = utplsqlMojo.buildTestsOptions();
+        FileMapperOptions tests = utPlsqlMojo.buildTestsOptions();
         assertEquals(2, tests.getFilePaths().size());
         assertTrue(tests.getFilePaths().contains("te/st/file.bdy"));
         assertTrue(tests.getFilePaths().contains("te/st/spec.spc"));
@@ -111,16 +111,16 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterDoesNotExist() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule.lookupConfiguredMojo(
+        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule.lookupConfiguredMojo(
                 new File("src/test/resources/unit-tests/test-no-sources-tests-params/directory-does-not-exist/"), "test");
-        assertNotNull(utplsqlMojo);
+        assertNotNull(utPlsqlMojo);
 
         // check sources
-        FileMapperOptions sources = utplsqlMojo.buildSourcesOptions();
+        FileMapperOptions sources = utPlsqlMojo.buildSourcesOptions();
         assertEquals(0, sources.getFilePaths().size());
 
         // check tests
-        FileMapperOptions tests = utplsqlMojo.buildTestsOptions();
+        FileMapperOptions tests = utPlsqlMojo.buildTestsOptions();
         assertEquals(0, tests.getFilePaths().size());
     }
 
@@ -133,18 +133,18 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterDoesNotExistButDefaultDirectoryExists() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/test-no-sources-tests-params/directory-exists/"), "test");
-        assertNotNull(utplsqlMojo);
+        assertNotNull(utPlsqlMojo);
 
         // check sources
-        FileMapperOptions sources = utplsqlMojo.buildSourcesOptions();
+        FileMapperOptions sources = utPlsqlMojo.buildSourcesOptions();
         assertEquals(2, sources.getFilePaths().size());
         assertTrue(sources.getFilePaths().contains("src/main/plsql/f1.sql"));
         assertTrue(sources.getFilePaths().contains("src/main/plsql/f2.sql"));
 
         // check tests
-        FileMapperOptions tests = utplsqlMojo.buildTestsOptions();
+        FileMapperOptions tests = utPlsqlMojo.buildTestsOptions();
         assertEquals(2, tests.getFilePaths().size());
         assertTrue(tests.getFilePaths().contains("src/test/plsql/foo/f1.pkg"));
         assertTrue(tests.getFilePaths().contains("src/test/plsql/f2.pkg"));
@@ -159,18 +159,18 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterHaveNotDirectoryTag() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partial-source-and-test-tag/missing-directory/"), "test");
-        assertNotNull(utplsqlMojo);
+        assertNotNull(utPlsqlMojo);
 
         // check sources
-        FileMapperOptions sources = utplsqlMojo.buildSourcesOptions();
+        FileMapperOptions sources = utPlsqlMojo.buildSourcesOptions();
         assertEquals(2, sources.getFilePaths().size());
         assertTrue(sources.getFilePaths().contains("src/main/plsql/f1.sql"));
         assertTrue(sources.getFilePaths().contains("src/main/plsql/foo/f2.sql"));
 
         // check tests
-        FileMapperOptions tests = utplsqlMojo.buildTestsOptions();
+        FileMapperOptions tests = utPlsqlMojo.buildTestsOptions();
         assertEquals(3, tests.getFilePaths().size());
         assertTrue(tests.getFilePaths().contains("src/test/plsql/foo/f1.pkg"));
         assertTrue(tests.getFilePaths().contains("src/test/plsql/f2.pkg"));
@@ -186,18 +186,18 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterHaveNotIncludesTag() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partial-source-and-test-tag/missing-includes/"), "test");
-        assertNotNull(utplsqlMojo);
+        assertNotNull(utPlsqlMojo);
 
         // check sources
-        FileMapperOptions sources = utplsqlMojo.buildSourcesOptions();
+        FileMapperOptions sources = utPlsqlMojo.buildSourcesOptions();
         assertEquals(2, sources.getFilePaths().size());
         assertTrue(sources.getFilePaths().contains("src/main/foo/f1.sql"));
         assertTrue(sources.getFilePaths().contains("src/main/foo/foo/f2.sql"));
 
         // check tests
-        FileMapperOptions tests = utplsqlMojo.buildTestsOptions();
+        FileMapperOptions tests = utPlsqlMojo.buildTestsOptions();
         assertEquals(2, tests.getFilePaths().size());
         assertTrue(tests.getFilePaths().contains("src/test/bar/foo/f1.pkg"));
         assertTrue(tests.getFilePaths().contains("src/test/bar/f2.pkg"));
@@ -208,14 +208,14 @@ public class MojoRuleTest {
      */
     @Test
     public void defaultConsoleBehaviour() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-console-output-behaviour/"), "test");
-        assertNotNull(utplsqlMojo);
+        assertNotNull(utPlsqlMojo);
 
-        utplsqlMojo.execute();
+        utPlsqlMojo.execute();
 
         // Assert that we added only the necessary reporters to the writer.
-        List<ReporterParameter> reporters = utplsqlMojo.reporters;
+        List<ReporterParameter> reporters = utPlsqlMojo.reporters;
         assertEquals(3, reporters.size());
 
         ReporterParameter reporterParameter1 = reporters.get(0);
@@ -236,14 +236,14 @@ public class MojoRuleTest {
      */
     @Test
     public void defaultReporter() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-reporter/"), "test");
-        assertNotNull(utplsqlMojo);
+        assertNotNull(utPlsqlMojo);
 
-        utplsqlMojo.execute();
+        utPlsqlMojo.execute();
 
-        assertEquals(1, utplsqlMojo.reporters.size());
-        assertEquals("UT_DOCUMENTATION_REPORTER", utplsqlMojo.reporters.get(0).getName());
+        assertEquals(1, utPlsqlMojo.reporters.size());
+        assertEquals("UT_DOCUMENTATION_REPORTER", utPlsqlMojo.reporters.get(0).getName());
     }
 
     /**
@@ -251,17 +251,30 @@ public class MojoRuleTest {
      */
     @Test
     public void skipUtplsqlTests() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/skip-utplsql-tests/"), "test");
-        assertNotNull(utplsqlMojo);
+        assertNotNull(utPlsqlMojo);
 
         final ByteArrayOutputStream console = new ByteArrayOutputStream();
         System.setOut(new PrintStream(console));
 
-        utplsqlMojo.execute();
+        utPlsqlMojo.execute();
 
         String standardOutput = console.toString();
 
         assertTrue(standardOutput.contains("utPLSQLTests are skipped."));
     }
+
+    /**
+     * DBMS_OUTPUT
+     */
+    @Test
+    public void dbmsOutput() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
+                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/dbms-output/"), "test");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+    }
+
 }

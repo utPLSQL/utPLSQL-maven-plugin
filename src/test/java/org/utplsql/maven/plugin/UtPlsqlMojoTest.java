@@ -7,7 +7,9 @@ import org.junit.Test;
 import org.utplsql.api.reporter.CoreReporters;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 
 import static org.junit.Assert.assertTrue;
 
@@ -97,6 +99,20 @@ public class UtPlsqlMojoTest {
         utPLSQLMojo.execute();
 
         assertTrue(new File("target/not-exist/junit-report.xml").exists());
+    }
+
+    @Test
+    public void skipUtplsqlTests() throws MojoExecutionException {
+        utPLSQLMojo.skipUtplsqlTests = true;
+
+        final ByteArrayOutputStream console = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(console));
+
+        utPLSQLMojo.execute();
+
+        String standardOutput = console.toString();
+
+        assertTrue(standardOutput.contains("utPLSQLTests are skipped."));
     }
 
 }
