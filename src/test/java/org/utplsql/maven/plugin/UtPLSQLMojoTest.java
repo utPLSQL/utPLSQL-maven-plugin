@@ -38,4 +38,39 @@ public class UtPLSQLMojoTest {
 
         assertTrue(new File("target/junit-report.xml").exists());
     }
+
+    @Test
+    public void absolutPath() throws MojoExecutionException {
+        ReporterParameter junitReporter = new ReporterParameter();
+        junitReporter.setConsoleOutput(true);
+
+        String os = System.getProperty("os.name");
+        if (os.contains("Windows")) {
+            junitReporter.setFileOutput("c:/tmp/junit-report.xml");
+        } else {
+            junitReporter.setFileOutput("/tmp/junit-report.xml");
+        }
+        junitReporter.setName(CoreReporters.UT_JUNIT_REPORTER.name());
+        utPLSQLMojo.reporters.add(junitReporter);
+
+        utPLSQLMojo.execute();
+        if (os.contains("Windows")) {
+            assertTrue(new File("c:/tmp/junit-report.xml").exists());
+        } else {
+            assertTrue(new File("/tmp/junit-report.xml").exists());
+        }
+    }
+
+    @Test
+    public void parentDoesNotExist() throws MojoExecutionException {
+        ReporterParameter junitReporter = new ReporterParameter();
+        junitReporter.setConsoleOutput(true);
+        junitReporter.setFileOutput("not-exist/junit-report.xml");
+        junitReporter.setName(CoreReporters.UT_JUNIT_REPORTER.name());
+        utPLSQLMojo.reporters.add(junitReporter);
+
+        utPLSQLMojo.execute();
+
+        assertTrue(new File("target/not-exist/junit-report.xml").exists());
+    }
 }

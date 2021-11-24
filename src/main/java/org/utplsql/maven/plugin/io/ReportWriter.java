@@ -114,7 +114,7 @@ public class ReportWriter {
                 try {
                     fileOutputStream.close();
                 } catch (IOException e) {
-                    log.info(format("Failed to closing the report %s", reporterParameter.getClass()));
+                    log.error(format("Couldn't close the output stream %s", reporterParameter.getClass()));
                 }
             }
         }
