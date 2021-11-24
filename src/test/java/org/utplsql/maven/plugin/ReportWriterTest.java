@@ -11,7 +11,7 @@ import java.io.File;
 
 import static org.junit.Assert.assertTrue;
 
-public class UtPLSQLMojoTest {
+public class ReportWriterTest {
 
     private static UtPLSQLMojo utPLSQLMojo;
 
@@ -73,4 +73,30 @@ public class UtPLSQLMojoTest {
 
         assertTrue(new File("target/not-exist/junit-report.xml").exists());
     }
+
+    @Test
+    public void onlyConsoleOutput() throws MojoExecutionException {
+        ReporterParameter junitReporter = new ReporterParameter();
+        junitReporter.setConsoleOutput(true);
+        junitReporter.setName(CoreReporters.UT_JUNIT_REPORTER.name());
+        utPLSQLMojo.reporters.add(junitReporter);
+
+        utPLSQLMojo.execute();
+
+        assertTrue(new File("target/not-exist/junit-report.xml").exists());
+    }
+
+    @Test
+    public void onlyFileOutput() throws MojoExecutionException {
+        ReporterParameter junitReporter = new ReporterParameter();
+        junitReporter.setConsoleOutput(false);
+        junitReporter.setFileOutput("not-exist/junit-report.xml");
+        junitReporter.setName(CoreReporters.UT_JUNIT_REPORTER.name());
+        utPLSQLMojo.reporters.add(junitReporter);
+
+        utPLSQLMojo.execute();
+
+        assertTrue(new File("target/not-exist/junit-report.xml").exists());
+    }
+
 }
