@@ -10,13 +10,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.utplsql.api.DBHelper;
 import org.utplsql.api.FileMapperOptions;
 import org.utplsql.api.Version;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.api.reporter.ReporterFactory;
-import org.utplsql.maven.plugin.reporter.ReportWriter;
+import org.utplsql.maven.plugin.io.ReportWriter;
+import org.utplsql.maven.plugin.model.ReporterParameter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,7 +40,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({DBHelper.class, ReporterFactory.class})
-public class UtPLSQLMojoTest {
+public class MojoRuleTest {
 
     @Rule
     public final MojoRule rule = new MojoRule();
@@ -73,10 +73,10 @@ public class UtPLSQLMojoTest {
     @Test
     public void invalidSourcesDirectory() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalidTestsSourcesDirectories/"), "test");
+                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalid-sources-directories/"), "test");
         assertNotNull(utplsqlMojo);
 
-        MojoExecutionException exception = assertThrows(MojoExecutionException.class, () -> Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions"));
+        MojoExecutionException exception = assertThrows(MojoExecutionException.class, utplsqlMojo::execute);
 
         assertEquals("Invalid <SOURCES> in your pom.xml", exception.getMessage());
     }
@@ -91,10 +91,10 @@ public class UtPLSQLMojoTest {
     @Test
     public void invalidTestsDirectory() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalidTestsSourcesDirectories/"), "test");
+                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalid-tests-sources-directories/"), "test");
         assertNotNull(utplsqlMojo);
 
-        MojoExecutionException exception = assertThrows(MojoExecutionException.class, () -> Whitebox.invokeMethod(utplsqlMojo, "buildTestsOptions"));
+        MojoExecutionException exception = assertThrows(MojoExecutionException.class, utplsqlMojo::execute);
 
         assertEquals("Invalid <TESTS> in your pom.xml: Invalid <directory> bar in resource. Check your pom.xml", exception.getMessage());
     }
@@ -109,15 +109,14 @@ public class UtPLSQLMojoTest {
     @Test
     public void sourcesTestsParameters() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/testSourcesTestsParams/"), "test");
+                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/test-sources-tests-params/"), "test");
         assertNotNull(utplsqlMojo);
 
         // TODO : move to another test about reporters
-        List<String> reporters = Whitebox.getInternalState(utplsqlMojo, "reporters");
-        assertEquals(2, reporters.size());
+        assertEquals(2, utplsqlMojo.reporters.size());
 
         // check sources
-        FileMapperOptions sources = Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
+        FileMapperOptions sources = utplsqlMojo.buildSourcesOptions();
         assertEquals(1, sources.getFilePaths().size());
         assertEquals("srcs/foo.sql", sources.getFilePaths().get(0));
         assertEquals("code_owner", sources.getObjectOwner());
@@ -130,7 +129,7 @@ public class UtPLSQLMojoTest {
         assertEquals("foo", sources.getTypeMappings().get(0).getValue());
 
         // check tests
-        FileMapperOptions tests = Whitebox.invokeMethod(utplsqlMojo, "buildTestsOptions");
+        FileMapperOptions tests = utplsqlMojo.buildTestsOptions();
         assertEquals(2, tests.getFilePaths().size());
         assertTrue(tests.getFilePaths().contains("te/st/file.bdy"));
         assertTrue(tests.getFilePaths().contains("te/st/spec.spc"));
@@ -154,15 +153,15 @@ public class UtPLSQLMojoTest {
     @Test
     public void sourcesAndTestsParameterDoesNotExist() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule.lookupConfiguredMojo(
-                new File("src/test/resources/unit-tests/testNoSourcesTestsParams/directoryDoesNotExist/"), "test");
+                new File("src/test/resources/unit-tests/test-no-sources-tests-params/directory-does-not-exist/"), "test");
         assertNotNull(utplsqlMojo);
 
         // check sources
-        FileMapperOptions sources = Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
+        FileMapperOptions sources = utplsqlMojo.buildSourcesOptions();
         assertEquals(0, sources.getFilePaths().size());
 
         // check tests
-        FileMapperOptions tests = Whitebox.invokeMethod(utplsqlMojo, "buildTestsOptions");
+        FileMapperOptions tests = utplsqlMojo.buildTestsOptions();
         assertEquals(0, tests.getFilePaths().size());
     }
 
@@ -176,17 +175,17 @@ public class UtPLSQLMojoTest {
     @Test
     public void sourcesAndTestsParameterDoesNotExistButDefaultDirectoryExists() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/testNoSourcesTestsParams/directoryExists/"), "test");
+                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/test-no-sources-tests-params/directory-exists/"), "test");
         assertNotNull(utplsqlMojo);
 
         // check sources
-        FileMapperOptions sources = Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
+        FileMapperOptions sources = utplsqlMojo.buildSourcesOptions();
         assertEquals(2, sources.getFilePaths().size());
         assertTrue(sources.getFilePaths().contains("src/main/plsql/f1.sql"));
         assertTrue(sources.getFilePaths().contains("src/main/plsql/f2.sql"));
 
         // check tests
-        FileMapperOptions tests = Whitebox.invokeMethod(utplsqlMojo, "buildTestsOptions");
+        FileMapperOptions tests = utplsqlMojo.buildTestsOptions();
         assertEquals(2, tests.getFilePaths().size());
         assertTrue(tests.getFilePaths().contains("src/test/plsql/foo/f1.pkg"));
         assertTrue(tests.getFilePaths().contains("src/test/plsql/f2.pkg"));
@@ -202,17 +201,17 @@ public class UtPLSQLMojoTest {
     @Test
     public void sourcesAndTestsParameterHaveNotDirectoryTag() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partialSourceAndTestTag/missingDirectory/"), "test");
+                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partial-source-and-test-tag/missing-directory/"), "test");
         assertNotNull(utplsqlMojo);
 
         // check sources
-        FileMapperOptions sources = Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
+        FileMapperOptions sources = utplsqlMojo.buildSourcesOptions();
         assertEquals(2, sources.getFilePaths().size());
         assertTrue(sources.getFilePaths().contains("src/main/plsql/f1.sql"));
         assertTrue(sources.getFilePaths().contains("src/main/plsql/foo/f2.sql"));
 
         // check tests
-        FileMapperOptions tests = Whitebox.invokeMethod(utplsqlMojo, "buildTestsOptions");
+        FileMapperOptions tests = utplsqlMojo.buildTestsOptions();
         assertEquals(3, tests.getFilePaths().size());
         assertTrue(tests.getFilePaths().contains("src/test/plsql/foo/f1.pkg"));
         assertTrue(tests.getFilePaths().contains("src/test/plsql/f2.pkg"));
@@ -229,17 +228,17 @@ public class UtPLSQLMojoTest {
     @Test
     public void sourcesAndTestsParameterHaveNotIncludesTag() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partialSourceAndTestTag/missingIncludes/"), "test");
+                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partial-source-and-test-tag/missing-includes/"), "test");
         assertNotNull(utplsqlMojo);
 
         // check sources
-        FileMapperOptions sources = Whitebox.invokeMethod(utplsqlMojo, "buildSourcesOptions");
+        FileMapperOptions sources = utplsqlMojo.buildSourcesOptions();
         assertEquals(2, sources.getFilePaths().size());
         assertTrue(sources.getFilePaths().contains("src/main/foo/f1.sql"));
         assertTrue(sources.getFilePaths().contains("src/main/foo/foo/f2.sql"));
 
         // check tests
-        FileMapperOptions tests = Whitebox.invokeMethod(utplsqlMojo, "buildTestsOptions");
+        FileMapperOptions tests = utplsqlMojo.buildTestsOptions();
         assertEquals(2, tests.getFilePaths().size());
         assertTrue(tests.getFilePaths().contains("src/test/bar/foo/f1.pkg"));
         assertTrue(tests.getFilePaths().contains("src/test/bar/f2.pkg"));
@@ -251,7 +250,7 @@ public class UtPLSQLMojoTest {
     @Test
     public void defaultConsoleBehaviour() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/defaultConsoleOutputBehaviour/"), "test");
+                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-console-output-behaviour/"), "test");
         assertNotNull(utplsqlMojo);
 
         List<Reporter> reporterList = new ArrayList<>();
@@ -261,7 +260,8 @@ public class UtPLSQLMojoTest {
             return mockReporter;
         });
 
-        Whitebox.invokeMethod(utplsqlMojo, "initReporters", mockConnection, mockVersion, mockReporterFactory);
+        ReportWriter reportWriter = new ReportWriter(utplsqlMojo.targetDir, mockVersion, utplsqlMojo.getLog());
+        utplsqlMojo.initReporters(mockConnection, reportWriter, mockReporterFactory);
 
         // Assert that we called the creation reporter with the correct parameters.
         verify(mockReporterFactory, times(2)).createReporter("UT_DOCUMENTATION_REPORTER");
@@ -276,19 +276,18 @@ public class UtPLSQLMojoTest {
         }
 
         // Assert that we added only the necessary reporters to the writer.
-        ReportWriter reportWriter = Whitebox.getInternalState(utplsqlMojo, "reportWriter");
-        List<Pair<Reporter, ReporterParameter>> listReporters = Whitebox.getInternalState(reportWriter, "listReporters");
-        assertEquals(3, listReporters.size());
+        List<Pair<Reporter, ReporterParameter>> reporters = reportWriter.getReporters();
+        assertEquals(3, reporters.size());
 
-        ReporterParameter reporterParameter1 = listReporters.get(0).getRight();
+        ReporterParameter reporterParameter1 = reporters.get(0).getRight();
         assertTrue(reporterParameter1.isConsoleOutput());
         assertFalse(reporterParameter1.isFileOutput());
 
-        ReporterParameter reporterParameter2 = listReporters.get(1).getRight();
+        ReporterParameter reporterParameter2 = reporters.get(1).getRight();
         assertFalse(reporterParameter2.isConsoleOutput());
         assertTrue(reporterParameter2.isFileOutput());
 
-        ReporterParameter reporterParameter3 = listReporters.get(2).getRight();
+        ReporterParameter reporterParameter3 = reporters.get(2).getRight();
         assertTrue(reporterParameter3.isConsoleOutput());
         assertTrue(reporterParameter3.isFileOutput());
     }
@@ -299,7 +298,7 @@ public class UtPLSQLMojoTest {
     @Test
     public void addDefaultReporter() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/defaultConsoleOutputBehaviour/"), "test");
+                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-console-output-behaviour/"), "test");
         assertNotNull(utplsqlMojo);
 
         List<Reporter> reporterList = new ArrayList<>();
@@ -310,10 +309,11 @@ public class UtPLSQLMojoTest {
             return mockReporter;
         });
 
-        List<ReporterParameter> reporterParameters = Whitebox.getInternalState(utplsqlMojo, "reporters");
+        List<ReporterParameter> reporterParameters = utplsqlMojo.reporters;
         reporterParameters.clear();
 
-        Whitebox.invokeMethod(utplsqlMojo, "initReporters", mockConnection, mockVersion, mockReporterFactory);
+        ReportWriter reportWriter = new ReportWriter(utplsqlMojo.targetDir, mockVersion, utplsqlMojo.getLog());
+        utplsqlMojo.initReporters(mockConnection, reportWriter, mockReporterFactory);
 
         assertEquals(1, reporterList.size());
         assertEquals("UT_DOCUMENTATION_REPORTER", reporterList.get(0).getTypeName());
@@ -326,7 +326,7 @@ public class UtPLSQLMojoTest {
     @Test
     public void skipUtplsqlTests() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/skipUtplsqlTests/"), "test");
+                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/skip-utplsql-tests/"), "test");
         assertNotNull(utplsqlMojo);
 
         final ByteArrayOutputStream console = new ByteArrayOutputStream();

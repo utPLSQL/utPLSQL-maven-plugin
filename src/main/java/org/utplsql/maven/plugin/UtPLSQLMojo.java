@@ -17,20 +17,21 @@ import org.utplsql.api.JavaApiVersionInfo;
 import org.utplsql.api.KeyValuePair;
 import org.utplsql.api.TestRunner;
 import org.utplsql.api.Version;
-import org.utplsql.api.db.DatabaseInformation;
 import org.utplsql.api.db.DefaultDatabaseInformation;
 import org.utplsql.api.exception.SomeTestsFailedException;
 import org.utplsql.api.reporter.CoreReporters;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.api.reporter.ReporterFactory;
-import org.utplsql.maven.plugin.helper.PluginDefault;
-import org.utplsql.maven.plugin.helper.SqlScannerHelper;
-import org.utplsql.maven.plugin.reporter.ReportWriter;
+import org.utplsql.maven.plugin.model.CustomTypeMapping;
+import org.utplsql.maven.plugin.model.ReporterParameter;
+import org.utplsql.maven.plugin.io.SqlFileScanner;
+import org.utplsql.maven.plugin.io.ReportWriter;
 
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,136 +47,108 @@ import java.util.stream.Collectors;
 public class UtPLSQLMojo extends AbstractMojo {
 
     @Parameter(readonly = true, defaultValue = "${project}")
-    private MavenProject project;
+    MavenProject project;
 
     @Parameter(property = "dbUrl")
-    protected String url;
-
+    String url;
     @Parameter(property = "dbUser")
-    protected String user;
-
+    String user;
     @Parameter(property = "dbPass")
-    protected String password;
+    String password;
 
     @Parameter
-    protected String includeObject;
-
+    String includeObject;
     @Parameter
-    protected String excludeObject;
+    String excludeObject;
 
     @Parameter(defaultValue = "false")
-    protected boolean skipCompatibilityCheck;
+    boolean skipCompatibilityCheck;
 
     @Parameter
-    protected final List<ReporterParameter> reporters = new ArrayList<>();
+    final List<ReporterParameter> reporters = new ArrayList<>();
 
     @Parameter
-    protected final List<String> paths = new ArrayList<>();
-
-    /**
-     * Sources Configuration
-     */
+    final List<String> paths = new ArrayList<>();
 
     @Parameter
-    protected final List<Resource> sources = new ArrayList<>();
+    final List<Resource> sources = new ArrayList<>();
+    @Parameter
+    String sourcesOwner;
+    @Parameter
+    String sourcesRegexExpression;
+    @Parameter
+    Integer sourcesOwnerSubexpression;
+    @Parameter
+    Integer sourcesNameSubexpression;
+    @Parameter
+    Integer sourcesTypeSubexpression;
+    @Parameter
+    List<CustomTypeMapping> sourcesCustomTypeMapping;
 
     @Parameter
-    private String sourcesOwner;
+    final List<Resource> tests = new ArrayList<>();
+    @Parameter
+    String testsOwner;
+    @Parameter
+    String testsRegexExpression;
+    @Parameter
+    Integer testsOwnerSubexpression;
+    @Parameter
+    Integer testsNameSubexpression;
+    @Parameter
+    Integer testsTypeSubexpression;
+    @Parameter
+    List<CustomTypeMapping> testsCustomTypeMapping;
 
     @Parameter
-    private String sourcesRegexExpression;
+    final Set<String> tags = new LinkedHashSet<>();
 
     @Parameter
-    private Integer sourcesOwnerSubexpression;
+    boolean randomTestOrder;
 
     @Parameter
-    private Integer sourcesNameSubexpression;
-
-    @Parameter
-    private Integer sourcesTypeSubexpression;
-
-    @Parameter
-    private List<CustomTypeMapping> sourcesCustomTypeMapping;
-
-    /**
-     * Tests Configuration
-     */
-    @Parameter
-    protected final List<Resource> tests = new ArrayList<>();
-
-    @Parameter
-    private String testsOwner;
-
-    @Parameter
-    private String testsRegexExpression;
-
-    @Parameter
-    private Integer testsOwnerSubexpression;
-
-    @Parameter
-    private Integer testsNameSubexpression;
-
-    @Parameter
-    private Integer testsTypeSubexpression;
-
-    @Parameter
-    private List<CustomTypeMapping> testsCustomTypeMapping;
-
-    @Parameter
-    private final Set<String> tags = new LinkedHashSet<>();
-
-    @Parameter
-    private boolean randomTestOrder;
-
-    @Parameter
-    private Integer randomTestOrderSeed;
+    Integer randomTestOrderSeed;
 
     @Parameter(defaultValue = "${project.build.directory}", readonly = true)
-    protected String targetDir;
+    String targetDir;
 
     @Parameter(defaultValue = "${maven.test.failure.ignore}")
-    protected boolean ignoreFailure;
+    boolean ignoreFailure;
 
     @Parameter(property = "skipUtplsqlTests", defaultValue = "false")
-    protected boolean skipUtplsqlTests;
+    boolean skipUtplsqlTests;
 
     @Parameter
-    protected boolean dbmsOutput;
+    boolean dbmsOutput;
 
-    /**
-     * Color in the console, bases on Maven logging configuration.
-     */
-    private final boolean colorConsole = MessageUtils.isColorEnabled();
+    private final SqlFileScanner sqlFileScanner = new SqlFileScanner();
 
-    private ReportWriter reportWriter;
-
-    private final DatabaseInformation databaseInformation = new DefaultDatabaseInformation();
-
-    /**
-     * Executes the plugin.
-     */
     @Override
     public void execute() throws MojoExecutionException {
         if (skipUtplsqlTests) {
             getLog().info("utPLSQLTests are skipped.");
         } else {
-            getLog().debug("Java Api Version = " + JavaApiVersionInfo.getVersion());
-            loadConfFromEnvironment();
+            getLog().debug("Java API Version = " + JavaApiVersionInfo.getVersion());
 
             Connection connection = null;
+            ReportWriter reportWriter = null;
             try {
                 FileMapperOptions sourceMappingOptions = buildSourcesOptions();
                 FileMapperOptions testMappingOptions = buildTestsOptions();
+                setDbConfiguration();
+
                 OracleDataSource ds = new OracleDataSource();
                 ds.setURL(url);
                 ds.setUser(user);
                 ds.setPassword(password);
                 connection = ds.getConnection();
 
-                Version utlVersion = this.databaseInformation.getUtPlsqlFrameworkVersion(connection);
+                Version utlVersion = new DefaultDatabaseInformation().getUtPlsqlFrameworkVersion(connection);
                 getLog().info("utPLSQL Version = " + utlVersion);
 
-                List<Reporter> reporterList = initReporters(connection, utlVersion, ReporterFactory.createEmpty());
+                reportWriter = new ReportWriter(targetDir, utlVersion, getLog());
+
+                List<Reporter> reporterList = initReporters(connection, reportWriter, ReporterFactory.createEmpty());
 
                 logParameters(sourceMappingOptions, testMappingOptions, reporterList);
 
@@ -190,7 +163,7 @@ public class UtPLSQLMojo extends AbstractMojo {
                         .sourceMappingOptions(sourceMappingOptions)
                         .testMappingOptions(testMappingOptions)
                         .skipCompatibilityCheck(skipCompatibilityCheck)
-                        .colorConsole(colorConsole)
+                        .colorConsole(MessageUtils.isColorEnabled())
                         .addTags(tags)
                         .randomTestOrder(randomTestOrder)
                         .randomTestOrderSeed(randomTestOrderSeed)
@@ -199,11 +172,12 @@ public class UtPLSQLMojo extends AbstractMojo {
                 if (StringUtils.isNotBlank(excludeObject)) {
                     runner.excludeObject(excludeObject);
                 }
-                if (StringUtils.isNotBlank(includeObject)) {
+                {
                     runner.includeObject(includeObject);
                 }
+                if (StringUtils.isNotBlank(includeObject))
 
-                runner.run(connection);
+                    runner.run(connection);
 
             } catch (SomeTestsFailedException e) {
                 if (!this.ignoreFailure) {
@@ -214,19 +188,20 @@ public class UtPLSQLMojo extends AbstractMojo {
             } finally {
                 try {
                     if (connection != null) {
-                        reportWriter.writeReports(connection);
-
+                        if (reportWriter != null) {
+                            reportWriter.writeReports(connection);
+                        }
                         DBHelper.disableDBMSOutput(connection);
                         connection.close();
                     }
-                } catch (Exception e) {
+                } catch (SQLException e) {
                     getLog().error(e.getMessage(), e);
                 }
             }
         }
     }
 
-    private void loadConfFromEnvironment() {
+    private void setDbConfiguration() {
         if (StringUtils.isEmpty(url)) {
             url = System.getProperty("dbUrl");
         }
@@ -238,48 +213,46 @@ public class UtPLSQLMojo extends AbstractMojo {
         }
     }
 
-    private FileMapperOptions buildSourcesOptions() throws MojoExecutionException {
+    FileMapperOptions buildSourcesOptions() throws MojoExecutionException {
         try {
             if (sources.isEmpty()) {
-                File defaultSourceDirectory = new File(project.getBasedir(), PluginDefault.SOURCE_DIRECTORY);
+                File defaultSourceDirectory = new File(project.getBasedir(), Defaults.SOURCE_DIRECTORY);
                 if (defaultSourceDirectory.exists()) {
-                    sources.add(PluginDefault.buildDefaultSource());
+                    sources.add(Defaults.buildDefaultSource());
                 } else {
                     return new FileMapperOptions(new ArrayList<>());
                 }
             }
 
-            List<String> scripts = SqlScannerHelper.findSqlScripts(project.getBasedir(), sources,
-                    PluginDefault.SOURCE_DIRECTORY, PluginDefault.SOURCE_FILE_PATTERN);
+            List<String> scripts = sqlFileScanner.findSqlScripts(project.getBasedir(), sources,
+                    Defaults.SOURCE_DIRECTORY, Defaults.SOURCE_FILE_PATTERN);
             return createFileMapperOptions(scripts, sourcesOwner, sourcesRegexExpression, sourcesOwnerSubexpression,
                     sourcesNameSubexpression, sourcesTypeSubexpression, sourcesCustomTypeMapping);
 
         } catch (Exception e) {
             throw new MojoExecutionException("Invalid <SOURCES> in your pom.xml", e);
         }
-
     }
 
-    private FileMapperOptions buildTestsOptions() throws MojoExecutionException {
+    FileMapperOptions buildTestsOptions() throws MojoExecutionException {
         try {
             if (tests.isEmpty()) {
-                File defaultTestDirectory = new File(project.getBasedir(), PluginDefault.TEST_DIRECTORY);
+                File defaultTestDirectory = new File(project.getBasedir(), Defaults.TEST_DIRECTORY);
                 if (defaultTestDirectory.exists()) {
-                    tests.add(PluginDefault.buildDefaultTest());
+                    tests.add(Defaults.buildDefaultTest());
                 } else {
                     return new FileMapperOptions(new ArrayList<>());
                 }
             }
 
-            List<String> scripts = SqlScannerHelper.findSqlScripts(project.getBasedir(), tests, PluginDefault.TEST_DIRECTORY,
-                    PluginDefault.TEST_FILE_PATTERN);
+            List<String> scripts = sqlFileScanner.findSqlScripts(project.getBasedir(), tests, Defaults.TEST_DIRECTORY,
+                    Defaults.TEST_FILE_PATTERN);
             return createFileMapperOptions(scripts, testsOwner, testsRegexExpression, testsOwnerSubexpression,
                     testsNameSubexpression, testsTypeSubexpression, testsCustomTypeMapping);
 
         } catch (Exception e) {
             throw new MojoExecutionException("Invalid <TESTS> in your pom.xml: " + e.getMessage());
         }
-
     }
 
     private FileMapperOptions createFileMapperOptions(List<String> scripts, String objectOwner, String regexPattern,
@@ -290,45 +263,34 @@ public class UtPLSQLMojo extends AbstractMojo {
         if (StringUtils.isNotEmpty(objectOwner)) {
             fileMapperOptions.setObjectOwner(objectOwner);
         }
-
         if (StringUtils.isNotEmpty(regexPattern)) {
             fileMapperOptions.setRegexPattern(regexPattern);
         }
-
         if (ownerSubExpression != null) {
             fileMapperOptions.setOwnerSubExpression(ownerSubExpression);
         }
-
         if (nameSubExpression != null) {
             fileMapperOptions.setNameSubExpression(nameSubExpression);
         }
-
         if (typeSubExpression != null) {
             fileMapperOptions.setTypeSubExpression(typeSubExpression);
         }
-
         if (typeMappings != null && !typeMappings.isEmpty()) {
             fileMapperOptions.setTypeMappings(typeMappings.stream()
                     .map(mapping -> new KeyValuePair(mapping.getCustomMapping(), mapping.getType()))
                     .collect(Collectors.toList()));
         }
-
         return fileMapperOptions;
     }
 
-    private List<Reporter> initReporters(Connection connection, Version utlVersion, ReporterFactory reporterFactory)
-            throws SQLException {
-
+    List<Reporter> initReporters(Connection connection, ReportWriter reportWriter, ReporterFactory reporterFactory) throws SQLException {
         List<Reporter> reporterList = new ArrayList<>();
-        reportWriter = new ReportWriter(targetDir, utlVersion, getLog());
-
         if (reporters.isEmpty()) {
             ReporterParameter reporterParameter = new ReporterParameter();
             reporterParameter.setConsoleOutput(true);
             reporterParameter.setName(CoreReporters.UT_DOCUMENTATION_REPORTER.name());
             reporters.add(reporterParameter);
         }
-
         for (ReporterParameter reporterParameter : reporters) {
             Reporter reporter = reporterFactory.createReporter(reporterParameter.getName());
             reporter.init(connection);
@@ -344,7 +306,6 @@ public class UtPLSQLMojo extends AbstractMojo {
                 reportWriter.addReporter(reporterParameter, reporter);
             }
         }
-
         return reporterList;
     }
 
@@ -363,6 +324,48 @@ public class UtPLSQLMojo extends AbstractMojo {
 
             log.debug("tests=");
             testMappingOptions.getFilePaths().forEach(log::debug);
+        }
+    }
+
+    /**
+     * This class provides methods to retrieve the list of resources in the default {@literal <source> and <test>} directories.
+     *
+     * @author Alberto Hernández
+     * @author Simon Martinelli
+     */
+    private static class Defaults {
+
+        public static final String SOURCE_DIRECTORY = "src/main/plsql";
+        public static final String TEST_DIRECTORY = "src/test/plsql";
+        public static final String SOURCE_FILE_PATTERN = "**/*.*";
+        public static final String TEST_FILE_PATTERN = "**/*.pkg";
+
+        private Defaults() {
+        }
+
+        /**
+         * This method returns {@link Resource} for the default {@code source} directory
+         *
+         * @return a {@link Resource}
+         */
+        public static Resource buildDefaultSource() {
+            return buildDirectory(SOURCE_DIRECTORY, SOURCE_FILE_PATTERN);
+        }
+
+        /**
+         * This method returns {@link Resource} for the default {@code test} directory
+         *
+         * @return a {@link Resource}
+         */
+        public static Resource buildDefaultTest() {
+            return buildDirectory(TEST_DIRECTORY, TEST_FILE_PATTERN);
+        }
+
+        private static Resource buildDirectory(String directory, String includes) {
+            Resource resource = new Resource();
+            resource.setDirectory(directory);
+            resource.setIncludes(Collections.singletonList(includes));
+            return resource;
         }
     }
 }

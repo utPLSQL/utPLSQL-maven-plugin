@@ -1,4 +1,4 @@
-package org.utplsql.maven.plugin.reporter;
+package org.utplsql.maven.plugin.io;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -7,7 +7,7 @@ import org.utplsql.api.Version;
 import org.utplsql.api.outputBuffer.OutputBuffer;
 import org.utplsql.api.outputBuffer.OutputBufferProvider;
 import org.utplsql.api.reporter.Reporter;
-import org.utplsql.maven.plugin.ReporterParameter;
+import org.utplsql.maven.plugin.model.ReporterParameter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,7 +29,7 @@ import static java.lang.String.format;
  */
 public class ReportWriter {
 
-    private final List<Pair<Reporter, ReporterParameter>> listReporters;
+    private final List<Pair<Reporter, ReporterParameter>> reporters;
 
     private final String outputDirectory;
 
@@ -45,7 +45,7 @@ public class ReportWriter {
      * @param log             the Maven log
      */
     public ReportWriter(String outputDirectory, Version databaseVersion, Log log) {
-        this.listReporters = new ArrayList<>();
+        this.reporters = new ArrayList<>();
         this.outputDirectory = outputDirectory;
         this.databaseVersion = databaseVersion;
         this.log = log;
@@ -58,7 +58,7 @@ public class ReportWriter {
      * @param reporter  the {@link Reporter}
      */
     public void addReporter(ReporterParameter parameter, Reporter reporter) {
-        listReporters.add(Pair.of(reporter, parameter));
+        reporters.add(Pair.of(reporter, parameter));
     }
 
     /**
@@ -68,9 +68,13 @@ public class ReportWriter {
      * @throws MojoExecutionException if any exception happens
      */
     public void writeReports(Connection connection) throws MojoExecutionException {
-        for (Pair<Reporter, ReporterParameter> pair : listReporters) {
+        for (Pair<Reporter, ReporterParameter> pair : reporters) {
             writeReports(connection, pair.getLeft(), pair.getRight());
         }
+    }
+
+    public List<Pair<Reporter, ReporterParameter>> getReporters() {
+        return reporters;
     }
 
     private void writeReports(Connection connection, Reporter reporter, ReporterParameter reporterParameter) throws MojoExecutionException {

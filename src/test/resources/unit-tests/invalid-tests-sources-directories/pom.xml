@@ -54,15 +54,6 @@
                         </reporter>
                     </reporters>
 
-                    <sources>
-                        <source>
-                            <directory>foo</directory>
-                            <includes>
-                                <include>**/*sql</include>
-                            </includes>
-                        </source>
-                    </sources>
-
                     <tests>
                         <test>
                             <directory>bar</directory>

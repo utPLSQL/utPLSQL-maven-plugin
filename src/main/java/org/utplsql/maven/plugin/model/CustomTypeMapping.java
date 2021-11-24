@@ -1,4 +1,4 @@
-package org.utplsql.maven.plugin;
+package org.utplsql.maven.plugin.model;
 
 /**
  * Bean used by Maven to populate its model.
