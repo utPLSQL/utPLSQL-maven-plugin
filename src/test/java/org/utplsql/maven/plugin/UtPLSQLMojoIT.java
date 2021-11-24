@@ -8,12 +8,12 @@ public class UtPLSQLMojoIT {
 
     @Test
     public void execute() throws MojoExecutionException {
-        UtPLSQLMojo utPlsqlMojo = new UtPLSQLMojo();
-        utPlsqlMojo.project = new MavenProject();
-        utPlsqlMojo.url = "jdbc:oracle:thin:@127.0.0.1:1521:XE";
-        utPlsqlMojo.user = "UT3";
-        utPlsqlMojo.password = "UT3";
+        UtPLSQLMojo utPLSQLMojo = new UtPLSQLMojo();
+        utPLSQLMojo.project = new MavenProject();
+        utPLSQLMojo.url = "jdbc:oracle:thin:@127.0.0.1:1521:XE";
+        utPLSQLMojo.user = "UT3";
+        utPLSQLMojo.password = "UT3";
 
-        utPlsqlMojo.execute();
+        utPLSQLMojo.execute();
     }
 }
