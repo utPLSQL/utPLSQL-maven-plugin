@@ -11,13 +11,13 @@ import java.io.File;
 
 import static org.junit.Assert.assertTrue;
 
-public class ReportWriterTest {
+public class UtPlsqlMojoTest {
 
-    private static UtPLSQLMojo utPLSQLMojo;
+    private static UtPlsqlMojo utPLSQLMojo;
 
     @BeforeClass
     public static void setUp() {
-        utPLSQLMojo = new UtPLSQLMojo();
+        utPLSQLMojo = new UtPlsqlMojo();
         utPLSQLMojo.project = new MavenProject();
         utPLSQLMojo.targetDir = "target";
 

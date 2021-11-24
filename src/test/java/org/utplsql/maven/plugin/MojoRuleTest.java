@@ -1,28 +1,15 @@
 package org.utplsql.maven.plugin;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.MojoRule;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.utplsql.api.DBHelper;
 import org.utplsql.api.FileMapperOptions;
-import org.utplsql.api.Version;
-import org.utplsql.api.reporter.Reporter;
-import org.utplsql.api.reporter.ReporterFactory;
-import org.utplsql.maven.plugin.io.ReportWriter;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -30,38 +17,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({DBHelper.class, ReporterFactory.class})
 public class MojoRuleTest {
 
     @Rule
     public final MojoRule rule = new MojoRule();
-
-    @Mock
-    public Connection mockConnection;
-
-    @Mock
-    public Version mockVersion;
-
-    @Mock
-    public ReporterFactory mockReporterFactory;
-
-    @Before
-    public void setUp() throws Exception {
-        mockStatic(DBHelper.class);
-        when(DBHelper.getDatabaseFrameworkVersion(mockConnection)).thenReturn(mockVersion);
-
-        mockStatic(ReporterFactory.class);
-        when(ReporterFactory.createEmpty()).thenReturn(mockReporterFactory);
-    }
 
     /**
      * Invalid Sources Directory
@@ -72,7 +32,7 @@ public class MojoRuleTest {
      */
     @Test
     public void invalidSourcesDirectory() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalid-sources-directories/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -90,7 +50,7 @@ public class MojoRuleTest {
      */
     @Test
     public void invalidTestsDirectory() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalid-tests-sources-directories/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -108,7 +68,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesTestsParameters() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/test-sources-tests-params/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -151,7 +111,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterDoesNotExist() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule.lookupConfiguredMojo(
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule.lookupConfiguredMojo(
                 new File("src/test/resources/unit-tests/test-no-sources-tests-params/directory-does-not-exist/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -173,7 +133,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterDoesNotExistButDefaultDirectoryExists() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/test-no-sources-tests-params/directory-exists/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -199,7 +159,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterHaveNotDirectoryTag() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partial-source-and-test-tag/missing-directory/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -226,7 +186,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterHaveNotIncludesTag() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partial-source-and-test-tag/missing-includes/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -248,75 +208,42 @@ public class MojoRuleTest {
      */
     @Test
     public void defaultConsoleBehaviour() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-console-output-behaviour/"), "test");
         assertNotNull(utplsqlMojo);
 
-        List<Reporter> reporterList = new ArrayList<>();
-        when(mockReporterFactory.createReporter(anyString())).thenAnswer(invocation -> {
-            Reporter mockReporter = mock(Reporter.class);
-            reporterList.add(mockReporter);
-            return mockReporter;
-        });
-
-        ReportWriter reportWriter = new ReportWriter(utplsqlMojo.targetDir, mockVersion, utplsqlMojo.getLog());
-        utplsqlMojo.initReporters(mockConnection, reportWriter, mockReporterFactory);
-
-        // Assert that we called the creation reporter with the correct parameters.
-        verify(mockReporterFactory, times(2)).createReporter("UT_DOCUMENTATION_REPORTER");
-        verify(mockReporterFactory).createReporter("UT_COVERAGE_SONAR_REPORTER");
-        verify(mockReporterFactory).createReporter("UT_SONAR_TEST_REPORTER");
-        verifyNoMoreInteractions(mockReporterFactory);
-
-        // Assert that all reporters have been initialized.
-        for (Reporter mockReporter : reporterList) {
-            verify(mockReporter).init(mockConnection);
-            verifyNoMoreInteractions(mockReporter);
-        }
+        utplsqlMojo.execute();
 
         // Assert that we added only the necessary reporters to the writer.
-        List<Pair<Reporter, ReporterParameter>> reporters = reportWriter.getReporters();
+        List<ReporterParameter> reporters = utplsqlMojo.reporters;
         assertEquals(3, reporters.size());
 
-        ReporterParameter reporterParameter1 = reporters.get(0).getRight();
+        ReporterParameter reporterParameter1 = reporters.get(0);
         assertTrue(reporterParameter1.isConsoleOutput());
         assertFalse(reporterParameter1.isFileOutput());
 
-        ReporterParameter reporterParameter2 = reporters.get(1).getRight();
+        ReporterParameter reporterParameter2 = reporters.get(1);
         assertFalse(reporterParameter2.isConsoleOutput());
         assertTrue(reporterParameter2.isFileOutput());
 
-        ReporterParameter reporterParameter3 = reporters.get(2).getRight();
+        ReporterParameter reporterParameter3 = reporters.get(2);
         assertTrue(reporterParameter3.isConsoleOutput());
         assertTrue(reporterParameter3.isFileOutput());
     }
 
     /**
-     * Add Default Reporter
+     * Default Reporter
      */
     @Test
-    public void addDefaultReporter() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-console-output-behaviour/"), "test");
+    public void defaultReporter() throws Exception {
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-reporter/"), "test");
         assertNotNull(utplsqlMojo);
 
-        List<Reporter> reporterList = new ArrayList<>();
-        when(mockReporterFactory.createReporter(anyString())).thenAnswer(invocation -> {
-            Reporter mockReporter = mock(Reporter.class);
-            when(mockReporter.getTypeName()).thenReturn(invocation.getArgument(0));
-            reporterList.add(mockReporter);
-            return mockReporter;
-        });
+        utplsqlMojo.execute();
 
-        List<ReporterParameter> reporterParameters = utplsqlMojo.reporters;
-        reporterParameters.clear();
-
-        ReportWriter reportWriter = new ReportWriter(utplsqlMojo.targetDir, mockVersion, utplsqlMojo.getLog());
-        utplsqlMojo.initReporters(mockConnection, reportWriter, mockReporterFactory);
-
-        assertEquals(1, reporterList.size());
-        assertEquals("UT_DOCUMENTATION_REPORTER", reporterList.get(0).getTypeName());
-        verify(reporterList.get(0)).init(mockConnection);
+        assertEquals(1, utplsqlMojo.reporters.size());
+        assertEquals("UT_DOCUMENTATION_REPORTER", utplsqlMojo.reporters.get(0).getName());
     }
 
     /**
@@ -324,7 +251,7 @@ public class MojoRuleTest {
      */
     @Test
     public void skipUtplsqlTests() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/skip-utplsql-tests/"), "test");
         assertNotNull(utplsqlMojo);
 

@@ -14,9 +14,9 @@
     <url>http://utplsql.org</url>
 
     <properties>
-        <dbUrl>jdbc:oracle:thin:@180.129.3.101:1521:xe</dbUrl>
-        <dbUser>ut3</dbUser>
-        <dbPass>XNtxj8eEgA6X6b6f</dbPass>
+        <dbUrl>jdbc:oracle:thin:@127.0.0.1:1521:xe</dbUrl>
+        <dbUser>UT3</dbUser>
+        <dbPass>UT3</dbPass>
     </properties>
 
     <build>
@@ -37,7 +37,7 @@
                     <ignoreFailure>false</ignoreFailure>
 
                     <paths>
-                        <path>:plsql</path>
+                        <path>app</path>
                     </paths>
 
                     <reporters>
@@ -45,12 +45,9 @@
                             <name>UT_DOCUMENTATION_REPORTER</name>
                         </reporter>
                         <reporter>
-                            <name>UT_DOCUMENTATION_REPORTER</name>
-                            <consoleOutput>false</consoleOutput>
-                        </reporter>
-                        <reporter>
                             <name>UT_COVERAGE_SONAR_REPORTER</name>
                             <fileOutput>coverage-sonar-report.xml</fileOutput>
+                            <consoleOutput>false</consoleOutput>
                         </reporter>
                         <reporter>
                             <name>UT_SONAR_TEST_REPORTER</name>
@@ -58,25 +55,6 @@
                             <consoleOutput>true</consoleOutput>
                         </reporter>
                     </reporters>
-
-                    <sources>
-                        <source>
-                            <directory>foo</directory>
-                            <includes>
-                                <include>**/*sql</include>
-                            </includes>
-                        </source>
-                    </sources>
-
-                    <tests>
-                        <test>
-                            <directory>bar</directory>
-                            <includes>
-                                <include>**/*.spc</include>
-                                <include>**/*.bdy</include>
-                            </includes>
-                        </test>
-                    </tests>
                 </configuration>
             </plugin>
         </plugins>

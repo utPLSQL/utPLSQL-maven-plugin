@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  * @author Simon Martinelli
  */
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST)
-public class UtPLSQLMojo extends AbstractMojo {
+public class UtPlsqlMojo extends AbstractMojo {
 
     @Parameter(readonly = true, defaultValue = "${project}")
     MavenProject project;

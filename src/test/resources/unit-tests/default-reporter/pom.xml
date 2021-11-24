@@ -21,6 +21,8 @@
 
     <build>
 
+        <directory>../../../target/</directory>
+
         <plugins>
             <plugin>
                 <groupId>org.utplsql</groupId>
@@ -32,23 +34,15 @@
                 </goals>
 
                 <configuration>
-
                     <ignoreFailure>false</ignoreFailure>
 
                     <paths>
-                        <path>:plsql</path>
+                        <path>app</path>
                     </paths>
 
                     <reporters>
                         <reporter>
-                            <name>UT_COVERAGE_SONAR_REPORTER</name>
-                            <fileOutput>utplsql/coverage-sonar-report.xml</fileOutput>
-                            <consoleOutput>true</consoleOutput>
-                        </reporter>
-                        <reporter>
-                            <name>UT_SONAR_TEST_REPORTER</name>
-                            <fileOutput>utplsql/sonar-test-report.xml</fileOutput>
-                            <consoleOutput>true</consoleOutput>
+                            <name>UT_DOCUMENTATION_REPORTER</name>
                         </reporter>
                     </reporters>
                 </configuration>
