@@ -117,8 +117,6 @@ public class UtPlsqlMojoTest {
 
     @Test
     public void defaultReport() throws MojoExecutionException {
-        utPLSQLMojo.execute();
-
         final ByteArrayOutputStream console = new ByteArrayOutputStream();
         System.setOut(new PrintStream(console));
 
