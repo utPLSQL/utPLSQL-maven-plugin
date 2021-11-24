@@ -57,7 +57,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Maven verify and sonar
-        run: mvn verify sonar:sonar -Pcoverage -Dsonar.projectKey=org.utplsql:utplsql-maven-plugin
+        run: mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKey=org.utplsql:utplsql-maven-plugin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

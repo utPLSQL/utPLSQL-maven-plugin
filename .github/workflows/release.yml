@@ -51,7 +51,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Maven deploy release
-        run: mvn deploy -Prelease
+        run: mvn clean deploy -Prelease
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
