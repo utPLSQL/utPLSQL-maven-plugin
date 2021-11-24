@@ -78,7 +78,7 @@ public class MojoRuleTest {
 
         MojoExecutionException exception = assertThrows(MojoExecutionException.class, utplsqlMojo::execute);
 
-        assertEquals("Invalid <SOURCES> in your pom.xml", exception.getMessage());
+        assertEquals("Directory foo does not exist!", exception.getMessage());
     }
 
     /**
@@ -96,7 +96,7 @@ public class MojoRuleTest {
 
         MojoExecutionException exception = assertThrows(MojoExecutionException.class, utplsqlMojo::execute);
 
-        assertEquals("Invalid <TESTS> in your pom.xml: Invalid <directory> bar in resource. Check your pom.xml", exception.getMessage());
+        assertEquals("Directory bar does not exist!", exception.getMessage());
     }
 
     /**

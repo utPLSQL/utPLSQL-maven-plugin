@@ -212,7 +212,7 @@ public class UtPlsqlMojo extends AbstractMojo {
         }
     }
 
-    FileMapperOptions buildSourcesOptions() {
+    FileMapperOptions buildSourcesOptions() throws MojoExecutionException {
         if (sources.isEmpty()) {
             File defaultSourceDirectory = new File(project.getBasedir(), Defaults.SOURCE_DIRECTORY);
             if (defaultSourceDirectory.exists()) {
