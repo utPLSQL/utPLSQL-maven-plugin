@@ -1,4 +1,4 @@
-package org.utplsql.maven.plugin.model;
+package org.utplsql.maven.plugin;
 
 import org.codehaus.plexus.util.StringUtils;
 

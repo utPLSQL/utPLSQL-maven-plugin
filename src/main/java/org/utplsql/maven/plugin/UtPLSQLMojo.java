@@ -25,8 +25,7 @@ import org.utplsql.api.reporter.Reporter;
 import org.utplsql.api.reporter.ReporterFactory;
 import org.utplsql.maven.plugin.helper.PluginDefault;
 import org.utplsql.maven.plugin.helper.SqlScannerHelper;
-import org.utplsql.maven.plugin.model.ReporterParameter;
-import org.utplsql.maven.plugin.reporter.ReporterWriter;
+import org.utplsql.maven.plugin.reporter.ReportWriter;
 
 import java.io.File;
 import java.sql.Connection;
@@ -35,6 +34,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class expose the {@link TestRunner} interface to Maven.
@@ -147,7 +147,7 @@ public class UtPLSQLMojo extends AbstractMojo {
      */
     private final boolean colorConsole = MessageUtils.isColorEnabled();
 
-    private ReporterWriter reporterWriter;
+    private ReportWriter reportWriter;
 
     private final DatabaseInformation databaseInformation = new DefaultDatabaseInformation();
 
@@ -214,7 +214,7 @@ public class UtPLSQLMojo extends AbstractMojo {
             } finally {
                 try {
                     if (connection != null) {
-                        reporterWriter.writeReporters(connection);
+                        reportWriter.writeReports(connection);
 
                         DBHelper.disableDBMSOutput(connection);
                         connection.close();
@@ -308,11 +308,9 @@ public class UtPLSQLMojo extends AbstractMojo {
         }
 
         if (typeMappings != null && !typeMappings.isEmpty()) {
-            fileMapperOptions.setTypeMappings(new ArrayList<>());
-            for (CustomTypeMapping typeMapping : typeMappings) {
-                fileMapperOptions.getTypeMappings()
-                        .add(new KeyValuePair(typeMapping.getCustomMapping(), typeMapping.getType()));
-            }
+            fileMapperOptions.setTypeMappings(typeMappings.stream()
+                    .map(mapping -> new KeyValuePair(mapping.getCustomMapping(), mapping.getType()))
+                    .collect(Collectors.toList()));
         }
 
         return fileMapperOptions;
@@ -322,7 +320,7 @@ public class UtPLSQLMojo extends AbstractMojo {
             throws SQLException {
 
         List<Reporter> reporterList = new ArrayList<>();
-        reporterWriter = new ReporterWriter(targetDir, utlVersion, getLog());
+        reportWriter = new ReportWriter(targetDir, utlVersion, getLog());
 
         if (reporters.isEmpty()) {
             ReporterParameter reporterParameter = new ReporterParameter();
@@ -343,7 +341,7 @@ public class UtPLSQLMojo extends AbstractMojo {
 
             // Only added the reporter if at least one of the output is required
             if (StringUtils.isNotBlank(reporterParameter.getFileOutput()) || reporterParameter.isConsoleOutput()) {
-                reporterWriter.addReporter(reporterParameter, reporter);
+                reportWriter.addReporter(reporterParameter, reporter);
             }
         }
 

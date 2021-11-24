@@ -49,7 +49,7 @@ public class UtPLSQLMojoIT {
         Verifier verifier = createVerifier(testProject);
         verifier.executeGoal("test");
 
-        checkReportsGenerated(testFolder, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
+        checkReports(testFolder, "utplsql/sonar-test-report.xml", "utplsql/coverage-sonar-report.xml");
     }
 
     @Test
@@ -60,7 +60,7 @@ public class UtPLSQLMojoIT {
         Verifier verifier = createVerifier(testProject);
         verifier.executeGoal("test");
 
-        checkReportsGenerated(testFolder, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
+        checkReports(testFolder, "utplsql/sonar-test-report.xml", "utplsql/coverage-sonar-report.xml");
     }
 
     @Test
@@ -71,7 +71,7 @@ public class UtPLSQLMojoIT {
         Verifier verifier = createVerifier(testProject);
         verifier.executeGoal("test");
 
-        checkReportsGenerated(testFolder, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
+        checkReports(testFolder, "utplsql/sonar-test-report.xml", "utplsql/coverage-sonar-report.xml");
     }
 
     @Test
@@ -82,7 +82,7 @@ public class UtPLSQLMojoIT {
         Verifier verifier = createVerifier(testProject);
         verifier.executeGoal("test");
 
-        checkReportsGenerated(testFolder, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
+        checkReports(testFolder, "utplsql/sonar-test-report.xml", "utplsql/coverage-sonar-report.xml");
     }
 
     @Test
@@ -102,7 +102,7 @@ public class UtPLSQLMojoIT {
         Verifier verifier = createVerifier(testProject);
         verifier.executeGoal("test");
 
-        checkReportsGenerated(testFolder, "utplsql/sonar-test-reporter.xml");
+        checkReports(testFolder, "utplsql/sonar-test-report.xml");
     }
 
     @Test
@@ -124,12 +124,12 @@ public class UtPLSQLMojoIT {
      * @param testFolder Project name
      * @param files      Files to compare
      */
-    private void checkReportsGenerated(String testFolder, String... files) throws IOException {
+    private void checkReports(String testFolder, String... files) throws IOException {
         for (String filename : files) {
             File outputFile = new File("target/test-classes/" + testFolder + "/target", filename);
             File expectedOutputFile = new File("target/test-classes/" + testFolder + "/expected-output", filename);
 
-            assertTrue("The reporter for " + filename + " was not generated", outputFile.exists());
+            assertTrue("The report for " + filename + " was not generated", outputFile.exists());
 
             try (Stream<String> stream = Files.lines(Paths.get("target", "test-classes", testFolder, "target", filename))) {
                 String outputContent = stream

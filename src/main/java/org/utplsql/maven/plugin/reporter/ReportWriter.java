@@ -7,19 +7,27 @@ import org.utplsql.api.Version;
 import org.utplsql.api.outputBuffer.OutputBuffer;
 import org.utplsql.api.outputBuffer.OutputBufferProvider;
 import org.utplsql.api.reporter.Reporter;
-import org.utplsql.maven.plugin.model.ReporterParameter;
+import org.utplsql.maven.plugin.ReporterParameter;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
 
-public class ReporterWriter {
+/**
+ * Writes the reports
+ *
+ * @author Alberto Hernández
+ * @author Simon Martinelli
+ */
+public class ReportWriter {
 
     private final List<Pair<Reporter, ReporterParameter>> listReporters;
 
@@ -32,11 +40,11 @@ public class ReporterWriter {
     /**
      * Constructor of the reporter writer.
      *
-     * @param outputDirectory the reporter output directory
-     * @param databaseVersion the utPLSQL framework version
+     * @param outputDirectory the report output directory
+     * @param databaseVersion the utPLSQL framework {@link Version}
      * @param log             the Maven log
      */
-    public ReporterWriter(String outputDirectory, Version databaseVersion, Log log) {
+    public ReportWriter(String outputDirectory, Version databaseVersion, Log log) {
         this.listReporters = new ArrayList<>();
         this.outputDirectory = outputDirectory;
         this.databaseVersion = databaseVersion;
@@ -44,25 +52,23 @@ public class ReporterWriter {
     }
 
     /**
-     * Adds a new reporter to the writter.
+     * Adds a new reporter to the writer.
      *
-     * @param parameter the reporter parameter
-     * @param reporter  the reporter Object
+     * @param parameter the {@link ReporterParameter}
+     * @param reporter  the {@link Reporter}
      */
     public void addReporter(ReporterParameter parameter, Reporter reporter) {
         listReporters.add(Pair.of(reporter, parameter));
     }
 
     /**
-     * Writes the reporters to the output.
+     * Writes the reports to the output.
      *
-     * @param connection the database connection
+     * @param connection The database {@link Connection}
      * @throws MojoExecutionException if any exception happens
      */
-    public void writeReporters(Connection connection) throws MojoExecutionException {
-        log.debug("Write Reporters");
+    public void writeReports(Connection connection) throws MojoExecutionException {
         for (Pair<Reporter, ReporterParameter> pair : listReporters) {
-            log.debug("Write writeReports " + pair.getRight().getName());
             writeReports(connection, pair.getLeft(), pair.getRight());
         }
     }
@@ -74,21 +80,19 @@ public class ReporterWriter {
             List<PrintStream> printStreams = new ArrayList<>();
 
             if (reporterParameter.isFileOutput()) {
-
                 File file = new File(reporterParameter.getFileOutput());
                 if (!file.isAbsolute()) {
                     file = new File(outputDirectory, reporterParameter.getFileOutput());
                 }
 
                 if (!file.getParentFile().exists()) {
-                    log.debug("Creating directory for reporter file " + file.getAbsolutePath());
+                    log.debug("Creating directory for report file " + file.getAbsolutePath());
                     file.getParentFile().mkdirs();
                 }
 
                 fileOutputStream = new FileOutputStream(file);
                 log.info(format("Writing report %s to %s", reporter.getTypeName(), file.getAbsolutePath()));
 
-                // Added to the Report
                 printStreams.add(new PrintStream(fileOutputStream));
             }
 
@@ -96,15 +100,17 @@ public class ReporterWriter {
                 log.info(format("Writing report %s to Console", reporter.getTypeName()));
                 printStreams.add(System.out);
             }
+
             buffer.printAvailable(connection, printStreams);
-        } catch (Exception e) {
-            throw new MojoExecutionException("Unexpected error opening file ouput ", e);
+
+        } catch (FileNotFoundException | SQLException e) {
+            throw new MojoExecutionException("Unexpected error opening file output ", e);
         } finally {
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
                 } catch (IOException e) {
-                    log.info(format("Failed to closing the reporting %s", reporterParameter.getClass()));
+                    log.info(format("Failed to closing the report %s", reporterParameter.getClass()));
                 }
             }
         }

@@ -41,7 +41,7 @@
                             <reporters>
                                 <reporter>
                                     <name>UT_SONAR_TEST_REPORTER</name>
-                                    <fileOutput>utplsql/sonar-test-reporter.xml</fileOutput>
+                                    <fileOutput>utplsql/sonar-test-report.xml</fileOutput>
                                     <consoleOutput>true</consoleOutput>
                                 </reporter>
                             </reporters>

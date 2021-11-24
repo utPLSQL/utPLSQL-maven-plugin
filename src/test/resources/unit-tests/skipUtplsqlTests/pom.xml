@@ -52,11 +52,11 @@
                         </reporter>
                         <reporter>
                             <name>UT_COVERAGE_SONAR_REPORTER</name>
-                            <fileOutput>coverage-sonar-reporter.xml</fileOutput>
+                            <fileOutput>coverage-sonar-report.xml</fileOutput>
                         </reporter>
                         <reporter>
                             <name>UT_SONAR_TEST_REPORTER</name>
-                            <fileOutput>utplsql/sonar-test-reporter.xml</fileOutput>
+                            <fileOutput>utplsql/sonar-test-report.xml</fileOutput>
                             <consoleOutput>true</consoleOutput>
                         </reporter>
                     </reporters>

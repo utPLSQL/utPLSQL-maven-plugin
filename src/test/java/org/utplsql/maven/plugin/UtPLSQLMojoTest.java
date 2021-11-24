@@ -16,8 +16,7 @@ import org.utplsql.api.FileMapperOptions;
 import org.utplsql.api.Version;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.api.reporter.ReporterFactory;
-import org.utplsql.maven.plugin.model.ReporterParameter;
-import org.utplsql.maven.plugin.reporter.ReporterWriter;
+import org.utplsql.maven.plugin.reporter.ReportWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -277,8 +276,8 @@ public class UtPLSQLMojoTest {
         }
 
         // Assert that we added only the necessary reporters to the writer.
-        ReporterWriter reporterWriter = Whitebox.getInternalState(utplsqlMojo, "reporterWriter");
-        List<Pair<Reporter, ReporterParameter>> listReporters = Whitebox.getInternalState(reporterWriter, "listReporters");
+        ReportWriter reportWriter = Whitebox.getInternalState(utplsqlMojo, "reportWriter");
+        List<Pair<Reporter, ReporterParameter>> listReporters = Whitebox.getInternalState(reportWriter, "listReporters");
         assertEquals(3, listReporters.size());
 
         ReporterParameter reporterParameter1 = listReporters.get(0).getRight();
