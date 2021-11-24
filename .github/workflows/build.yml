@@ -2,7 +2,7 @@ name: Build and deploy snapshot
 
 on:
   push:
-    branches: [ develop ]
+    branches-ignore: [ main ]
   pull_request:
     branches: [ develop ]
 
