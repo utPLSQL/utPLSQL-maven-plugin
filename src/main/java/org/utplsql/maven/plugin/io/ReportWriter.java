@@ -65,15 +65,16 @@ public class ReportWriter {
      * Writes the reports to the output.
      *
      * @param connection The database {@link Connection}
-     * @throws MojoExecutionException if any exception happens
+     * @throws SQLException if database access fails
+     * @throws IOException  if files can't be written
      */
-    public void writeReports(Connection connection) throws MojoExecutionException {
+    public void writeReports(Connection connection) throws SQLException, IOException {
         for (Pair<Reporter, ReporterParameter> pair : reporters) {
             writeReports(connection, pair.getLeft(), pair.getRight());
         }
     }
 
-    private void writeReports(Connection connection, Reporter reporter, ReporterParameter reporterParameter) throws MojoExecutionException {
+    private void writeReports(Connection connection, Reporter reporter, ReporterParameter reporterParameter) throws IOException, SQLException {
         FileOutputStream fileOutputStream = null;
         try {
             OutputBuffer buffer = OutputBufferProvider.getCompatibleOutputBuffer(databaseVersion, reporter, connection);
@@ -103,15 +104,9 @@ public class ReportWriter {
 
             buffer.printAvailable(connection, printStreams);
 
-        } catch (FileNotFoundException | SQLException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
         } finally {
             if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    log.error(format("Couldn't close the output stream %s", reporterParameter.getClass()));
-                }
+                fileOutputStream.close();
             }
         }
     }

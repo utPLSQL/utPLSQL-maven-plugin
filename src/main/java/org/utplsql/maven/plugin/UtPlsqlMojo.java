@@ -28,6 +28,7 @@ import org.utplsql.maven.plugin.model.CustomTypeMapping;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -193,7 +194,7 @@ public class UtPlsqlMojo extends AbstractMojo {
                         DBHelper.disableDBMSOutput(connection);
                         connection.close();
                     }
-                } catch (SQLException e) {
+                } catch (SQLException | IOException e) {
                     getLog().error(e.getMessage(), e);
                 }
             }
