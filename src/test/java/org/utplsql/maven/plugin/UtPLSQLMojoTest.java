@@ -72,7 +72,7 @@ public class UtPLSQLMojoTest {
      * Then : it should throw a MojoExecutionException
      */
     @Test
-    public void testInvalidSourcesDirectory() throws Exception {
+    public void invalidSourcesDirectory() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalidTestsSourcesDirectories/"), "test");
         assertNotNull(utplsqlMojo);
@@ -90,7 +90,7 @@ public class UtPLSQLMojoTest {
      * Then : it should throw a MojoExecutionException
      */
     @Test
-    public void testInvalidTestsDirectory() throws Exception {
+    public void invalidTestsDirectory() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalidTestsSourcesDirectories/"), "test");
         assertNotNull(utplsqlMojo);
@@ -108,7 +108,7 @@ public class UtPLSQLMojoTest {
      * Then : it should fill all parameters correctly
      */
     @Test
-    public void testSourcesTestsParameters() throws Exception {
+    public void sourcesTestsParameters() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/testSourcesTestsParams/"), "test");
         assertNotNull(utplsqlMojo);
@@ -153,7 +153,7 @@ public class UtPLSQLMojoTest {
      * Then : it should not find any source files
      */
     @Test
-    public void testSourcesAndTestsParameterDoesNotExist() throws Exception {
+    public void sourcesAndTestsParameterDoesNotExist() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule.lookupConfiguredMojo(
                 new File("src/test/resources/unit-tests/testNoSourcesTestsParams/directoryDoesNotExist/"), "test");
         assertNotNull(utplsqlMojo);
@@ -175,7 +175,7 @@ public class UtPLSQLMojoTest {
      * Then : it should find all sources/tests files in default directories
      */
     @Test
-    public void testSourcesAndTestsParameterDoesNotExistButDefaultDirectoryExists() throws Exception {
+    public void sourcesAndTestsParameterDoesNotExistButDefaultDirectoryExists() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/testNoSourcesTestsParams/directoryExists/"), "test");
         assertNotNull(utplsqlMojo);
@@ -201,7 +201,7 @@ public class UtPLSQLMojoTest {
      * Then : it should find all sources/tests files in default directories
      */
     @Test
-    public void testSourcesAndTestsParameterHaveNotDirectoryTag() throws Exception {
+    public void sourcesAndTestsParameterHaveNotDirectoryTag() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partialSourceAndTestTag/missingDirectory/"), "test");
         assertNotNull(utplsqlMojo);
@@ -228,7 +228,7 @@ public class UtPLSQLMojoTest {
      * Then : it should find all sources/tests files in default directories
      */
     @Test
-    public void testSourcesAndTestsParameterHaveNotIncludesTag() throws Exception {
+    public void sourcesAndTestsParameterHaveNotIncludesTag() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partialSourceAndTestTag/missingIncludes/"), "test");
         assertNotNull(utplsqlMojo);
@@ -250,7 +250,7 @@ public class UtPLSQLMojoTest {
      * Default Console Behaviour
      */
     @Test
-    public void testDefaultConsoleBehaviour() throws Exception {
+    public void defaultConsoleBehaviour() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/defaultConsoleOutputBehaviour/"), "test");
         assertNotNull(utplsqlMojo);
@@ -298,7 +298,7 @@ public class UtPLSQLMojoTest {
      * Add Default Reporter
      */
     @Test
-    public void testAddDefaultReporter() throws Exception {
+    public void addDefaultReporter() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/defaultConsoleOutputBehaviour/"), "test");
         assertNotNull(utplsqlMojo);
@@ -325,7 +325,7 @@ public class UtPLSQLMojoTest {
      * Skip utPLSQL Tests
      */
     @Test
-    public void testSkipUtplsqlTests() throws Exception {
+    public void skipUtplsqlTests() throws Exception {
         UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/skipUtplsqlTests/"), "test");
         assertNotNull(utplsqlMojo);

@@ -43,113 +43,78 @@ public class UtPLSQLMojoIT {
     }
 
     @Test
-    public void testSimpleProject() {
-        try {
-            final String PROJECT_NAME = "simple-project";
-            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+    public void simpleProject() throws IOException, VerificationException {
+        final String PROJECT_NAME = "simple-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
-            Verifier verifier = createVerifier(testProject);
-            verifier.executeGoal("test");
+        Verifier verifier = createVerifier(testProject);
+        verifier.executeGoal("test");
 
-            checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception running the test of Definition " + e.getMessage());
-        }
+        checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
     }
 
     @Test
-    public void testRegexProject() {
-        try {
-            final String PROJECT_NAME = "regex-project";
-            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+    public void regexProject() throws IOException, VerificationException {
+        final String PROJECT_NAME = "regex-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
-            Verifier verifier = createVerifier(testProject);
-            verifier.executeGoal("test");
+        Verifier verifier = createVerifier(testProject);
+        verifier.executeGoal("test");
 
-            checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception running the test : " + e.getMessage());
-        }
+        checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
     }
 
     @Test
-    public void testTypeMappingProject() {
-        try {
-            final String PROJECT_NAME = "type-mapping-project";
-            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+    public void typeMappingProject() throws IOException, VerificationException {
+        final String PROJECT_NAME = "type-mapping-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
-            Verifier verifier = createVerifier(testProject);
-            verifier.executeGoal("test");
+        Verifier verifier = createVerifier(testProject);
+        verifier.executeGoal("test");
 
-            checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception running the test : " + e.getMessage());
-        }
+        checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
     }
 
     @Test
-    public void testOwnerParameterProject() {
-        try {
-            final String PROJECT_NAME = "owner-param-project";
-            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+    public void ownerParameterProject() throws IOException, VerificationException {
+        final String PROJECT_NAME = "owner-param-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
-            Verifier verifier = createVerifier(testProject);
-            verifier.executeGoal("test");
+        Verifier verifier = createVerifier(testProject);
+        verifier.executeGoal("test");
 
-            checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception running the test : " + e.getMessage());
-        }
+        checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
     }
 
     @Test
-    public void testMinimalistProject() {
-        try {
-            final String PROJECT_NAME = "minimalist-project";
-            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+    public void minimalistProject() throws IOException, VerificationException {
+        final String PROJECT_NAME = "minimalist-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
-            Verifier verifier = createVerifier(testProject);
-            verifier.executeGoal("test");
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception running the test : " + e.getMessage());
-        }
+        Verifier verifier = createVerifier(testProject);
+        verifier.executeGoal("test");
     }
 
     @Test
-    public void testTagsProject() {
-        try {
-            final String PROJECT_NAME = "tags-project";
-            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+    public void tagsProject() throws IOException, VerificationException {
+        final String PROJECT_NAME = "tags-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
-            Verifier verifier = createVerifier(testProject);
-            verifier.executeGoal("test");
+        Verifier verifier = createVerifier(testProject);
+        verifier.executeGoal("test");
 
-            checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception running the test of Definition " + e.getMessage());
-        }
+        checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml");
     }
 
     @Test
-    public void testSkipUtplsqlTests() {
-        try {
-            final String PROJECT_NAME = "skip-project";
-            File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+    public void skipUtplsqlTests() throws IOException, VerificationException {
+        final String PROJECT_NAME = "skip-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
 
-            Verifier verifier = createVerifier(testProject);
-            verifier.executeGoal("test");
+        Verifier verifier = createVerifier(testProject);
+        verifier.executeGoal("test");
 
-            assertFalse(new File("target/test-classes/" + PROJECT_NAME + "/target").exists());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception running the test of Definition " + e.getMessage());
-        }
+        assertFalse(new File("target/test-classes/" + PROJECT_NAME + "/target").exists());
     }
 
     /**
