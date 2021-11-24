@@ -4,7 +4,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.junit.Test;
 
-public class UtPLSQLMojoIT {
+public class UtPLSQLMojoTest {
 
     @Test
     public void execute() throws MojoExecutionException {
