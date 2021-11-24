@@ -72,7 +72,7 @@ public class MojoRuleTest {
      */
     @Test
     public void invalidSourcesDirectory() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalid-sources-directories/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -90,7 +90,7 @@ public class MojoRuleTest {
      */
     @Test
     public void invalidTestsDirectory() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalid-tests-sources-directories/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -108,11 +108,10 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesTestsParameters() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/test-sources-tests-params/"), "test");
         assertNotNull(utplsqlMojo);
 
-        // TODO : move to another test about reporters
         assertEquals(2, utplsqlMojo.reporters.size());
 
         // check sources
@@ -152,7 +151,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterDoesNotExist() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule.lookupConfiguredMojo(
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule.lookupConfiguredMojo(
                 new File("src/test/resources/unit-tests/test-no-sources-tests-params/directory-does-not-exist/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -174,7 +173,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterDoesNotExistButDefaultDirectoryExists() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/test-no-sources-tests-params/directory-exists/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -200,7 +199,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterHaveNotDirectoryTag() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partial-source-and-test-tag/missing-directory/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -227,7 +226,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterHaveNotIncludesTag() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partial-source-and-test-tag/missing-includes/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -249,7 +248,7 @@ public class MojoRuleTest {
      */
     @Test
     public void defaultConsoleBehaviour() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-console-output-behaviour/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -297,7 +296,7 @@ public class MojoRuleTest {
      */
     @Test
     public void addDefaultReporter() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-console-output-behaviour/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -325,7 +324,7 @@ public class MojoRuleTest {
      */
     @Test
     public void skipUtplsqlTests() throws Exception {
-        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
+        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/skip-utplsql-tests/"), "test");
         assertNotNull(utplsqlMojo);
 

@@ -22,10 +22,10 @@ import org.utplsql.api.exception.SomeTestsFailedException;
 import org.utplsql.api.reporter.CoreReporters;
 import org.utplsql.api.reporter.Reporter;
 import org.utplsql.api.reporter.ReporterFactory;
+import org.utplsql.maven.plugin.io.ReportWriter;
+import org.utplsql.maven.plugin.io.SqlFileScanner;
 import org.utplsql.maven.plugin.model.CustomTypeMapping;
 import org.utplsql.maven.plugin.model.ReporterParameter;
-import org.utplsql.maven.plugin.io.SqlFileScanner;
-import org.utplsql.maven.plugin.io.ReportWriter;
 
 import java.io.File;
 import java.sql.Connection;
@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  * @author Simon Martinelli
  */
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST)
-public class UtPLSQLMojo extends AbstractMojo {
+public class UtPlsqlMojo extends AbstractMojo {
 
     @Parameter(readonly = true, defaultValue = "${project}")
     MavenProject project;
@@ -212,46 +212,36 @@ public class UtPLSQLMojo extends AbstractMojo {
         }
     }
 
-    FileMapperOptions buildSourcesOptions() throws MojoExecutionException {
-        try {
-            if (sources.isEmpty()) {
-                File defaultSourceDirectory = new File(project.getBasedir(), Defaults.SOURCE_DIRECTORY);
-                if (defaultSourceDirectory.exists()) {
-                    sources.add(Defaults.buildDefaultSource());
-                } else {
-                    return new FileMapperOptions(new ArrayList<>());
-                }
+    FileMapperOptions buildSourcesOptions() {
+        if (sources.isEmpty()) {
+            File defaultSourceDirectory = new File(project.getBasedir(), Defaults.SOURCE_DIRECTORY);
+            if (defaultSourceDirectory.exists()) {
+                sources.add(Defaults.buildDefaultSource());
+            } else {
+                return new FileMapperOptions(new ArrayList<>());
             }
-
-            List<String> scripts = sqlFileScanner.findSqlScripts(project.getBasedir(), sources,
-                    Defaults.SOURCE_DIRECTORY, Defaults.SOURCE_FILE_PATTERN);
-            return createFileMapperOptions(scripts, sourcesOwner, sourcesRegexExpression, sourcesOwnerSubexpression,
-                    sourcesNameSubexpression, sourcesTypeSubexpression, sourcesCustomTypeMapping);
-
-        } catch (Exception e) {
-            throw new MojoExecutionException("Invalid <SOURCES> in your pom.xml", e);
         }
+
+        List<String> scripts = sqlFileScanner.findSqlScripts(project.getBasedir(), sources,
+                Defaults.SOURCE_DIRECTORY, Defaults.SOURCE_FILE_PATTERN);
+        return createFileMapperOptions(scripts, sourcesOwner, sourcesRegexExpression, sourcesOwnerSubexpression,
+                sourcesNameSubexpression, sourcesTypeSubexpression, sourcesCustomTypeMapping);
     }
 
     FileMapperOptions buildTestsOptions() throws MojoExecutionException {
-        try {
-            if (tests.isEmpty()) {
-                File defaultTestDirectory = new File(project.getBasedir(), Defaults.TEST_DIRECTORY);
-                if (defaultTestDirectory.exists()) {
-                    tests.add(Defaults.buildDefaultTest());
-                } else {
-                    return new FileMapperOptions(new ArrayList<>());
-                }
+        if (tests.isEmpty()) {
+            File defaultTestDirectory = new File(project.getBasedir(), Defaults.TEST_DIRECTORY);
+            if (defaultTestDirectory.exists()) {
+                tests.add(Defaults.buildDefaultTest());
+            } else {
+                return new FileMapperOptions(new ArrayList<>());
             }
-
-            List<String> scripts = sqlFileScanner.findSqlScripts(project.getBasedir(), tests, Defaults.TEST_DIRECTORY,
-                    Defaults.TEST_FILE_PATTERN);
-            return createFileMapperOptions(scripts, testsOwner, testsRegexExpression, testsOwnerSubexpression,
-                    testsNameSubexpression, testsTypeSubexpression, testsCustomTypeMapping);
-
-        } catch (Exception e) {
-            throw new MojoExecutionException("Invalid <TESTS> in your pom.xml: " + e.getMessage());
         }
+
+        List<String> scripts = sqlFileScanner.findSqlScripts(project.getBasedir(), tests, Defaults.TEST_DIRECTORY,
+                Defaults.TEST_FILE_PATTERN);
+        return createFileMapperOptions(scripts, testsOwner, testsRegexExpression, testsOwnerSubexpression,
+                testsNameSubexpression, testsTypeSubexpression, testsCustomTypeMapping);
     }
 
     private FileMapperOptions createFileMapperOptions(List<String> scripts, String objectOwner, String regexPattern,

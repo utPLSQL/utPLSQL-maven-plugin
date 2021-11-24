@@ -54,8 +54,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.version>3.5.2</maven.version>
-        <powermock.version>2.0.9</powermock.version>
         <jaxb.version>2.3.1</jaxb.version>
+        <powermock.version>2.0.9</powermock.version>
         <sonar.organization>utplsql</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
