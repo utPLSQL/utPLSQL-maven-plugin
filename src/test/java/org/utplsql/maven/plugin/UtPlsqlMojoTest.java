@@ -115,4 +115,18 @@ public class UtPlsqlMojoTest {
         assertTrue(standardOutput.contains("utPLSQLTests are skipped."));
     }
 
+    @Test
+    public void defaultReport() throws MojoExecutionException {
+        utPLSQLMojo.execute();
+
+        final ByteArrayOutputStream console = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(console));
+
+        utPLSQLMojo.execute();
+
+        String standardOutput = console.toString();
+
+        assertTrue(standardOutput.contains("Finished"));
+    }
+
 }
