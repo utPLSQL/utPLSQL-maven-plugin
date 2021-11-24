@@ -72,7 +72,7 @@ public class MojoRuleTest {
      */
     @Test
     public void invalidSourcesDirectory() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalid-sources-directories/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -90,7 +90,7 @@ public class MojoRuleTest {
      */
     @Test
     public void invalidTestsDirectory() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalid-tests-sources-directories/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -108,7 +108,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesTestsParameters() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/test-sources-tests-params/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -151,7 +151,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterDoesNotExist() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule.lookupConfiguredMojo(
+        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule.lookupConfiguredMojo(
                 new File("src/test/resources/unit-tests/test-no-sources-tests-params/directory-does-not-exist/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -173,7 +173,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterDoesNotExistButDefaultDirectoryExists() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/test-no-sources-tests-params/directory-exists/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -199,7 +199,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterHaveNotDirectoryTag() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partial-source-and-test-tag/missing-directory/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -226,7 +226,7 @@ public class MojoRuleTest {
      */
     @Test
     public void sourcesAndTestsParameterHaveNotIncludesTag() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partial-source-and-test-tag/missing-includes/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -248,7 +248,7 @@ public class MojoRuleTest {
      */
     @Test
     public void defaultConsoleBehaviour() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-console-output-behaviour/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -296,7 +296,7 @@ public class MojoRuleTest {
      */
     @Test
     public void addDefaultReporter() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-console-output-behaviour/"), "test");
         assertNotNull(utplsqlMojo);
 
@@ -324,7 +324,7 @@ public class MojoRuleTest {
      */
     @Test
     public void skipUtplsqlTests() throws Exception {
-        UtPlsqlMojo utplsqlMojo = (UtPlsqlMojo) rule
+        UtPLSQLMojo utplsqlMojo = (UtPLSQLMojo) rule
                 .lookupConfiguredMojo(new File("src/test/resources/unit-tests/skip-utplsql-tests/"), "test");
         assertNotNull(utplsqlMojo);
 
