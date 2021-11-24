@@ -1,7 +1,6 @@
 package org.utplsql.maven.plugin.io;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.utplsql.api.Version;
 import org.utplsql.api.outputBuffer.OutputBuffer;
@@ -10,7 +9,6 @@ import org.utplsql.api.reporter.Reporter;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
