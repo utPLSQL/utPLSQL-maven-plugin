@@ -1,10 +1,10 @@
 package org.utplsql.maven.plugin.io;
 
 import org.apache.maven.model.Resource;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +28,7 @@ public class SqlFileScanner {
      * @param defaultFilePattern the default file pattern
      * @return a list of the files found
      */
-    public List<String> findSqlScripts(File baseDir, List<Resource> resources, String defaultDirectory, String defaultFilePattern) throws MojoExecutionException {
+    public List<String> findSqlScripts(File baseDir, List<Resource> resources, String defaultDirectory, String defaultFilePattern) throws IOException {
         List<String> founds = new ArrayList<>();
 
         for (Resource resource : resources) {
@@ -52,10 +52,10 @@ public class SqlFileScanner {
         return founds;
     }
 
-    private DirectoryScanner buildScanner(String baseDir, Resource resource) throws MojoExecutionException {
+    private DirectoryScanner buildScanner(String baseDir, Resource resource) throws IOException {
         File fileBaseDir = new File(baseDir, resource.getDirectory());
         if (!fileBaseDir.exists() || !fileBaseDir.isDirectory() || !fileBaseDir.canRead()) {
-            throw new MojoExecutionException(format("Directory %s does not exist!", resource.getDirectory()));
+            throw new IOException(format("Directory %s does not exist!", resource.getDirectory()));
         }
 
         DirectoryScanner scanner = new DirectoryScanner();

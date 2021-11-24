@@ -139,11 +139,11 @@ public class UtPlsqlMojo extends AbstractMojo {
                 Version utlVersion = new DefaultDatabaseInformation().getUtPlsqlFrameworkVersion(connection);
                 getLog().info("utPLSQL Version = " + utlVersion);
 
-                reportWriter = new ReportWriter(targetDir, utlVersion, getLog());
-
-                List<Reporter> reporterList = initReporters(connection, reportWriter, ReporterFactory.createEmpty());
                 FileMapperOptions sourceMappingOptions = buildSourcesOptions();
                 FileMapperOptions testMappingOptions = buildTestsOptions();
+
+                reportWriter = new ReportWriter(targetDir, utlVersion, getLog());
+                List<Reporter> reporterList = initReporters(connection, reportWriter, ReporterFactory.createEmpty());
 
                 logParameters(sourceMappingOptions, testMappingOptions, reporterList);
 
@@ -172,7 +172,7 @@ public class UtPlsqlMojo extends AbstractMojo {
                 if (!ignoreFailure) {
                     throw new MojoExecutionException(e.getMessage(), e);
                 }
-            } catch (SQLException e) {
+            } catch (SQLException | IOException e) {
                 throw new MojoExecutionException(e.getMessage(), e);
             } finally {
                 try {
@@ -215,7 +215,7 @@ public class UtPlsqlMojo extends AbstractMojo {
         return connection;
     }
 
-    FileMapperOptions buildSourcesOptions() throws MojoExecutionException {
+    FileMapperOptions buildSourcesOptions() throws IOException {
         if (sources.isEmpty()) {
             File defaultSourceDirectory = new File(project.getBasedir(), Defaults.SOURCE_DIRECTORY);
             if (defaultSourceDirectory.exists()) {
@@ -231,7 +231,7 @@ public class UtPlsqlMojo extends AbstractMojo {
                 sourcesNameSubexpression, sourcesTypeSubexpression, sourcesCustomTypeMapping);
     }
 
-    FileMapperOptions buildTestsOptions() throws MojoExecutionException {
+    FileMapperOptions buildTestsOptions() throws IOException {
         if (tests.isEmpty()) {
             File defaultTestDirectory = new File(project.getBasedir(), Defaults.TEST_DIRECTORY);
             if (defaultTestDirectory.exists()) {
