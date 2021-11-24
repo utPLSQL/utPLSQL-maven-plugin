@@ -134,15 +134,7 @@ public class UtPlsqlMojo extends AbstractMojo {
             Connection connection = null;
             ReportWriter reportWriter = null;
             try {
-                FileMapperOptions sourceMappingOptions = buildSourcesOptions();
-                FileMapperOptions testMappingOptions = buildTestsOptions();
-                setDbConfiguration();
-
-                OracleDataSource ds = new OracleDataSource();
-                ds.setURL(url);
-                ds.setUser(user);
-                ds.setPassword(password);
-                connection = ds.getConnection();
+                connection = createConnection();
 
                 Version utlVersion = new DefaultDatabaseInformation().getUtPlsqlFrameworkVersion(connection);
                 getLog().info("utPLSQL Version = " + utlVersion);
@@ -150,13 +142,10 @@ public class UtPlsqlMojo extends AbstractMojo {
                 reportWriter = new ReportWriter(targetDir, utlVersion, getLog());
 
                 List<Reporter> reporterList = initReporters(connection, reportWriter, ReporterFactory.createEmpty());
+                FileMapperOptions sourceMappingOptions = buildSourcesOptions();
+                FileMapperOptions testMappingOptions = buildTestsOptions();
 
                 logParameters(sourceMappingOptions, testMappingOptions, reporterList);
-
-                if (dbmsOutput) {
-                    DBHelper.enableDBMSOutput(connection);
-                    getLog().info("Enabled dbms_output.");
-                }
 
                 TestRunner runner = new TestRunner()
                         .addPathList(paths)
@@ -180,7 +169,7 @@ public class UtPlsqlMojo extends AbstractMojo {
                 runner.run(connection);
 
             } catch (SomeTestsFailedException e) {
-                if (!this.ignoreFailure) {
+                if (!ignoreFailure) {
                     throw new MojoExecutionException(e.getMessage(), e);
                 }
             } catch (SQLException e) {
@@ -201,7 +190,8 @@ public class UtPlsqlMojo extends AbstractMojo {
         }
     }
 
-    private void setDbConfiguration() {
+
+    private Connection createConnection() throws SQLException {
         if (StringUtils.isEmpty(url)) {
             url = System.getProperty("dbUrl");
         }
@@ -211,6 +201,18 @@ public class UtPlsqlMojo extends AbstractMojo {
         if (StringUtils.isEmpty(password)) {
             password = System.getProperty("dbPass");
         }
+
+        OracleDataSource ds = new OracleDataSource();
+        ds.setURL(url);
+        ds.setUser(user);
+        ds.setPassword(password);
+
+        Connection connection = ds.getConnection();
+        if (dbmsOutput) {
+            DBHelper.enableDBMSOutput(connection);
+            getLog().info("Enabled dbms_output.");
+        }
+        return connection;
     }
 
     FileMapperOptions buildSourcesOptions() throws MojoExecutionException {
