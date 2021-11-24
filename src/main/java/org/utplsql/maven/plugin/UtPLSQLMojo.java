@@ -172,12 +172,11 @@ public class UtPLSQLMojo extends AbstractMojo {
                 if (StringUtils.isNotBlank(excludeObject)) {
                     runner.excludeObject(excludeObject);
                 }
-                {
+                if (StringUtils.isNotBlank(includeObject)) {
                     runner.includeObject(includeObject);
                 }
-                if (StringUtils.isNotBlank(includeObject))
 
-                    runner.run(connection);
+                runner.run(connection);
 
             } catch (SomeTestsFailedException e) {
                 if (!this.ignoreFailure) {

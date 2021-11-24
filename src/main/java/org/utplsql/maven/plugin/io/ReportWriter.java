@@ -108,7 +108,7 @@ public class ReportWriter {
             buffer.printAvailable(connection, printStreams);
 
         } catch (FileNotFoundException | SQLException e) {
-            throw new MojoExecutionException("Unexpected error opening file output ", e);
+            throw new MojoExecutionException(e.getMessage(), e);
         } finally {
             if (fileOutputStream != null) {
                 try {
