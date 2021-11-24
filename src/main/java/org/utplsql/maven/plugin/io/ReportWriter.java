@@ -73,10 +73,6 @@ public class ReportWriter {
         }
     }
 
-    public List<Pair<Reporter, ReporterParameter>> getReporters() {
-        return reporters;
-    }
-
     private void writeReports(Connection connection, Reporter reporter, ReporterParameter reporterParameter) throws MojoExecutionException {
         FileOutputStream fileOutputStream = null;
         try {
