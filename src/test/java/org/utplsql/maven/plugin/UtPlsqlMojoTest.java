@@ -117,14 +117,7 @@ public class UtPlsqlMojoTest {
 
     @Test
     public void defaultReport() throws MojoExecutionException {
-        final ByteArrayOutputStream console = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(console));
-
         utPLSQLMojo.execute();
-
-        String standardOutput = console.toString();
-
-        assertTrue(standardOutput.contains("Finished"));
     }
 
 }
