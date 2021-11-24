@@ -231,7 +231,7 @@ Please refer to the following usage example for the parameters descriptions:
 </project>
 ```
 
-More project samples are available in the src/test/resources directory:
+More project samples are available in the src/test/resources/integration-tests directory:
 * **simple-project:** Minimalist test project with standard project directory structure.
 * **regex-project:** Overrides project directory structure and use additional parameters (sourcesRegexExpression, testsRegexExpression, ...), to tell utPLSQL how project files should be mapped into database objects.
 * **type-mapping-project:** Example how to use regex and custom type parameters together.

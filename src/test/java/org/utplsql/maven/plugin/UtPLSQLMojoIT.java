@@ -21,7 +21,6 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class UtPLSQLMojoIT {
 
@@ -44,52 +43,52 @@ public class UtPLSQLMojoIT {
 
     @Test
     public void simpleProject() throws IOException, VerificationException {
-        final String PROJECT_NAME = "simple-project";
-        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+        final String testFolder = "integration-tests/simple-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + testFolder);
 
         Verifier verifier = createVerifier(testProject);
         verifier.executeGoal("test");
 
-        checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
+        checkReportsGenerated(testFolder, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
     }
 
     @Test
     public void regexProject() throws IOException, VerificationException {
-        final String PROJECT_NAME = "regex-project";
-        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+        final String testFolder = "integration-tests/regex-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + testFolder);
 
         Verifier verifier = createVerifier(testProject);
         verifier.executeGoal("test");
 
-        checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
+        checkReportsGenerated(testFolder, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
     }
 
     @Test
     public void typeMappingProject() throws IOException, VerificationException {
-        final String PROJECT_NAME = "type-mapping-project";
-        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+        final String testFolder = "integration-tests/type-mapping-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + testFolder);
 
         Verifier verifier = createVerifier(testProject);
         verifier.executeGoal("test");
 
-        checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
+        checkReportsGenerated(testFolder, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
     }
 
     @Test
     public void ownerParameterProject() throws IOException, VerificationException {
-        final String PROJECT_NAME = "owner-param-project";
-        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+        final String testFolder = "integration-tests/owner-param-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + testFolder);
 
         Verifier verifier = createVerifier(testProject);
         verifier.executeGoal("test");
 
-        checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
+        checkReportsGenerated(testFolder, "utplsql/sonar-test-reporter.xml", "utplsql/coverage-sonar-reporter.xml");
     }
 
     @Test
     public void minimalistProject() throws IOException, VerificationException {
-        final String PROJECT_NAME = "minimalist-project";
-        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+        final String testFolder = "integration-tests/minimalist-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + testFolder);
 
         Verifier verifier = createVerifier(testProject);
         verifier.executeGoal("test");
@@ -97,24 +96,24 @@ public class UtPLSQLMojoIT {
 
     @Test
     public void tagsProject() throws IOException, VerificationException {
-        final String PROJECT_NAME = "tags-project";
-        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+        final String testFolder = "integration-tests/tags-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + testFolder);
 
         Verifier verifier = createVerifier(testProject);
         verifier.executeGoal("test");
 
-        checkReportsGenerated(PROJECT_NAME, "utplsql/sonar-test-reporter.xml");
+        checkReportsGenerated(testFolder, "utplsql/sonar-test-reporter.xml");
     }
 
     @Test
     public void skipUtplsqlTests() throws IOException, VerificationException {
-        final String PROJECT_NAME = "skip-project";
-        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + PROJECT_NAME);
+        final String testFolder = "integration-tests/skip-project";
+        File testProject = ResourceExtractor.simpleExtractResources(getClass(), "/" + testFolder);
 
         Verifier verifier = createVerifier(testProject);
         verifier.executeGoal("test");
 
-        assertFalse(new File("target/test-classes/" + PROJECT_NAME + "/target").exists());
+        assertFalse(new File("target/test-classes/" + testFolder + "/target").exists());
     }
 
     /**
@@ -122,33 +121,29 @@ public class UtPLSQLMojoIT {
      * Path separator is set to "/" to ensure windows / linux / mac compatibility.
      * \r and \n are removed to provide simpler comparison.
      *
-     * @param projectName Project name
-     * @param files       Files to compare
+     * @param testFolder Project name
+     * @param files      Files to compare
      */
-    private void checkReportsGenerated(String projectName, String... files) {
+    private void checkReportsGenerated(String testFolder, String... files) throws IOException {
         for (String filename : files) {
-            File outputFile = new File("target/test-classes/" + projectName + "/target", filename);
-            File expectedOutputFile = new File("target/test-classes/" + projectName + "/expected-output", filename);
+            File outputFile = new File("target/test-classes/" + testFolder + "/target", filename);
+            File expectedOutputFile = new File("target/test-classes/" + testFolder + "/expected-output", filename);
 
             assertTrue("The reporter for " + filename + " was not generated", outputFile.exists());
 
-            try {
-                try (Stream<String> stream = Files.lines(Paths.get("target", "test-classes", projectName, "target", filename))) {
-                    String outputContent = stream
-                            .filter(line -> !line.contains("<?xml"))
-                            .map(line -> line.replaceAll("(duration=\"[0-9.]*\")", "duration=\"1\""))
-                            .map(line -> line.replaceAll("\\\\", "/"))
-                            .map(line -> line.replaceAll("\r", "").replaceAll("\n", ""))
-                            .collect(Collectors.joining("\n"));
-                    assertEquals("The files differ!",
-                            FileUtils.readFileToString(expectedOutputFile, "utf-8")
-                                    .replace("\r", "")
-                                    .replace("\n", ""),
-                            outputContent.replace("\n", ""));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                fail("Unexpected Exception running the test : " + e.getMessage());
+            try (Stream<String> stream = Files.lines(Paths.get("target", "test-classes", testFolder, "target", filename))) {
+                String outputContent = stream
+                        .filter(line -> !line.contains("<?xml"))
+                        .map(line -> line.replaceAll("(duration=\"[0-9.]*\")", "duration=\"1\""))
+                        .map(line -> line.replaceAll("\\\\", "/"))
+                        .map(line -> line.replaceAll("\r", "").replaceAll("\n", ""))
+                        .collect(Collectors.joining("\n"));
+
+                assertEquals("The files differ!",
+                        FileUtils.readFileToString(expectedOutputFile, "utf-8")
+                                .replace("\r", "")
+                                .replace("\n", ""),
+                        outputContent.replace("\n", ""));
             }
         }
     }
