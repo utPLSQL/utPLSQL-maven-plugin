@@ -1,16 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.utplsql</groupId>
-    <artifactId>utplsql-maven-plugin-minimalist-test</artifactId>
+    <artifactId>minimalist</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
-    <name>utplsql-maven-plugin IT Minimalist</name>
     <properties>
-		<!-- url, user, password are set with dbUrl, dbUser, dbPass system properties -->
+        <dbUrl>jdbc:oracle:thin:@localhost:1521:xe</dbUrl>
+        <dbUser>UT3</dbUser>
+        <dbPass>UT3</dbPass>
     </properties>
 
     <build>
@@ -18,7 +19,7 @@
             <plugin>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>utplsql-maven-plugin</artifactId>
-                <version>${utplsql-maven-plugin-version}</version>
+                <version>@project.version@</version>
                 <executions>
                     <execution>
                         <goals>
@@ -26,7 +27,6 @@
                         </goals>
                     </execution>
                 </executions>
-
             </plugin>
         </plugins>
     </build>

@@ -2,7 +2,7 @@ package org.utplsql.maven.plugin;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.utplsql.api.reporter.CoreReporters;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 
@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UtPlsqlMojoTest {
 
