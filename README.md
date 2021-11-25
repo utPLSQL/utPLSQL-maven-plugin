@@ -2,17 +2,21 @@
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.utplsql%3Autplsql-maven-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.utplsql%3Autplsql-maven-plugin)
 
 # utPLSQL-maven-plugin
+
 A maven plugin for running Unit Tests with utPLSQL v3+.
 
 ## Compatibility
+
 This plugin is compatible with utPLSQL 3.1.0+.
 
 ## Prerequisites
+
 * Java SE Runtime Environment 8
 * Maven Version 3.5+
-* Oracle JDBC driver 
+* Oracle JDBC driver
 
 ```xml
+
 <dependency>
     <groupId>com.oracle.database.jdbc</groupId>
     <artifactId>ojdbc8</artifactId>
@@ -27,6 +31,7 @@ This plugin is compatible with utPLSQL 3.1.0+.
 To skip running the tests for a particular project, set the **skipUtplsqlTests** property to true.
 
 ```xml
+
 <configuration>
     <skipUtplsqlTests>true</skipUtplsqlTests>
 </configuration>
@@ -38,9 +43,11 @@ You can also skip the tests via the command line by executing the following comm
 
 #### Skipping by Default
 
-If you want to skip tests by default but want the ability to re-enable tests from the command line, you need to go via a properties section in the pom:
+If you want to skip tests by default but want the ability to re-enable tests from the command line, you need to go via a
+properties section in the pom:
 
 ```xml
+
 <configuration>
     <skipUtplsqlTests>true</skipUtplsqlTests>
 </configuration>
@@ -55,9 +62,10 @@ This will allow you to run with all tests disabled by default and to run them wi
 Please refer to the following usage example for the parameters descriptions:
 
 ```xml
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.my_org</groupId>
@@ -90,7 +98,7 @@ Please refer to the following usage example for the parameters descriptions:
                         </goals>
                         <configuration>
                             <!-- REQUIRED PARAMETERS -->
-                            
+
                             <!-- A list of tests suite paths. -->
                             <!-- The path(s) can be in one of the following formats: -->
                             <!--     schema[.package[.procedure]] -->
@@ -115,7 +123,7 @@ Please refer to the following usage example for the parameters descriptions:
                             </sources>
 
                             <tests>
-                                <test>                                
+                                <test>
                                     <!-- Path to project test files. -->
                                     <directory>src/test/resources/scripts/test</directory>
                                     <!-- File patterns to include. -->
@@ -125,13 +133,13 @@ Please refer to the following usage example for the parameters descriptions:
                                     </includes>
                                 </test>
                             </tests>
-                                                        
+
                             <!-- OPTIONAL PARAMETERS -->
-                        
+
                             <!-- Continue in case of failure. -->
                             <!-- Defaults to: ${maven.test.failure.ignore} -->
                             <ignoreFailure>false</ignoreFailure>
-                            
+
                             <!-- Skip the utPLSQL version compatibility check. -->
                             <!-- Defaults to: false -->
                             <skipCompatibilityCheck>false</skipCompatibilityCheck>
@@ -153,17 +161,17 @@ Please refer to the following usage example for the parameters descriptions:
                             <randomTestOrder>true</randomTestOrder>
                             <!-- Sets the seed to use for random test execution order. If set, it sets -random to true. -->
                             <randomTestOrderSeed>5</randomTestOrderSeed>
-                            
+
                             <!-- Comma-separated object list to include in the coverage report. -->
                             <!-- Format: [schema.]package[,[schema.]package ...]. -->
                             <!-- See coverage reporting options in framework documentation. -->
                             <includeObject>app.test1,app.test2</includeObject>
-                            
+
                             <!-- Comma-separated object list to exclude from the coverage report. -->
                             <!-- Format: [schema.]package[,[schema.]package ...]. -->
                             <!-- See coverage reporting options in framework documentation. -->
                             <excludeObject>app.test1,app.test2</excludeObject>
-                            
+
                             <!-- List of reporters. -->
                             <!-- You can pass the name of the reporter and/or the output file -->
                             <!-- of the reporter and/or if the report is logged to the console. -->
@@ -194,7 +202,7 @@ Please refer to the following usage example for the parameters descriptions:
                                     <name>UT_TEAMCITY_REPORTER</name>
                                 </reporter>
                             </reporters>
-                            
+
                             <!-- Custom source code mapping options. -->
                             <!-- See coverage reporting options in framework documentation. -->
                             <sourcesOwner>code_owner</sourcesOwner>
@@ -208,7 +216,7 @@ Please refer to the following usage example for the parameters descriptions:
                                     <customMapping>package_bodies</customMapping>
                                 </customTypeMapping>
                             </sourcesCustomTypeMapping>
-                            
+
                             <!-- Custom test code mapping options. -->
                             <!-- See coverage reporting options in framework documentation. -->
                             <testsOwner>tests_owner</testsOwner>
@@ -231,9 +239,12 @@ Please refer to the following usage example for the parameters descriptions:
 </project>
 ```
 
-More project samples are available in the src/test/resources/integration-tests directory:
+More project samples are available in the `src/test/resources-its/org/utplsql/maven/plugin/UtPlsqlMojoIT`
+directory:
+
 * **simple-project:** Minimalist test project with standard project directory structure.
-* **regex-project:** Overrides project directory structure and use additional parameters (sourcesRegexExpression, testsRegexExpression, ...), to tell utPLSQL how project files should be mapped into database objects.
+* **regex-project:** Overrides project directory structure and use additional parameters (sourcesRegexExpression,
+  testsRegexExpression, ...), to tell utPLSQL how project files should be mapped into database objects.
 * **type-mapping-project:** Example how to use regex and custom type parameters together.
 * **owner-param-project:** Demonstrates how to use sourcesOwner and testsOwner parameters.
 
