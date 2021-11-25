@@ -1,5 +1,6 @@
 package org.utplsql.maven.plugin;
 
+import com.soebes.itf.jupiter.extension.MavenGoal;
 import com.soebes.itf.jupiter.extension.MavenJupiterExtension;
 import com.soebes.itf.jupiter.extension.MavenTest;
 import com.soebes.itf.jupiter.maven.MavenExecutionResult;
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.utplsql.maven.plugin.ReportChecker.checkReports;
 import static org.utplsql.maven.plugin.ReportChecker.reportExists;
 
+@MavenGoal("test")
 @MavenJupiterExtension
 public class UtPlsqlMojoIT {
 
