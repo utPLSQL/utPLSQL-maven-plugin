@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -278,6 +277,8 @@ public class UtPlsqlMojo extends AbstractMojo {
     List<Reporter> initReporters(Connection connection, ReportWriter reportWriter, ReporterFactory reporterFactory) throws SQLException {
         List<Reporter> reporterList = new ArrayList<>();
         if (reporters.isEmpty()) {
+            getLog().debug("No reporters configured using default");
+
             ReporterParameter reporterParameter = new ReporterParameter();
             reporterParameter.setConsoleOutput(true);
             reporterParameter.setName(CoreReporters.UT_DOCUMENTATION_REPORTER.name());
@@ -302,20 +303,19 @@ public class UtPlsqlMojo extends AbstractMojo {
     }
 
     private void logParameters(FileMapperOptions sourceMappingOptions, FileMapperOptions testMappingOptions, List<Reporter> reporterList) {
-        Log log = getLog();
-        log.info("Invoking TestRunner with: " + targetDir);
+        getLog().info("Invoking TestRunner with: " + targetDir);
 
-        if (log.isDebugEnabled()) {
-            log.debug("Invoking TestRunner with: ");
+        if (getLog().isDebugEnabled()) {
+            getLog().debug("Invoking TestRunner with: ");
 
-            log.debug("reporters=");
-            reporterList.forEach((Reporter r) -> log.debug(r.getTypeName()));
+            getLog().debug("reporters=");
+            reporterList.forEach((Reporter r) -> getLog().debug(r.getTypeName()));
 
-            log.debug("sources=");
-            sourceMappingOptions.getFilePaths().forEach(log::debug);
+            getLog().debug("sources=");
+            sourceMappingOptions.getFilePaths().forEach(getLog()::debug);
 
-            log.debug("tests=");
-            testMappingOptions.getFilePaths().forEach(log::debug);
+            getLog().debug("tests=");
+            testMappingOptions.getFilePaths().forEach(getLog()::debug);
         }
     }
 

@@ -2,7 +2,6 @@ package org.utplsql.maven.plugin;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.utplsql.api.reporter.CoreReporters;
 import org.utplsql.maven.plugin.model.ReporterParameter;
@@ -15,34 +14,39 @@ import static org.junit.Assert.assertTrue;
 
 public class UtPlsqlMojoTest {
 
-    private static UtPlsqlMojo utPLSQLMojo;
+    private UtPlsqlMojo createUtPlsqlMojo() {
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
 
-    @BeforeClass
-    public static void setUp() {
-        utPLSQLMojo = new UtPlsqlMojo();
-        utPLSQLMojo.project = new MavenProject();
-        utPLSQLMojo.targetDir = "target";
+        UtPlsqlMojo utPlsqlMojo = new UtPlsqlMojo();
+        utPlsqlMojo.project = new MavenProject();
+        utPlsqlMojo.targetDir = "target";
 
-        utPLSQLMojo.url = "jdbc:oracle:thin:@127.0.0.1:1521:XE";
-        utPLSQLMojo.user = "UT3";
-        utPLSQLMojo.password = "UT3";
+        utPlsqlMojo.url = "jdbc:oracle:thin:@127.0.0.1:1521:XE";
+        utPlsqlMojo.user = "UT3";
+        utPlsqlMojo.password = "UT3";
+
+        return utPlsqlMojo;
     }
 
     @Test
     public void junitReporter() throws MojoExecutionException {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
+
         ReporterParameter junitReporter = new ReporterParameter();
         junitReporter.setConsoleOutput(true);
         junitReporter.setFileOutput("junit-report.xml");
         junitReporter.setName(CoreReporters.UT_JUNIT_REPORTER.name());
-        utPLSQLMojo.reporters.add(junitReporter);
+        utPlsqlMojo.reporters.add(junitReporter);
 
-        utPLSQLMojo.execute();
+        utPlsqlMojo.execute();
 
         assertTrue(new File("target/junit-report.xml").exists());
     }
 
     @Test
     public void absolutPath() throws MojoExecutionException {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
+
         ReporterParameter junitReporter = new ReporterParameter();
         junitReporter.setConsoleOutput(true);
 
@@ -53,9 +57,9 @@ public class UtPlsqlMojoTest {
             junitReporter.setFileOutput("/tmp/junit-report.xml");
         }
         junitReporter.setName(CoreReporters.UT_JUNIT_REPORTER.name());
-        utPLSQLMojo.reporters.add(junitReporter);
+        utPlsqlMojo.reporters.add(junitReporter);
 
-        utPLSQLMojo.execute();
+        utPlsqlMojo.execute();
         if (os.contains("Windows")) {
             assertTrue(new File("c:/tmp/junit-report.xml").exists());
         } else {
@@ -65,50 +69,58 @@ public class UtPlsqlMojoTest {
 
     @Test
     public void parentDoesNotExist() throws MojoExecutionException {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
+
         ReporterParameter junitReporter = new ReporterParameter();
         junitReporter.setConsoleOutput(true);
         junitReporter.setFileOutput("not-exist/junit-report.xml");
         junitReporter.setName(CoreReporters.UT_JUNIT_REPORTER.name());
-        utPLSQLMojo.reporters.add(junitReporter);
+        utPlsqlMojo.reporters.add(junitReporter);
 
-        utPLSQLMojo.execute();
+        utPlsqlMojo.execute();
 
         assertTrue(new File("target/not-exist/junit-report.xml").exists());
     }
 
     @Test
     public void onlyConsoleOutput() throws MojoExecutionException {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
+
         ReporterParameter junitReporter = new ReporterParameter();
         junitReporter.setConsoleOutput(true);
         junitReporter.setName(CoreReporters.UT_JUNIT_REPORTER.name());
-        utPLSQLMojo.reporters.add(junitReporter);
+        utPlsqlMojo.reporters.add(junitReporter);
 
-        utPLSQLMojo.execute();
+        utPlsqlMojo.execute();
 
         assertTrue(new File("target/not-exist/junit-report.xml").exists());
     }
 
     @Test
     public void onlyFileOutput() throws MojoExecutionException {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
+
         ReporterParameter junitReporter = new ReporterParameter();
         junitReporter.setConsoleOutput(false);
         junitReporter.setFileOutput("not-exist/junit-report.xml");
         junitReporter.setName(CoreReporters.UT_JUNIT_REPORTER.name());
-        utPLSQLMojo.reporters.add(junitReporter);
+        utPlsqlMojo.reporters.add(junitReporter);
 
-        utPLSQLMojo.execute();
+        utPlsqlMojo.execute();
 
         assertTrue(new File("target/not-exist/junit-report.xml").exists());
     }
 
     @Test
     public void skipUtplsqlTests() throws MojoExecutionException {
-        utPLSQLMojo.skipUtplsqlTests = true;
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
+
+        utPlsqlMojo.skipUtplsqlTests = true;
 
         final ByteArrayOutputStream console = new ByteArrayOutputStream();
         System.setOut(new PrintStream(console));
 
-        utPLSQLMojo.execute();
+        utPlsqlMojo.execute();
 
         String standardOutput = console.toString();
 
@@ -117,10 +129,12 @@ public class UtPlsqlMojoTest {
 
     @Test
     public void defaultReportAndExcludes() throws MojoExecutionException {
-        utPLSQLMojo.excludeObject = "abc";
-        utPLSQLMojo.includeObject = "xyz";
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
 
-        utPLSQLMojo.execute();
+        utPlsqlMojo.excludeObject = "abc";
+        utPlsqlMojo.includeObject = "xyz";
+
+        utPlsqlMojo.execute();
     }
 
 }
