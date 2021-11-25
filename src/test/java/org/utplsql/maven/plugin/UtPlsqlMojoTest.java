@@ -116,7 +116,10 @@ public class UtPlsqlMojoTest {
     }
 
     @Test
-    public void defaultReport() throws MojoExecutionException {
+    public void defaultReportAndExcludes() throws MojoExecutionException {
+        utPLSQLMojo.excludeObject = "abc";
+        utPLSQLMojo.includeObject = "xyz";
+
         utPLSQLMojo.execute();
     }
 
