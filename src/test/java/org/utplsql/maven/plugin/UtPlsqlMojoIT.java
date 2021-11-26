@@ -43,6 +43,8 @@ class UtPlsqlMojoIT {
     void skip(MavenExecutionResult result) {
         assertThat(result).isSuccessful();
 
+        assertThat(result.getMavenLog()).info().contains("utPLSQLTests are skipped.");
+
         assertThat(reportWasGenerated(result, "sonar-test-report.xml")).isFalse();
     }
 
