@@ -31,9 +31,8 @@ public class UtPlsqlMojoTest {
      * Then : it should throw a MojoExecutionException
      */
     @Test
-    public void invalidSourcesDirectory() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalid-sources-directories/"), "test");
+    public void invalid_sources_directory() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("invalid_sources_directory");
         assertNotNull(utPlsqlMojo);
 
         MojoExecutionException exception = assertThrows(MojoExecutionException.class, utPlsqlMojo::execute);
@@ -49,9 +48,8 @@ public class UtPlsqlMojoTest {
      * Then : it should throw a MojoExecutionException
      */
     @Test
-    public void invalidTestsDirectory() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/invalid-tests-sources-directories/"), "test");
+    public void invalid_tests_directory() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("invalid_tests_directory");
         assertNotNull(utPlsqlMojo);
 
         MojoExecutionException exception = assertThrows(MojoExecutionException.class, utPlsqlMojo::execute);
@@ -67,9 +65,8 @@ public class UtPlsqlMojoTest {
      * Then : it should fill all parameters correctly
      */
     @Test
-    public void sourcesTestsParameters() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/test-sources-tests-params/"), "test");
+    public void sources_tests_parameters() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("sources_tests_parameters");
         assertNotNull(utPlsqlMojo);
 
         assertEquals(2, utPlsqlMojo.reporters.size());
@@ -110,9 +107,8 @@ public class UtPlsqlMojoTest {
      * Then : it should not find any source files
      */
     @Test
-    public void sourcesAndTestsParameterDoesNotExist() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule.lookupConfiguredMojo(
-                new File("src/test/resources/unit-tests/test-no-sources-tests-params/directory-does-not-exist/"), "test");
+    public void sources_and_tests_parameter_does_not_exist() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("sources_and_tests_parameter_does_not_exist");
         assertNotNull(utPlsqlMojo);
 
         // check sources
@@ -132,9 +128,8 @@ public class UtPlsqlMojoTest {
      * Then : it should find all sources/tests files in default directories
      */
     @Test
-    public void sourcesAndTestsParameterDoesNotExistButDefaultDirectoryExists() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/test-no-sources-tests-params/directory-exists/"), "test");
+    public void sources_and_tests_parameter_does_not_exist_but_default_directory_exists() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("sources_and_tests_parameter_does_not_exist_but_default_directory_exists");
         assertNotNull(utPlsqlMojo);
 
         // check sources
@@ -158,9 +153,8 @@ public class UtPlsqlMojoTest {
      * Then : it should find all sources/tests files in default directories
      */
     @Test
-    public void sourcesAndTestsParameterHaveNotDirectoryTag() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partial-source-and-test-tag/missing-directory/"), "test");
+    public void sources_and_tests_parameter_have_not_directory_tag() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("sources_and_tests_parameter_have_not_directory_tag");
         assertNotNull(utPlsqlMojo);
 
         // check sources
@@ -185,9 +179,8 @@ public class UtPlsqlMojoTest {
      * Then : it should find all sources/tests files in default directories
      */
     @Test
-    public void sourcesAndTestsParameterHaveNotIncludesTag() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/partial-source-and-test-tag/missing-includes/"), "test");
+    public void sources_and_tests_parameter_have_not_includes_tag() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("sources_and_tests_parameter_have_not_includes_tag");
         assertNotNull(utPlsqlMojo);
 
         // check sources
@@ -205,11 +198,14 @@ public class UtPlsqlMojoTest {
 
     /**
      * Default Console Behaviour
+     * <p>
+     * Given : a pom.xml with file and console output
+     * When : pom is read
+     * Then : it should set the correct output channels
      */
     @Test
-    public void defaultConsoleBehaviour() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-console-output-behaviour/"), "test");
+    public void default_console_output_behaviour() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("default_console_output_behaviour");
         assertNotNull(utPlsqlMojo);
 
         utPlsqlMojo.execute();
@@ -233,11 +229,14 @@ public class UtPlsqlMojoTest {
 
     /**
      * Default Reporter
+     * <p>
+     * Given : a pom.xml without reporters
+     * When : pom is read
+     * Then : it should set the default reporter
      */
     @Test
-    public void defaultReporter() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/default-reporter/"), "test");
+    public void default_reporter() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("default_reporter");
         assertNotNull(utPlsqlMojo);
 
         utPlsqlMojo.execute();
@@ -247,12 +246,15 @@ public class UtPlsqlMojoTest {
     }
 
     /**
-     * Skip utPLSQL Tests
+     * Default Reporter
+     * <p>
+     * Given : a pom.xml with skipUtplsqlTests=true
+     * When : pom is read
+     * Then : Tests are skipped
      */
     @Test
-    public void skipUtplsqlTests() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/skip-utplsql-tests/"), "test");
+    public void skip_utplsql_tests() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("skip_utplsql_tests");
         assertNotNull(utPlsqlMojo);
 
         final ByteArrayOutputStream console = new ByteArrayOutputStream();
@@ -266,15 +268,46 @@ public class UtPlsqlMojoTest {
     }
 
     /**
-     * DBMS_OUTPUT
+     * Enable DBMS_OUTPUT
+     * <p>
+     * Given : a pom.xml with dbmsOutput=true
+     * When : pom is read
+     * Then : DBMS_OUTPUT is enabled
      */
     @Test
-    public void dbmsOutput() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = (UtPlsqlMojo) rule
-                .lookupConfiguredMojo(new File("src/test/resources/unit-tests/dbms-output/"), "test");
+    public void dbms_output() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("dbms_output");
         assertNotNull(utPlsqlMojo);
 
         utPlsqlMojo.execute();
+    }
+
+    /**
+     * DB configuration from System Properties
+     * <p>
+     * Given : a pom.xml without dbUrl, dbUser and dbPass configured
+     * When : pom is read
+     * Then : System Properties must be used to configure database
+     */
+    @Test
+    public void db_config_using_system_properties() throws Exception {
+        System.setProperty("dbUrl", "jdbc:oracle:thin:@localhost:1521:xe");
+        System.setProperty("dbUser", "UT3");
+        System.setProperty("dbPass", "UT3");
+
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("dbms_output");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+
+        System.setProperty("dbUrl", "");
+        System.setProperty("dbUser", "");
+        System.setProperty("dbPass", "");
+
+    }
+
+    private UtPlsqlMojo createUtPlsqlMojo(String directory) throws Exception {
+        return (UtPlsqlMojo) rule.lookupConfiguredMojo(new File("src/test/resources/unit-tests/" + directory), "test");
     }
 
 }
