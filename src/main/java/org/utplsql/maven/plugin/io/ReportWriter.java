@@ -1,6 +1,5 @@
 package org.utplsql.maven.plugin.io;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.plugin.logging.Log;
 import org.utplsql.api.Version;
 import org.utplsql.api.outputBuffer.OutputBuffer;
@@ -27,7 +26,7 @@ import static java.lang.String.format;
  */
 public class ReportWriter {
 
-    private final List<Pair<Reporter, ReporterParameter>> reporters;
+    private final List<ReporterAndReporterParameter> reporters;
 
     private final String outputDirectory;
 
@@ -56,7 +55,7 @@ public class ReportWriter {
      * @param reporter  the {@link Reporter}
      */
     public void addReporter(ReporterParameter parameter, Reporter reporter) {
-        reporters.add(Pair.of(reporter, parameter));
+        reporters.add(new ReporterAndReporterParameter(reporter, parameter));
     }
 
     /**
@@ -67,8 +66,8 @@ public class ReportWriter {
      * @throws IOException  if files can't be written
      */
     public void writeReports(Connection connection) throws SQLException, IOException {
-        for (Pair<Reporter, ReporterParameter> pair : reporters) {
-            writeReports(connection, pair.getLeft(), pair.getRight());
+        for (ReporterAndReporterParameter pair : reporters) {
+            writeReports(connection, pair.getReporter(), pair.getReporterParameter());
         }
     }
 

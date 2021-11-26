@@ -1,7 +1,6 @@
 package org.utplsql.maven.plugin;
 
 import oracle.jdbc.pool.OracleDataSource;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -36,6 +35,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.utplsql.maven.plugin.util.StringUtil.isEmpty;
+import static org.utplsql.maven.plugin.util.StringUtil.isNotBlank;
+import static org.utplsql.maven.plugin.util.StringUtil.isNotEmpty;
 
 /**
  * This class expose the {@link TestRunner} interface to Maven.
@@ -158,10 +161,10 @@ public class UtPlsqlMojo extends AbstractMojo {
                         .randomTestOrderSeed(randomTestOrderSeed)
                         .failOnErrors(!ignoreFailure);
 
-                if (StringUtils.isNotBlank(excludeObject)) {
+                if (isNotBlank(excludeObject)) {
                     runner.excludeObject(excludeObject);
                 }
-                if (StringUtils.isNotBlank(includeObject)) {
+                if (isNotBlank(includeObject)) {
                     runner.includeObject(includeObject);
                 }
 
@@ -189,15 +192,14 @@ public class UtPlsqlMojo extends AbstractMojo {
         }
     }
 
-
     private Connection createConnection() throws SQLException {
-        if (StringUtils.isEmpty(url)) {
+        if (isEmpty(url)) {
             url = System.getProperty("dbUrl");
         }
-        if (StringUtils.isEmpty(user)) {
+        if (isEmpty(user)) {
             user = System.getProperty("dbUser");
         }
-        if (StringUtils.isEmpty(password)) {
+        if (isEmpty(password)) {
             password = System.getProperty("dbPass");
         }
 
@@ -251,10 +253,10 @@ public class UtPlsqlMojo extends AbstractMojo {
                                                       Integer typeSubExpression, List<CustomTypeMapping> typeMappings) {
         FileMapperOptions fileMapperOptions = new FileMapperOptions(scripts);
 
-        if (StringUtils.isNotEmpty(objectOwner)) {
+        if (isNotEmpty(objectOwner)) {
             fileMapperOptions.setObjectOwner(objectOwner);
         }
-        if (StringUtils.isNotEmpty(regexPattern)) {
+        if (isNotEmpty(regexPattern)) {
             fileMapperOptions.setRegexPattern(regexPattern);
         }
         if (ownerSubExpression != null) {
@@ -295,7 +297,7 @@ public class UtPlsqlMojo extends AbstractMojo {
             }
 
             // Only added the reporter if at least one of the output is required
-            if (StringUtils.isNotBlank(reporterParameter.getFileOutput()) || reporterParameter.isConsoleOutput()) {
+            if (isNotBlank(reporterParameter.getFileOutput()) || reporterParameter.isConsoleOutput()) {
                 reportWriter.addReporter(reporterParameter, reporter);
             }
         }
