@@ -86,6 +86,7 @@ public class ReportWriter {
 
                 if (!file.getParentFile().exists()) {
                     log.debug("Creating directory for report file " + file.getAbsolutePath());
+                    //noinspection ResultOfMethodCallIgnored
                     file.getParentFile().mkdirs();
                 }
 

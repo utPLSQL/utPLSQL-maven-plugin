@@ -1,7 +1,7 @@
 package org.utplsql.maven.plugin;
 
+import com.soebes.itf.jupiter.maven.MavenExecutionResult;
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.Assertions;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,9 @@ import java.nio.file.Files;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static com.soebes.itf.extension.assertj.MavenProjectResultAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ReportChecker {
 
@@ -21,17 +23,15 @@ public class ReportChecker {
      * Path separator is set to "/" to ensure windows / linux / mac compatibility.
      * \r and \n are removed to provide simpler comparison.
      *
-     * @param testClass  Class under test
-     * @param testFolder Folder name
-     * @param files      Files to compare
+     * @param result {@link MavenExecutionResult}
+     * @param files  Files to compare
      */
-    public static void checkReports(Class<?> testClass, String testFolder, String... files) throws IOException {
-        String fullyQualifiedClassNameDirectory = testClass.getName().replace(".", "/");
-
+    public static void assertThatReportsAreGeneratedAsExpected(MavenExecutionResult result, String... files) {
         for (String filename : files) {
-            File expectedOutputFile = new File("target/maven-it/" + fullyQualifiedClassNameDirectory + "/" + testFolder + "/project/expected-output/utplsql", filename);
-            File outputFile = new File("target/maven-it/" + fullyQualifiedClassNameDirectory + "/" + testFolder + "/project/target/utplsql", filename);
-            assertTrue(outputFile.exists(), "The report " + outputFile.getPath() + " was not generated");
+            File expectedOutputFile = new File(result.getMavenProjectResult().getTargetProjectDirectory(), "/expected-output/utplsql/" + filename);
+            File outputFile = new File(result.getMavenProjectResult().getTargetProjectDirectory(), "/target/utplsql/" + filename);
+
+            assertThat(result.getMavenProjectResult()).withFile("/utplsql/" + filename).exists();
 
             try (Stream<String> stream = Files.lines(outputFile.toPath())) {
                 String outputContent = stream
@@ -41,27 +41,26 @@ public class ReportChecker {
                         .map(line -> line.replaceAll("\r", "").replaceAll("\n", ""))
                         .collect(Collectors.joining("\n"));
 
-                Assertions.assertEquals(
+                assertEquals(
                         FileUtils.readFileToString(expectedOutputFile, "utf-8")
                                 .replace("\r", "")
                                 .replace("\n", ""),
                         outputContent.replace("\n", ""), "The files differ!");
+            } catch (IOException e) {
+                fail(e);
             }
         }
     }
 
     /**
-     * Check if a report file exits
+     * Check if the report was generated
      *
-     * @param testClass  Class under test
-     * @param testFolder Folder name
-     * @param filename   File Name
-     * @return true or false
+     * @param result   {@link MavenExecutionResult}
+     * @param filename File Name
+     * @return if report exits
      */
-    public static boolean reportExists(Class<?> testClass, String testFolder, String filename) {
-        String fullyQualifiedClassNameDirectory = testClass.getName().replace(".", "/");
-
-        File outputFile = new File("target/maven-it/" + fullyQualifiedClassNameDirectory + "/" + testFolder + "/project/target/utplsql", filename);
+    public static boolean reportWasGenerated(MavenExecutionResult result, String filename) {
+        File outputFile = new File(result.getMavenProjectResult().getTargetProjectDirectory(), "/target/utplsql/" + filename);
         return outputFile.exists();
     }
 }
