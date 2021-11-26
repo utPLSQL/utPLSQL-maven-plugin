@@ -303,7 +303,24 @@ public class UtPlsqlMojoTest {
         System.setProperty("dbUrl", "");
         System.setProperty("dbUser", "");
         System.setProperty("dbPass", "");
+    }
 
+    /**
+     * DB configuration from System Properties
+     * <p>
+     * Given : a pom.xml without dbUrl, dbUser and dbPass configured
+     * When : pom is read
+     * Then : System Properties must be used to configure database
+     */
+    @Test
+    public void include_and_exclude_objects() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("include_and_exclude_objects");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+
+        assertEquals("abc", utPlsqlMojo.includeObject);
+        assertEquals("xyz", utPlsqlMojo.excludeObject);
     }
 
     private UtPlsqlMojo createUtPlsqlMojo(String directory) throws Exception {
