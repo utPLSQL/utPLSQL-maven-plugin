@@ -17,7 +17,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>${project.groupId}</groupId>
+                <groupId>org.utplsql</groupId>
                 <artifactId>utplsql-maven-plugin</artifactId>
                 <version>@project.version@</version>
                 <executions>
