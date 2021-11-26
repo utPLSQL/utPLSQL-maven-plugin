@@ -295,7 +295,7 @@ public class UtPlsqlMojoTest {
         System.setProperty("dbUser", "UT3");
         System.setProperty("dbPass", "UT3");
 
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("dbms_output");
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("db_config_using_system_properties");
         assertNotNull(utPlsqlMojo);
 
         utPlsqlMojo.execute();
