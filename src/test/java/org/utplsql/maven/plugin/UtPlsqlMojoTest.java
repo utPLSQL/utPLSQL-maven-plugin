@@ -29,7 +29,7 @@ public class UtPlsqlMojoTest {
     }
 
     @Test
-    public void junitReporter() throws MojoExecutionException {
+    void junitReporter() throws MojoExecutionException {
         UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
 
         ReporterParameter junitReporter = new ReporterParameter();
@@ -44,7 +44,7 @@ public class UtPlsqlMojoTest {
     }
 
     @Test
-    public void absolutPath() throws MojoExecutionException {
+    void absolutPath() throws MojoExecutionException {
         UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
 
         ReporterParameter junitReporter = new ReporterParameter();
@@ -68,7 +68,7 @@ public class UtPlsqlMojoTest {
     }
 
     @Test
-    public void parentDoesNotExist() throws MojoExecutionException {
+    void parentDoesNotExist() throws MojoExecutionException {
         UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
 
         ReporterParameter junitReporter = new ReporterParameter();
@@ -83,7 +83,7 @@ public class UtPlsqlMojoTest {
     }
 
     @Test
-    public void onlyConsoleOutput() throws MojoExecutionException {
+    void onlyConsoleOutput() throws MojoExecutionException {
         UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
 
         ReporterParameter junitReporter = new ReporterParameter();
@@ -97,7 +97,7 @@ public class UtPlsqlMojoTest {
     }
 
     @Test
-    public void onlyFileOutput() throws MojoExecutionException {
+    void onlyFileOutput() throws MojoExecutionException {
         UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
 
         ReporterParameter junitReporter = new ReporterParameter();
@@ -112,7 +112,7 @@ public class UtPlsqlMojoTest {
     }
 
     @Test
-    public void skipUtplsqlTests() throws MojoExecutionException {
+    void skipUtplsqlTests() throws MojoExecutionException {
         UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
 
         utPlsqlMojo.skipUtplsqlTests = true;
@@ -128,7 +128,7 @@ public class UtPlsqlMojoTest {
     }
 
     @Test
-    public void defaultReportAndExcludes() throws MojoExecutionException {
+    void defaultReportAndExcludes() throws MojoExecutionException {
         UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo();
 
         utPlsqlMojo.excludeObject = "abc";
