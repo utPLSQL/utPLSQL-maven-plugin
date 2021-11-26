@@ -15,6 +15,7 @@
     </properties>
 
     <build>
+        <directory>../../../target</directory>
         <plugins>
             <plugin>
                 <groupId>org.utplsql</groupId>
