@@ -71,3 +71,5 @@ jobs:
 
       - name: Publish unit test results
         uses: EnricoMi/publish-unit-test-result-action@v1.24
+        with:
+          files: target/**/TEST**.xml
