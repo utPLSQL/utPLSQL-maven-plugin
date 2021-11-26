@@ -56,7 +56,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Maven verify and sonar
+      - name: Maven unit and integration tests with sonar
         run: mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKey=org.utplsql:utplsql-maven-plugin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -6,12 +6,7 @@
     <groupId>org.utplsql</groupId>
     <artifactId>utplsql-maven-plugin-test</artifactId>
     <version>3.1.0-SNAPSHOT</version>
-
     <packaging>pom</packaging>
-
-    <name>utplsql-maven-plugin Maven Plugin Test</name>
-
-    <url>http://utplsql.org</url>
 
     <properties>
         <dbUrl>jdbc:oracle:thin:@127.0.0.1:1521:xe</dbUrl>
@@ -20,27 +15,19 @@
     </properties>
 
     <build>
-
-        <directory>../../../target/</directory>
-
         <plugins>
             <plugin>
                 <groupId>org.utplsql</groupId>
                 <artifactId>utplsql-maven-plugin</artifactId>
-                <version>{project.version}</version>
-
+                <version>@project.version@</version>
                 <goals>
                     <goal>test</goal>
                 </goals>
-
                 <configuration>
-
                     <ignoreFailure>false</ignoreFailure>
-
                     <paths>
                         <path>:plsql</path>
                     </paths>
-
                     <reporters>
                         <reporter>
                             <name>UT_COVERAGE_SONAR_REPORTER</name>
@@ -53,7 +40,6 @@
                             <consoleOutput>true</consoleOutput>
                         </reporter>
                     </reporters>
-
                     <tests>
                         <test>
                             <directory>bar</directory>
