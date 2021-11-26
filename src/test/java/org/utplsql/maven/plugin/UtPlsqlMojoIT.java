@@ -14,7 +14,7 @@ import static org.utplsql.maven.plugin.ReportChecker.reportExists;
 
 @MavenGoal("test")
 @MavenJupiterExtension
-public class UtPlsqlMojoIT {
+class UtPlsqlMojoIT {
 
     @MavenTest
     void minimalist(MavenExecutionResult result) {

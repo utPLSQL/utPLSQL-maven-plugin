@@ -12,7 +12,7 @@ import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UtPlsqlMojoTest {
+class UtPlsqlMojoTest {
 
     private UtPlsqlMojo createUtPlsqlMojo() {
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
