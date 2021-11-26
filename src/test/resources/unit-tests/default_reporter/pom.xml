@@ -28,11 +28,6 @@
                     <paths>
                         <path>app</path>
                     </paths>
-                    <reporters>
-                        <reporter>
-                            <name>UT_DOCUMENTATION_REPORTER</name>
-                        </reporter>
-                    </reporters>
                 </configuration>
             </plugin>
         </plugins>
