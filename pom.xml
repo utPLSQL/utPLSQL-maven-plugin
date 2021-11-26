@@ -151,6 +151,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.soebes.itf.jupiter.extension</groupId>
             <artifactId>itf-jupiter-extension</artifactId>
             <version>${itf.version}</version>
@@ -160,13 +165,6 @@
             <groupId>com.soebes.itf.jupiter.extension</groupId>
             <artifactId>itf-assertj</artifactId>
             <version>${itf.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
 
