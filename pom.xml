@@ -5,7 +5,7 @@
 
     <groupId>org.utplsql</groupId>
     <artifactId>utplsql-maven-plugin</artifactId>
-    <version>3.1.6.RC2</version>
+    <version>3.1.6</version>
     <packaging>maven-plugin</packaging>
 
     <name>utPLSQL Maven Plugin</name>
@@ -53,32 +53,32 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <maven.version>3.5.2</maven.version>
-        <powermock.version>2.0.9</powermock.version>
-        <jaxb.version>2.3.1</jaxb.version>
+        <itf.version>0.11.0</itf.version>
+        <junit.version>5.8.1</junit.version>
+
+        <sonar.organization>utplsql</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <version>3.0.1</version>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-core</artifactId>
+            <version>${maven.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${jaxb.version}</version>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>${maven.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ojdbc8</artifactId>
-            <version>21.3.0.0</version>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-shared-utils</artifactId>
+            <version>3.1.0</version>
         </dependency>
 
         <dependency>
@@ -88,31 +88,15 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-core</artifactId>
-            <version>${maven.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-model</artifactId>
-            <version>${maven.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-api</artifactId>
-            <version>${maven.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.plugin-tools</groupId>
-            <artifactId>maven-plugin-annotations</artifactId>
-            <version>${maven.version}</version>
-            <scope>provided</scope>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>21.3.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.4.1</version>
+            <version>3.1.0</version>
         </dependency>
 
         <!-- Test Dependencies -->
@@ -128,39 +112,33 @@
             <version>3.3.0</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.maven.shared</groupId>
-            <artifactId>maven-verifier</artifactId>
-            <version>1.6</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <groupId>com.soebes.itf.jupiter.extension</groupId>
+            <artifactId>itf-jupiter-extension</artifactId>
+            <version>${itf.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.soebes.itf.jupiter.extension</groupId>
+            <artifactId>itf-assertj</artifactId>
+            <version>${itf.version}</version>
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <version>${powermock.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito2</artifactId>
-            <version>${powermock.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
@@ -180,6 +158,21 @@
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.soebes.itf.jupiter.extension</groupId>
+                <artifactId>itf-maven-plugin</artifactId>
+                <version>${itf.version}</version>
+                <executions>
+                    <execution>
+                        <id>installing</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>install</goal>
+                            <goal>resources-its</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -242,6 +235,32 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>coverage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.7</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>release</id>
             <activation>

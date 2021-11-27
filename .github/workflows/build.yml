@@ -1,8 +1,8 @@
-name: Build
+name: Build and deploy snapshot
 
 on:
   push:
-    branches: [ develop ]
+    branches-ignore: [ main ]
   pull_request:
     branches: [ develop ]
 
@@ -28,6 +28,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Install utPLSQL
         run: sh ${{ github.workspace }}/scripts/1_install_utplsql.sh
@@ -35,10 +37,10 @@ jobs:
       - name: Install demo project
         run: sh ${{ github.workspace }}/scripts/2_install_demo_project.sh
 
-      - name: Set up JDK 8
+      - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
-          java-version: '8'
+          java-version: '11'
           distribution: 'adopt'
           server-id: ossrh
           server-username: MAVEN_USERNAME
@@ -54,9 +56,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Maven unit and integration tests with sonar
+        run: mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKey=org.utplsql:utplsql-maven-plugin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
       - name: Maven deploy snapshot
-        run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent deploy
+        run: mvn deploy -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      - name: Publish unit test results
+        uses: EnricoMi/publish-unit-test-result-action@v1.24
+        if: always()
+        with:
+          files: target/**/TEST**.xml

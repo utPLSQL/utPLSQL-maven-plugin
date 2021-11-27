@@ -1,6 +1,6 @@
 package org.utplsql.maven.plugin.model;
 
-import org.codehaus.plexus.util.StringUtils;
+import static org.utplsql.maven.plugin.util.StringUtil.isNotBlank;
 
 /**
  * Represents a reporter parameter in the pom file.
@@ -54,7 +54,7 @@ public class ReporterParameter {
      * @return true if the file output is enabled, false otherwise
      */
     public boolean isFileOutput() {
-        return StringUtils.isNotBlank(fileOutput);
+        return isNotBlank(fileOutput);
     }
 
     /**
