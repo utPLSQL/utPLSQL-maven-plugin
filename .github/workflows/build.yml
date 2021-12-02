@@ -15,7 +15,7 @@ jobs:
 
     services:
       oracle:
-        image: gvenzl/oracle-xe:18.4.0-slim
+        image: gvenzl/oracle-xe:21-slim
         env:
           ORACLE_PASSWORD: oracle
         ports:
