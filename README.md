@@ -221,7 +221,7 @@ Please refer to the following usage example for the parameters descriptions:
                             <!-- See coverage reporting options in framework documentation. -->
                             <testsOwner>tests_owner</testsOwner>
                             <testsRegexExpression>.*/\w+/(\w+)/(\w+)\.\w{3}</testsRegexExpression>
-                            <testsOwnerSubexpression>test</testsOwnerSubexpression>
+                            <testsOwnerSubexpression>3</testsOwnerSubexpression>
                             <testsNameSubexpression>2</testsNameSubexpression>
                             <testsTypeSubexpression>1</testsTypeSubexpression>
                             <testsCustomTypeMapping>
