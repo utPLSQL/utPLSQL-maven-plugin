@@ -81,7 +81,7 @@ Please refer to the following usage example for the parameters descriptions:
         <!-- -DdbUser="user" -->
         <dbUser>user</dbUser>
         <!-- Database connection password. -->
-        <!-- -DdbPass="password" -->
+        <!-- -DdbPassword="password" -->
         <dbPass>password</dbPass>
     </properties>
 
@@ -100,6 +100,7 @@ Please refer to the following usage example for the parameters descriptions:
                             <!-- REQUIRED PARAMETERS -->
 
                             <!-- A list of tests suite paths. -->
+                          
                             <!-- The path(s) can be in one of the following formats: -->
                             <!--     schema[.package[.procedure]] -->
                             <!--     schema:suite[.suite[.suite][...]][.procedure] -->
@@ -207,7 +208,7 @@ Please refer to the following usage example for the parameters descriptions:
                             <!-- See coverage reporting options in framework documentation. -->
                             <sourcesOwner>code_owner</sourcesOwner>
                             <sourcesRegexExpression>.*/\w+/(\w+)/(\w+)\.\w{3}</sourcesRegexExpression>
-                            <sourcesOwnerSubexpression>3</sourcesOwnerSubexpression>
+                            <sourcesOwnerSubexpression>app</sourcesOwnerSubexpression>
                             <sourcesNameSubexpression>2</sourcesNameSubexpression>
                             <sourcesTypeSubexpression>1</sourcesTypeSubexpression>
                             <sourcesCustomTypeMapping>
@@ -221,7 +222,7 @@ Please refer to the following usage example for the parameters descriptions:
                             <!-- See coverage reporting options in framework documentation. -->
                             <testsOwner>tests_owner</testsOwner>
                             <testsRegexExpression>.*/\w+/(\w+)/(\w+)\.\w{3}</testsRegexExpression>
-                            <testsOwnerSubexpression>3</testsOwnerSubexpression>
+                            <testsOwnerSubexpression>test</testsOwnerSubexpression>
                             <testsNameSubexpression>2</testsNameSubexpression>
                             <testsTypeSubexpression>1</testsTypeSubexpression>
                             <testsCustomTypeMapping>
