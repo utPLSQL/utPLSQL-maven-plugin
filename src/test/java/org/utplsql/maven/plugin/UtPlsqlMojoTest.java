@@ -306,11 +306,11 @@ public class UtPlsqlMojoTest {
     }
 
     /**
-     * DB configuration from System Properties
+     * Exclude object from coverage report
      * <p>
-     * Given : a pom.xml without dbUrl, dbUser and dbPass configured
+     * Given : a pom.xml with excludeObject set
      * When : pom is read
-     * Then : System Properties must be used to configure database
+     * Then : excludeObject is present
      */
     @Test
     public void exclude_object() throws Exception {
@@ -320,6 +320,23 @@ public class UtPlsqlMojoTest {
         utPlsqlMojo.execute();
 
         assertEquals("app.pkg_test_me,app.test_pkg_test_me", utPlsqlMojo.excludeObject);
+    }
+
+    /**
+     * Include object from coverage report
+     * <p>
+     * Given : a pom.xml with includeObject set
+     * When : pom is read
+     * Then : includeObject is present
+     */
+    @Test
+    public void include_object() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("include_object");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+
+        assertEquals("app.pkg_test_me,app.test_pkg_test_me", utPlsqlMojo.includeObject);
     }
 
     private UtPlsqlMojo createUtPlsqlMojo(String directory) throws Exception {
