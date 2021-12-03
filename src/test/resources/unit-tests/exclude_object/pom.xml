@@ -29,8 +29,22 @@
                     <paths>
                         <path>app</path>
                     </paths>
-                    <includeObject>abc</includeObject>
-                    <excludeObject>xyz</excludeObject>
+                    <reporters>
+                        <reporter>
+                            <name>UT_DOCUMENTATION_REPORTER</name>
+                        </reporter>
+                        <reporter>
+                            <name>UT_COVERAGE_SONAR_REPORTER</name>
+                            <fileOutput>coverage-sonar-report.xml</fileOutput>
+                            <consoleOutput>false</consoleOutput>
+                        </reporter>
+                        <reporter>
+                            <name>UT_SONAR_TEST_REPORTER</name>
+                            <fileOutput>utplsql/sonar-test-report.xml</fileOutput>
+                            <consoleOutput>true</consoleOutput>
+                        </reporter>
+                    </reporters>
+                    <excludeObject>app.pkg_test_me,app.test_pkg_test_me</excludeObject>
                 </configuration>
             </plugin>
         </plugins>

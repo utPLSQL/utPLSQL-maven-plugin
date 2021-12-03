@@ -100,6 +100,7 @@ Please refer to the following usage example for the parameters descriptions:
                             <!-- REQUIRED PARAMETERS -->
 
                             <!-- A list of tests suite paths. -->
+                          
                             <!-- The path(s) can be in one of the following formats: -->
                             <!--     schema[.package[.procedure]] -->
                             <!--     schema:suite[.suite[.suite][...]][.procedure] -->

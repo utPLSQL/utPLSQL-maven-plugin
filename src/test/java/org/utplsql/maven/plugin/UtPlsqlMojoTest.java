@@ -313,14 +313,13 @@ public class UtPlsqlMojoTest {
      * Then : System Properties must be used to configure database
      */
     @Test
-    public void include_and_exclude_objects() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("include_and_exclude_objects");
+    public void exclude_object() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("exclude_object");
         assertNotNull(utPlsqlMojo);
 
         utPlsqlMojo.execute();
 
-        assertEquals("abc", utPlsqlMojo.includeObject);
-        assertEquals("xyz", utPlsqlMojo.excludeObject);
+        assertEquals("app.pkg_test_me,app.test_pkg_test_me", utPlsqlMojo.excludeObject);
     }
 
     private UtPlsqlMojo createUtPlsqlMojo(String directory) throws Exception {

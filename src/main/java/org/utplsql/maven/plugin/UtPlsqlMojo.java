@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -162,10 +163,21 @@ public class UtPlsqlMojo extends AbstractMojo {
                         .failOnErrors(!ignoreFailure);
 
                 if (isNotBlank(excludeObject)) {
-                    runner.excludeObject(excludeObject);
+                    if (excludeObject.contains(",")) {
+                        String[] excludes = excludeObject.split(",");
+                        runner.excludeObjects(Arrays.asList(excludes));
+                    } else {
+                        runner.excludeObject(excludeObject);
+                    }
+
                 }
                 if (isNotBlank(includeObject)) {
-                    runner.includeObject(includeObject);
+                    if (includeObject.contains(",")) {
+                        String[] includes = includeObject.split(",");
+                        runner.excludeObjects(Arrays.asList(includes));
+                    } else {
+                        runner.excludeObject(includeObject);
+                    }
                 }
 
                 runner.run(connection);
