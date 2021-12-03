@@ -17,6 +17,11 @@ class StringUtilTest {
     }
 
     @Test
+    void is_empty_null_true() {
+        assertTrue(isEmpty(null));
+    }
+
+    @Test
     void is_empty_false() {
         assertFalse(isEmpty("abc"));
     }
@@ -34,6 +39,11 @@ class StringUtilTest {
     @Test
     void is_blank_true() {
         assertTrue(isBlank(" "));
+    }
+
+    @Test
+    void is_blank_null_true() {
+        assertTrue(isBlank(null));
     }
 
     @Test
