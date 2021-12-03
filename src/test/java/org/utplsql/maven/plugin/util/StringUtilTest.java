@@ -12,52 +12,62 @@ import static org.utplsql.maven.plugin.util.StringUtil.isNotEmpty;
 class StringUtilTest {
 
     @Test
-    void is_empty_true() {
+    void isEmpty_with_empty() {
         assertTrue(isEmpty(""));
     }
 
     @Test
-    void is_empty_null_true() {
+    void isEmpty_with_null() {
         assertTrue(isEmpty(null));
     }
 
     @Test
-    void is_empty_false() {
+    void isEmpty_with_string() {
         assertFalse(isEmpty("abc"));
     }
 
     @Test
-    void is_not_empty_true() {
+    void isNotEmpty_with_string() {
         assertTrue(isNotEmpty("abc"));
     }
 
     @Test
-    void is_not_empty_false() {
+    void isNotEmpty_with_empty() {
         assertFalse(isNotEmpty(""));
     }
 
     @Test
-    void is_blank_true() {
+    void isNotEmpty_with_blank() {
+        assertTrue(isNotEmpty(" "));
+    }
+
+    @Test
+    void isBlank_with_blank() {
         assertTrue(isBlank(" "));
     }
 
     @Test
-    void is_blank_null_true() {
+    void isBlank_with_null() {
         assertTrue(isBlank(null));
     }
 
     @Test
-    void is_blank_false() {
+    void isBlank_with_string() {
         assertFalse(isBlank("abc"));
     }
 
     @Test
-    void is_not_blank_true() {
+    void isBlank_with_whitespaces_before_string() {
+        assertFalse(isBlank("   abc"));
+    }
+
+    @Test
+    void isNotBlank_with_string() {
         assertTrue(isNotBlank("abc"));
     }
 
     @Test
-    void is_not_blank_false() {
+    void isNotBlank_with_empty() {
         assertFalse(isNotBlank(""));
     }
 }
