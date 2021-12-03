@@ -81,7 +81,7 @@ Please refer to the following usage example for the parameters descriptions:
         <!-- -DdbUser="user" -->
         <dbUser>user</dbUser>
         <!-- Database connection password. -->
-        <!-- -DdbPassword="password" -->
+        <!-- -DdbPass="password" -->
         <dbPass>password</dbPass>
     </properties>
 
@@ -207,7 +207,7 @@ Please refer to the following usage example for the parameters descriptions:
                             <!-- See coverage reporting options in framework documentation. -->
                             <sourcesOwner>code_owner</sourcesOwner>
                             <sourcesRegexExpression>.*/\w+/(\w+)/(\w+)\.\w{3}</sourcesRegexExpression>
-                            <sourcesOwnerSubexpression>app</sourcesOwnerSubexpression>
+                            <sourcesOwnerSubexpression>3</sourcesOwnerSubexpression>
                             <sourcesNameSubexpression>2</sourcesNameSubexpression>
                             <sourcesTypeSubexpression>1</sourcesTypeSubexpression>
                             <sourcesCustomTypeMapping>
