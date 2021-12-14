@@ -174,9 +174,9 @@ public class UtPlsqlMojo extends AbstractMojo {
                 if (isNotBlank(includeObject)) {
                     if (includeObject.contains(",")) {
                         String[] includes = includeObject.split(",");
-                        runner.excludeObjects(Arrays.asList(includes));
+                        runner.includeObjects(Arrays.asList(includes));
                     } else {
-                        runner.excludeObject(includeObject);
+                        runner.includeObject(includeObject);
                     }
                 }
 
