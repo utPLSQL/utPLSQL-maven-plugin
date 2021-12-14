@@ -68,4 +68,11 @@ class UtPlsqlMojoIT {
 
         assertThatReportsAreGeneratedAsExpected(result, "sonar-test-report.xml", "coverage-sonar-report.xml");
     }
+
+    @MavenTest
+    void include_object(MavenExecutionResult result) {
+        assertThat(result).isSuccessful();
+
+        assertThatReportsAreGeneratedAsExpected(result, "sonar-test-report.xml", "coverage-sonar-report.xml");
+    }
 }

@@ -90,7 +90,7 @@ Please refer to the following usage example for the parameters descriptions:
             <plugin>
                 <groupId>org.utplsql</groupId>
                 <artifactId>utplsql-maven-plugin</artifactId>
-                <version>3.1.7</version>
+                <version>3.1.8</version>
                 <executions>
                     <execution>
                         <goals>
