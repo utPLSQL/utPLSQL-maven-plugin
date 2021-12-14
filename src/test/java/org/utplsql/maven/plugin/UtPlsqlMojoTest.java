@@ -305,40 +305,6 @@ public class UtPlsqlMojoTest {
         System.setProperty("dbPass", "");
     }
 
-    /**
-     * Exclude object from coverage report
-     * <p>
-     * Given : a pom.xml with excludeObject set
-     * When : pom is read
-     * Then : excludeObject is present
-     */
-    @Test
-    public void exclude_object() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("exclude_object");
-        assertNotNull(utPlsqlMojo);
-
-        utPlsqlMojo.execute();
-
-        assertEquals("app.pkg_test_me,app.test_pkg_test_me", utPlsqlMojo.excludeObject);
-    }
-
-    /**
-     * Include object from coverage report
-     * <p>
-     * Given : a pom.xml with includeObject set
-     * When : pom is read
-     * Then : includeObject is present
-     */
-    @Test
-    public void include_object() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("include_object");
-        assertNotNull(utPlsqlMojo);
-
-        utPlsqlMojo.execute();
-
-        assertEquals("app.pkg_test_me,app.test_pkg_test_me", utPlsqlMojo.includeObject);
-    }
-
     private UtPlsqlMojo createUtPlsqlMojo(String directory) throws Exception {
         return (UtPlsqlMojo) rule.lookupConfiguredMojo(new File("src/test/resources/unit-tests/" + directory), "test");
     }
