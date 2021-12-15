@@ -46,7 +46,9 @@
                                 <source>
                                     <directory>scripts/sources</directory>
                                     <includes>
-                                        <include>**/*sql</include>
+                                        <include>**/**.sql</include>
+                                        <include>**/**.pks</include>
+                                        <include>**/**.pkb</include>
                                     </includes>
                                 </source>
                             </sources>
@@ -64,7 +66,8 @@
                                 <test>
                                     <directory>scripts/test</directory>
                                     <includes>
-                                        <include>**/*sql</include>
+                                        <include>**/**.pks</include>
+                                        <include>**/**.pkb</include>
                                     </includes>
                                 </test>
                             </tests>

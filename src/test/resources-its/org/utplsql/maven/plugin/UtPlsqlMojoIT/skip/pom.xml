@@ -27,40 +27,6 @@
                         </goals>
                         <configuration>
                             <skipUtplsqlTests>true</skipUtplsqlTests>
-                            <ignoreFailure>false</ignoreFailure>
-                            <paths>
-                                <path>app</path>
-                            </paths>
-                            <reporters>
-                                <reporter>
-                                    <name>UT_COVERAGE_SONAR_REPORTER</name>
-                                    <fileOutput>utplsql/coverage-sonar-report.xml</fileOutput>
-                                    <consoleOutput>true</consoleOutput>
-                                </reporter>
-                                <reporter>
-                                    <name>UT_SONAR_TEST_REPORTER</name>
-                                    <fileOutput>utplsql/sonar-test-report.xml</fileOutput>
-                                    <consoleOutput>true</consoleOutput>
-                                </reporter>
-                            </reporters>
-                            <sources>
-                                <source>
-                                    <directory>scripts/sources</directory>
-                                    <includes>
-                                        <include>**/*bdy</include>
-                                        <include>**/*spc</include>
-                                    </includes>
-                                </source>
-                            </sources>
-                            <tests>
-                                <test>
-                                    <directory>scripts/tests</directory>
-                                    <includes>
-                                        <include>**/*bdy</include>
-                                        <include>**/*spc</include>
-                                    </includes>
-                                </test>
-                            </tests>
                         </configuration>
                     </execution>
                 </executions>

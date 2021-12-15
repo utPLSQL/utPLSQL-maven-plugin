@@ -87,8 +87,8 @@ public class UtPlsqlMojoTest {
         // check tests
         FileMapperOptions tests = utPlsqlMojo.buildTestsOptions();
         assertEquals(2, tests.getFilePaths().size());
-        assertTrue(tests.getFilePaths().contains("te/st/file.bdy"));
-        assertTrue(tests.getFilePaths().contains("te/st/spec.spc"));
+        assertTrue(tests.getFilePaths().contains("te/st/file.pkb"));
+        assertTrue(tests.getFilePaths().contains("te/st/spec.pks"));
         assertEquals("tests_owner", tests.getObjectOwner());
         assertEquals(".*/\\w+/(\\w+)/(\\w+)\\.\\w{3}", tests.getRegexPattern());
         assertEquals(Integer.valueOf(54), tests.getNameSubExpression());

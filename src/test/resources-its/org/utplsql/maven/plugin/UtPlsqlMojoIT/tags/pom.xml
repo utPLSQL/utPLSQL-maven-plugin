@@ -45,8 +45,8 @@
                                 <test>
                                     <directory>scripts/tests</directory>
                                     <includes>
-                                        <include>**/*bdy</include>
-                                        <include>**/*spc</include>
+                                        <include>**/**.pks</include>
+                                        <include>**/**.pkb</include>
                                     </includes>
                                 </test>
                             </tests>

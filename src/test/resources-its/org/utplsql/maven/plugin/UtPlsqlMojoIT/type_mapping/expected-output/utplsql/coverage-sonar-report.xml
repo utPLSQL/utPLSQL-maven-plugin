@@ -1,5 +1,5 @@
 <coverage version="1">
-<file path="scripts/sources/app/package_bodies/PKG_TEST_ME.sql">
+<file path="scripts/sources/app/package_bodies/PKG_TEST_ME.pkb">
 <lineToCover lineNumber="7" covered="true"/>
 <lineToCover lineNumber="8" covered="true"/>
 <lineToCover lineNumber="9" covered="true"/>

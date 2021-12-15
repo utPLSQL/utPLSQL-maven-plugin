@@ -46,13 +46,13 @@
                                 <source>
                                     <directory>scripts/sources</directory>
                                     <includes>
-                                        <include>**/*bdy</include>
-                                        <include>**/*spc</include>
+                                        <include>**/**.sql</include>
+                                        <include>**/**.pks</include>
+                                        <include>**/**.pkb</include>
                                     </includes>
                                 </source>
                             </sources>
-                            <sourcesRegexExpression>.*(\\|\/)(\w+)(\\|\/)(\w+)(\\|\/)(\w+).(\w{3})
-                            </sourcesRegexExpression>
+                            <sourcesRegexExpression>.*(\\|\/)(\w+)(\\|\/)(\w+)(\\|\/)(\w+).(\w{3})</sourcesRegexExpression>
                             <sourcesOwnerSubexpression>2</sourcesOwnerSubexpression>
                             <sourcesNameSubexpression>6</sourcesNameSubexpression>
                             <sourcesTypeSubexpression>7</sourcesTypeSubexpression>
@@ -60,8 +60,8 @@
                                 <test>
                                     <directory>scripts/test</directory>
                                     <includes>
-                                        <include>**/*bdy</include>
-                                        <include>**/*spc</include>
+                                        <include>**/**.pks</include>
+                                        <include>**/**.pkb</include>
                                     </includes>
                                 </test>
                             </tests>
