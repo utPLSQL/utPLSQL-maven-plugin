@@ -20,15 +20,15 @@
             <plugin>
                 <groupId>org.utplsql</groupId>
                 <artifactId>utplsql-maven-plugin</artifactId>
-                <version>@project.version@</version>
+                <version>@proj</version>
                 <goals>
                     <goal>test</goal>
                 </goals>
                 <configuration>
-                    <skipUtplsqlTests>true</skipUtplsqlTests>
+                    <oraStuckTimeout>0</oraStuckTimeout>
                     <ignoreFailure>false</ignoreFailure>
                     <paths>
-                        <path>:plsql</path>
+                        <path>app</path>
                     </paths>
                     <reporters>
                         <reporter>
@@ -48,23 +48,6 @@
                             <consoleOutput>true</consoleOutput>
                         </reporter>
                     </reporters>
-                    <sources>
-                        <source>
-                            <directory>foo</directory>
-                            <includes>
-                                <include>**/*sql</include>
-                            </includes>
-                        </source>
-                    </sources>
-                    <tests>
-                        <test>
-                            <directory>bar</directory>
-                            <includes>
-                                <include>**/**.pks</include>
-                                <include>**/**.pkb</include>
-                            </includes>
-                        </test>
-                    </tests>
                 </configuration>
             </plugin>
         </plugins>

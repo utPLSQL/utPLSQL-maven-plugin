@@ -75,4 +75,11 @@ class UtPlsqlMojoIT {
 
         assertThatReportsAreGeneratedAsExpected(result, "sonar-test-report.xml", "coverage-sonar-report.xml");
     }
+
+    @MavenTest
+    void ora_stuck_timeout(MavenExecutionResult result) {
+        assertThat(result).isSuccessful();
+
+        assertThatReportsAreGeneratedAsExpected(result, "sonar-test-report.xml", "coverage-sonar-report.xml");
+    }
 }

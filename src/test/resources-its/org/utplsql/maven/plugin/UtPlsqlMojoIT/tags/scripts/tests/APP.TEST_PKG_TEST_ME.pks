@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE TESTS_OWNER.TEST_PKG_TEST_ME AS
+CREATE OR REPLACE PACKAGE TEST_PKG_TEST_ME AS
   -- %suite(TEST_PKG_TEST_ME)
   -- %suitepath(plsql.examples)
   --
@@ -75,11 +75,13 @@ CREATE OR REPLACE PACKAGE TESTS_OWNER.TEST_PKG_TEST_ME AS
   -- %test
   -- %displayname(Checking if procedure (NOT NULL) insert while existing)
   -- %rollback(manual)
+  -- %tags(exists)
   PROCEDURE TEST_PR_TEST_ME_EXISTS;
   
   -- %test
   -- %displayname(Demonstrating the use of cursor)
   -- %rollback(manual)
+  -- %tags(cursor)
   PROCEDURE TEST_PR_TEST_ME_CURSOR;
 
 END;

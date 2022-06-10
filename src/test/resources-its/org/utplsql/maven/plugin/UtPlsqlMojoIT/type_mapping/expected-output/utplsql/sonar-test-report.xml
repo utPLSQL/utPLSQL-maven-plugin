@@ -1,5 +1,5 @@
 <testExecutions version="1">
-<file path="scripts/test/app/package_bodies/TEST_PKG_TEST_ME.sql">
+<file path="scripts/test/app/package_bodies/TEST_PKG_TEST_ME.pkb">
 <testCase name="test_fc_input_1" duration="1" >
 </testCase>
 <testCase name="test_fc_input_0" duration="1" >

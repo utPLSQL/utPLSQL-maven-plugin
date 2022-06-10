@@ -64,8 +64,8 @@
                         <test>
                             <directory>te/st</directory>
                             <includes>
-                                <include>**/*.spc</include>
-                                <include>**/*.bdy</include>
+                                <include>**/**.pks</include>
+                                <include>**/**.pkb</include>
                             </includes>
                         </test>
                     </tests>

@@ -1,5 +1,5 @@
 <testExecutions version="1">
-<file path="scripts/tests/APP.TEST_PKG_TEST_ME.bdy">
+<file path="scripts/tests/APP.TEST_PKG_TEST_ME.pkb">
 <testCase name="test_pr_test_me_exists" duration="1" >
 </testCase>
 <testCase name="test_pr_test_me_cursor" duration="1" >

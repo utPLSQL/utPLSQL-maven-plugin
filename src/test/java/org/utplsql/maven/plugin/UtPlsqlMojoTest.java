@@ -87,8 +87,8 @@ public class UtPlsqlMojoTest {
         // check tests
         FileMapperOptions tests = utPlsqlMojo.buildTestsOptions();
         assertEquals(2, tests.getFilePaths().size());
-        assertTrue(tests.getFilePaths().contains("te/st/file.bdy"));
-        assertTrue(tests.getFilePaths().contains("te/st/spec.spc"));
+        assertTrue(tests.getFilePaths().contains("te/st/file.pkb"));
+        assertTrue(tests.getFilePaths().contains("te/st/spec.pks"));
         assertEquals("tests_owner", tests.getObjectOwner());
         assertEquals(".*/\\w+/(\\w+)/(\\w+)\\.\\w{3}", tests.getRegexPattern());
         assertEquals(Integer.valueOf(54), tests.getNameSubExpression());
@@ -271,6 +271,22 @@ public class UtPlsqlMojoTest {
      * Enable DBMS_OUTPUT
      * <p>
      * Given : a pom.xml with dbmsOutput=true
+     * When : pom is read
+     * Then : Property is set
+     */
+    @Test
+    public void ora_stuck_timeout() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("ora_stuck_timeout");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+    }
+
+
+    /**
+     * Ora Stuck Timeout
+     * <p>
+     * Given : a pom.xml with ora-stuck-timeout set
      * When : pom is read
      * Then : DBMS_OUTPUT is enabled
      */

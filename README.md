@@ -90,7 +90,7 @@ Please refer to the following usage example for the parameters descriptions:
             <plugin>
                 <groupId>org.utplsql</groupId>
                 <artifactId>utplsql-maven-plugin</artifactId>
-                <version>3.1.9</version>
+                <version>3.1.10</version>
                 <executions>
                     <execution>
                         <goals>
@@ -152,6 +152,10 @@ Please refer to the following usage example for the parameters descriptions:
                             <!-- Enables DBMS_OUTPUT -->
                             <!-- Defaults to: false -->
                             <dbmsOutput>false</dbmsOutput>
+                          
+                            <!-- Sets a timeout around Reporter creation and retries when not ready after a while. -->
+                            <!-- 0 = no timeout. -->
+                            <ora-stuck-timeout>0</ora-stuck-timeout>
 
                             <!-- A list of tags to run. -->
                             <tags>

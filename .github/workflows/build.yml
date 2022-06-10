@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   
   repository_dispatch:
-    type: [utPLSQL-build]
+    type: [utPLSQL-build,utPLSQL-java-api-build]
 
 jobs:
   build:
