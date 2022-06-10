@@ -125,6 +125,9 @@ public class UtPlsqlMojo extends AbstractMojo {
     @Parameter
     boolean dbmsOutput;
 
+    @Parameter(defaultValue = "0")
+    Integer oraStuckTimeout;
+
     private final SqlFileScanner sqlFileScanner = new SqlFileScanner();
 
     @Override
@@ -160,7 +163,8 @@ public class UtPlsqlMojo extends AbstractMojo {
                         .addTags(tags)
                         .randomTestOrder(randomTestOrder)
                         .randomTestOrderSeed(randomTestOrderSeed)
-                        .failOnErrors(!ignoreFailure);
+                        .failOnErrors(!ignoreFailure)
+                        .oraStuckTimeout(oraStuckTimeout);
 
                 if (isNotBlank(excludeObject)) {
                     if (excludeObject.contains(",")) {

@@ -272,6 +272,22 @@ public class UtPlsqlMojoTest {
      * <p>
      * Given : a pom.xml with dbmsOutput=true
      * When : pom is read
+     * Then : Property is set
+     */
+    @Test
+    public void ora_stuck_timeout() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("ora_stuck_timeout");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+    }
+
+
+    /**
+     * Ora Stuck Timeout
+     * <p>
+     * Given : a pom.xml with ora-stuck-timeout set
+     * When : pom is read
      * Then : DBMS_OUTPUT is enabled
      */
     @Test
