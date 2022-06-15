@@ -25,7 +25,7 @@
                     <goal>test</goal>
                 </goals>
                 <configuration>
-                    <oraStuckTimeout>0</oraStuckTimeout>
+                    <oraStuckTimeout>5</oraStuckTimeout>
                     <ignoreFailure>false</ignoreFailure>
                     <paths>
                         <path>app</path>

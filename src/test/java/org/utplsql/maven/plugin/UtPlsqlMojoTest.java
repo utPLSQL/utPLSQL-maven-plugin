@@ -268,9 +268,9 @@ public class UtPlsqlMojoTest {
     }
 
     /**
-     * Enable DBMS_OUTPUT
+     * Set ORA Stuck Timeout
      * <p>
-     * Given : a pom.xml with dbmsOutput=true
+     * Given : a pom.xml with oraStuckTimeout=0
      * When : pom is read
      * Then : Property is set
      */
@@ -280,8 +280,9 @@ public class UtPlsqlMojoTest {
         assertNotNull(utPlsqlMojo);
 
         utPlsqlMojo.execute();
-    }
 
+        assertEquals(Integer.valueOf(5), utPlsqlMojo.oraStuckTimeout);
+    }
 
     /**
      * Ora Stuck Timeout
