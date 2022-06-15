@@ -155,7 +155,7 @@ Please refer to the following usage example for the parameters descriptions:
                           
                             <!-- Sets a timeout around Reporter creation and retries when not ready after a while. -->
                             <!-- 0 = no timeout. -->
-                            <ora-stuck-timeout>0</ora-stuck-timeout>
+                            <oraStuckTimeout>0</oraStuckTimeout>
 
                             <!-- A list of tags to run. -->
                             <tags>
