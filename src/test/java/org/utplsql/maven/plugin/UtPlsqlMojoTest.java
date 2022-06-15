@@ -281,7 +281,7 @@ public class UtPlsqlMojoTest {
 
         utPlsqlMojo.execute();
 
-        assertEquals(Integer.valueOf(5), utPlsqlMojo.oraStuckTimeout);
+        assertEquals(5, (int) utPlsqlMojo.oraStuckTimeout);
     }
 
     /**
