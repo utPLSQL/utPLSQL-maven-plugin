@@ -83,8 +83,8 @@
 
         <dependency>
             <groupId>org.utplsql</groupId>
-            <artifactId>java-api</artifactId>
-            <version>3.1.9</version>
+            <artifactId>utplsql-java-api</artifactId>
+            <version>3.1.15</version>
         </dependency>
 
         <dependency>
@@ -320,17 +320,4 @@
             </build>
         </profile>
     </profiles>
-
-    <repositories>
-        <repository>
-            <id>utplsql-java-api</id>
-            <url>https://packagecloud.io/utplsql/utplsql-java-api/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 </project>

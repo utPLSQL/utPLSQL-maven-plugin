@@ -65,6 +65,15 @@ public class UtPlsqlMojo extends AbstractMojo {
     @Parameter
     String excludeObject;
 
+    @Parameter
+    String includeSchemaExpr;
+    @Parameter
+    String excludeSchemaExpr;
+    @Parameter
+    String includeObjectExpr;
+    @Parameter
+    String excludeObjectExpr;
+
     @Parameter(defaultValue = "false")
     boolean skipCompatibilityCheck;
 
@@ -182,6 +191,20 @@ public class UtPlsqlMojo extends AbstractMojo {
                     } else {
                         runner.includeObject(includeObject);
                     }
+                }
+
+                if (isNotBlank(excludeSchemaExpr)) {
+                    runner.excludeSchemaExpr(excludeSchemaExpr);
+                }
+                if (isNotBlank(includeSchemaExpr)) {
+                    runner.includeSchemaExpr(includeSchemaExpr);
+                }
+
+                if (isNotBlank(excludeObjectExpr)) {
+                    runner.excludeObjectExpr(excludeObjectExpr);
+                }
+                if (isNotBlank(includeObjectExpr)) {
+                    runner.includeObjectExpr(includeObjectExpr);
                 }
 
                 runner.run(connection);
