@@ -42,7 +42,7 @@
                                     <consoleOutput>true</consoleOutput>
                                 </reporter>
                             </reporters>
-                            <excludeObject>tests_owner.test_pkg_test_me</excludeObject>
+                            <excludeObject>app.pkg_test_me,app.test_pkg_test_me</excludeObject>
                         </configuration>
                     </execution>
                 </executions>
