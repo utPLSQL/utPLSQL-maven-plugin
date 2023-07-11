@@ -356,6 +356,75 @@ public class UtPlsqlMojoTest {
         assertEquals("app.pkg_test_me,app.test_pkg_test_me", utPlsqlMojo.includeObject);
     }
 
+    /**
+     * Include an object by regex
+     * <p>
+     * Given : a pom.xml with a regex to include
+     * When : pom is read
+     * Then : Objects are included
+     */
+    @Test
+    public void include_object_expr() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("include_object_expr");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+
+        assertEquals("*", utPlsqlMojo.includeObjectExpr);
+    }
+
+    /**
+     * Exclude an object by regex
+     * <p>
+     * Given : a pom.xml with a regex to exclude
+     * When : pom is read
+     * Then : Objects are included
+     */
+    @Test
+    public void exclude_object_expr() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("exclude_object_expr");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+
+        assertEquals("*", utPlsqlMojo.excludeObjectExpr);
+    }
+
+
+    /**
+     * Include a schema by regex
+     * <p>
+     * Given : a pom.xml with a regex to include
+     * When : pom is read
+     * Then : Objects are included
+     */
+    @Test
+    public void include_schema_expr() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("include_schema_expr");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+
+        assertEquals("*", utPlsqlMojo.includeSchemaExpr);
+    }
+
+    /**
+     * Exclude a schema by regex
+     * <p>
+     * Given : a pom.xml with a regex to exclude
+     * When : pom is read
+     * Then : Objects are included
+     */
+    @Test
+    public void exclude_schema_expr() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("exclude_schema_expr");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+
+        assertEquals("*", utPlsqlMojo.excludeSchemaExpr);
+    }
+
     private UtPlsqlMojo createUtPlsqlMojo(String directory) throws Exception {
         return (UtPlsqlMojo) rule.lookupConfiguredMojo(new File("src/test/resources/unit-tests/" + directory), "test");
     }
