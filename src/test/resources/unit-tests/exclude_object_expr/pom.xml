@@ -25,7 +25,6 @@
                     <goal>test</goal>
                 </goals>
                 <configuration>
-                    <oraStuckTimeout>5</oraStuckTimeout>
                     <ignoreFailure>false</ignoreFailure>
                     <paths>
                         <path>app</path>
@@ -35,12 +34,9 @@
                             <name>UT_DOCUMENTATION_REPORTER</name>
                         </reporter>
                         <reporter>
-                            <name>UT_DOCUMENTATION_REPORTER</name>
-                            <consoleOutput>false</consoleOutput>
-                        </reporter>
-                        <reporter>
                             <name>UT_COVERAGE_SONAR_REPORTER</name>
                             <fileOutput>coverage-sonar-report.xml</fileOutput>
+                            <consoleOutput>false</consoleOutput>
                         </reporter>
                         <reporter>
                             <name>UT_SONAR_TEST_REPORTER</name>
@@ -48,6 +44,7 @@
                             <consoleOutput>true</consoleOutput>
                         </reporter>
                     </reporters>
+                    <excludeObjectExpr>*</excludeObjectExpr>
                 </configuration>
             </plugin>
         </plugins>

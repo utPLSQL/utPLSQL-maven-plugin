@@ -268,9 +268,9 @@ public class UtPlsqlMojoTest {
     }
 
     /**
-     * Enable DBMS_OUTPUT
+     * Set ORA Stuck Timeout
      * <p>
-     * Given : a pom.xml with dbmsOutput=true
+     * Given : a pom.xml with oraStuckTimeout=0
      * When : pom is read
      * Then : Property is set
      */
@@ -280,8 +280,9 @@ public class UtPlsqlMojoTest {
         assertNotNull(utPlsqlMojo);
 
         utPlsqlMojo.execute();
-    }
 
+        assertEquals(5, (int) utPlsqlMojo.oraStuckTimeout);
+    }
 
     /**
      * Ora Stuck Timeout
@@ -322,11 +323,11 @@ public class UtPlsqlMojoTest {
     }
 
     /**
-     * DB configuration from System Properties
+     * Exclude a list of objects
      * <p>
-     * Given : a pom.xml without dbUrl, dbUser and dbPass configured
+     * Given : a pom.xml with a list of objects to exclude
      * When : pom is read
-     * Then : System Properties must be used to configure database
+     * Then : Objects are excluded
      */
     @Test
     public void exclude_object() throws Exception {
@@ -336,6 +337,92 @@ public class UtPlsqlMojoTest {
         utPlsqlMojo.execute();
 
         assertEquals("app.pkg_test_me,app.test_pkg_test_me", utPlsqlMojo.excludeObject);
+    }
+
+    /**
+     * Include a list of objects
+     * <p>
+     * Given : a pom.xml with a list of objects to include
+     * When : pom is read
+     * Then : Objects are included
+     */
+    @Test
+    public void include_object() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("include_object");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+
+        assertEquals("app.pkg_test_me,app.test_pkg_test_me", utPlsqlMojo.includeObject);
+    }
+
+    /**
+     * Include an object by regex
+     * <p>
+     * Given : a pom.xml with a regex to include
+     * When : pom is read
+     * Then : Objects are included
+     */
+    @Test
+    public void include_object_expr() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("include_object_expr");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+
+        assertEquals("*", utPlsqlMojo.includeObjectExpr);
+    }
+
+    /**
+     * Exclude an object by regex
+     * <p>
+     * Given : a pom.xml with a regex to exclude
+     * When : pom is read
+     * Then : Objects are included
+     */
+    @Test
+    public void exclude_object_expr() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("exclude_object_expr");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+
+        assertEquals("*", utPlsqlMojo.excludeObjectExpr);
+    }
+
+
+    /**
+     * Include a schema by regex
+     * <p>
+     * Given : a pom.xml with a regex to include
+     * When : pom is read
+     * Then : Objects are included
+     */
+    @Test
+    public void include_schema_expr() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("include_schema_expr");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+
+        assertEquals("*", utPlsqlMojo.includeSchemaExpr);
+    }
+
+    /**
+     * Exclude a schema by regex
+     * <p>
+     * Given : a pom.xml with a regex to exclude
+     * When : pom is read
+     * Then : Objects are included
+     */
+    @Test
+    public void exclude_schema_expr() throws Exception {
+        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("exclude_schema_expr");
+        assertNotNull(utPlsqlMojo);
+
+        utPlsqlMojo.execute();
+
+        assertEquals("*", utPlsqlMojo.excludeSchemaExpr);
     }
 
     private UtPlsqlMojo createUtPlsqlMojo(String directory) throws Exception {

@@ -42,7 +42,7 @@
                                     <consoleOutput>true</consoleOutput>
                                 </reporter>
                             </reporters>
-                            <excludeObject>app.pkg_test_me,app.test_pkg_test_me</excludeObject>
+                            <excludeObjectExpr>*pkg_test_me</excludeObjectExpr>
                         </configuration>
                     </execution>
                 </executions>

@@ -90,7 +90,7 @@ Please refer to the following usage example for the parameters descriptions:
             <plugin>
                 <groupId>org.utplsql</groupId>
                 <artifactId>utplsql-maven-plugin</artifactId>
-                <version>3.1.10</version>
+                <version>3.1.11</version>
                 <executions>
                     <execution>
                         <goals>
@@ -100,7 +100,7 @@ Please refer to the following usage example for the parameters descriptions:
                             <!-- REQUIRED PARAMETERS -->
 
                             <!-- A list of tests suite paths. -->
-                          
+
                             <!-- The path(s) can be in one of the following formats: -->
                             <!--     schema[.package[.procedure]] -->
                             <!--     schema:suite[.suite[.suite][...]][.procedure] -->
@@ -152,7 +152,7 @@ Please refer to the following usage example for the parameters descriptions:
                             <!-- Enables DBMS_OUTPUT -->
                             <!-- Defaults to: false -->
                             <dbmsOutput>false</dbmsOutput>
-                          
+
                             <!-- Sets a timeout around Reporter creation and retries when not ready after a while. -->
                             <!-- 0 = no timeout. -->
                             <oraStuckTimeout>0</oraStuckTimeout>
@@ -176,6 +176,18 @@ Please refer to the following usage example for the parameters descriptions:
                             <!-- Format: [schema.]package[,[schema.]package ...]. -->
                             <!-- See coverage reporting options in framework documentation. -->
                             <excludeObject>app.test1,app.test2</excludeObject>
+
+                            <!-- Regular expression to match against schema name to include in coverage -->
+                            <includeSchemaExpr>app.test1,app.test2</includeSchemaExpr>
+
+                            <!-- Regular expression to match against schema name to exclude in coverage -->
+                            <excludeSchemaExprr>app.test1,app.test2</excludeSchemaExprr>
+
+                            <!-- Regular expression to match against schema name to include in coverage -->
+                            <includeObjectExpr>app.test1,app.test2</includeObjectExpr>
+
+                            <!-- Regular expression to match against object name to exclude in coverage -->
+                            <excludeObjectExpr>app.test1,app.test2</excludeObjectExpr>
 
                             <!-- List of reporters. -->
                             <!-- You can pass the name of the reporter and/or the output file -->
