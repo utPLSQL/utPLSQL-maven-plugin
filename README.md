@@ -75,7 +75,7 @@ Please refer to the following usage example for the parameters descriptions:
     <properties>
         <!-- URL of the connection to the database. -->
         <!-- Can also be passed as execution parameters. -->
-        <!-- -DdbUrl="jdbc:oracle:thin:@127.0.0.1:1521:FREEPDB1" -->
+        <!-- -DdbUrl="jdbc:oracle:thin:@127.0.0.1:1521/FREEPDB1" -->
         <dbUrl>url_of_connection</dbUrl>
         <!-- Database connection user. -->
         <!-- -DdbUser="user" -->
