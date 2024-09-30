@@ -181,7 +181,7 @@ Please refer to the following usage example for the parameters descriptions:
                             <includeSchemaExpr>app.test1,app.test2</includeSchemaExpr>
 
                             <!-- Regular expression to match against schema name to exclude in coverage -->
-                            <excludeSchemaExprr>app.test1,app.test2</excludeSchemaExprr>
+                            <excludeSchemaExpr>app.test1,app.test2</excludeSchemaExpr>
 
                             <!-- Regular expression to match against schema name to include in coverage -->
                             <includeObjectExpr>app.test1,app.test2</includeObjectExpr>
