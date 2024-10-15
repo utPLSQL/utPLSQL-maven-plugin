@@ -12,7 +12,11 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 public class UtPlsqlMojoTest {
 
@@ -304,7 +308,7 @@ public class UtPlsqlMojoTest {
      */
     @Test
     public void db_config_using_system_properties() throws Exception {
-        System.setProperty("dbUrl", "jdbc:oracle:thin:@localhost:1521:FREEPDB1");
+        System.setProperty("dbUrl", "jdbc:oracle:thin:@localhost:1521:xe");
         System.setProperty("dbUser", "UT3");
         System.setProperty("dbPass", "UT3");
 
