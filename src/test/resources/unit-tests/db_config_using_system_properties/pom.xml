@@ -14,7 +14,7 @@
             <plugin>
                 <groupId>org.utplsql</groupId>
                 <artifactId>utplsql-maven-plugin</artifactId>
-                <version>@proj</version>
+                <version>@project.version@</version>
                 <goals>
                     <goal>test</goal>
                 </goals>

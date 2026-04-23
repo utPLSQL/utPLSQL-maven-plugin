@@ -308,7 +308,7 @@ public class UtPlsqlMojoTest {
      */
     @Test
     public void db_config_using_system_properties() throws Exception {
-        System.setProperty("dbUrl", "jdbc:oracle:thin:@localhost:1521:xe");
+        System.setProperty("dbUrl", "jdbc:oracle:thin:@//localhost:1521/FREEPDB1");
         System.setProperty("dbUser", "UT3");
         System.setProperty("dbPass", "UT3");
 
@@ -317,9 +317,9 @@ public class UtPlsqlMojoTest {
 
         utPlsqlMojo.execute();
 
-        System.setProperty("dbUrl", "");
-        System.setProperty("dbUser", "");
-        System.setProperty("dbPass", "");
+        System.clearProperty("dbUrl");
+        System.clearProperty("dbUser");
+        System.clearProperty("dbPass");
     }
 
     /**

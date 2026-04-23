@@ -15,6 +15,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      DB_URL: "//localhost:1521/FREEPDB1"
+      DB_USER: UT3
+      DB_PASS: UT3
 
     services:
       oracle:
