@@ -20,9 +20,7 @@ EOF
 
 # Copy utPLSQL files to the container and install it.
 docker cp ./${UTPLSQL_FILE} oracle:/${UTPLSQL_FILE}
-# docker cp ./$UTPLSQL_FILE $ORACLE_VERSION:/$UTPLSQL_FILE
 docker cp ./install.sh.tmp oracle:/install.sh
-docker cp ./create_api_user.sh oracle:/create_api_user.sh
 # Remove temporary files.
 # rm $UTPLSQL_FILE.tar.gz
 rm -rf $UTPLSQL_FILE
@@ -30,4 +28,3 @@ rm install.sh.tmp
 
 # Execute the utPLSQL installation inside the container.
 docker exec oracle bash /install.sh
-docker exec oracle bash /create_api_user.sh
