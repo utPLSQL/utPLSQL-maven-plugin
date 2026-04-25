@@ -42,7 +42,7 @@
                                     <consoleOutput>true</consoleOutput>
                                 </reporter>
                             </reporters>
-                            <includeObjectExpr>APP.*</includeObjectExpr>
+                            <includeObjectExpr>TEST_PKG_.*_ME</includeObjectExpr>
                         </configuration>
                     </execution>
                 </executions>
