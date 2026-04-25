@@ -55,7 +55,7 @@ jobs:
         run: .github/scripts/1_install_utplsql.sh
 
       - name: Install demo project
-        run: .github/scripts/install_demo_project.sh
+        run: .github/scripts/2_install_demo_project.sh
 
       - name: Build and Test
         run: |
