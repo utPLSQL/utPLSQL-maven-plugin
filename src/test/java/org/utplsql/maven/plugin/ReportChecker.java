@@ -28,10 +28,10 @@ public class ReportChecker {
      */
     public static void assertThatReportsAreGeneratedAsExpected(MavenExecutionResult result, String... files) {
         for (String filename : files) {
-            File expectedOutputFile = new File(result.getMavenProjectResult().getTargetProjectDirectory().toFile(), "/expected-output/utplsql/" + filename);
-            File outputFile = new File(result.getMavenProjectResult().getTargetProjectDirectory().toFile(), "/target/utplsql/" + filename);
+            File expectedOutputFile = new File(result.getMavenProjectResult().getTargetProjectDirectory().toFile(), "expected-output/utplsql/" + filename);
+            File outputFile = new File(result.getMavenProjectResult().getTargetProjectDirectory().toFile(), "target/utplsql/" + filename);
 
-            assertThat(result.getMavenProjectResult()).withFile("/utplsql/" + filename).exists();
+            assertThat(result.getMavenProjectResult()).withFile("utplsql/" + filename).exists();
 
             try (Stream<String> stream = Files.lines(outputFile.toPath())) {
                 String outputContent = stream
