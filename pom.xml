@@ -92,14 +92,6 @@
             <version>3.4.2</version>
         </dependency>
 
-        <!-- plexus-utils is a transitive dependency of maven-core (provided), so mark as provided -->
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>3.6.1</version>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.utplsql</groupId>
             <artifactId>utplsql-java-api</artifactId>

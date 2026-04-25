@@ -1,7 +1,7 @@
 package org.utplsql.maven.plugin.io;
 
 import org.apache.maven.model.Resource;
-import org.codehaus.plexus.util.DirectoryScanner;
+import org.apache.maven.shared.utils.io.DirectoryScanner;
 
 import java.io.File;
 import java.io.IOException;
