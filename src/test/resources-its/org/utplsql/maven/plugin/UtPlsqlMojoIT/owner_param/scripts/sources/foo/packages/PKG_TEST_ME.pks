@@ -6,3 +6,6 @@ CREATE OR REPLACE PACKAGE CODE_OWNER.PKG_TEST_ME AS
   PROCEDURE PR_TEST_ME(PSNAME IN VARCHAR2);
 END PKG_TEST_ME;
 /
+
+grant execute on pkg_test_me to tests_owner;
+grant debug on pkg_test_me to tests_owner;
