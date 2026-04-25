@@ -309,8 +309,8 @@ public class UtPlsqlMojoTest {
     @Test
     public void db_config_using_system_properties() throws Exception {
         System.setProperty("dbUrl", "jdbc:oracle:thin:@//localhost:1521/FREEPDB1");
-        System.setProperty("dbUser", "APP");
-        System.setProperty("dbPass", "pass");
+        System.setProperty("dbUser", "UT3");
+        System.setProperty("dbPass", "ut3");
 
         UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("db_config_using_system_properties");
         assertNotNull(utPlsqlMojo);

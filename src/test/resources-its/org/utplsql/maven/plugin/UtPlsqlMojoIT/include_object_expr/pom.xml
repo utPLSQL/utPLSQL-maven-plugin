@@ -10,8 +10,8 @@
 
     <properties>
         <dbUrl>jdbc:oracle:thin:@//localhost:1521/FREEPDB1</dbUrl>
-        <dbUser>APP</dbUser>
-        <dbPass>pass</dbPass>
+        <dbUser>UT3</dbUser>
+        <dbPass>ut3</dbPass>
     </properties>
 
     <build>
@@ -42,7 +42,7 @@
                                     <consoleOutput>true</consoleOutput>
                                 </reporter>
                             </reporters>
-                            <includeObjectExpr>app.*</includeObjectExpr>
+                            <includeObjectExpr>APP.*</includeObjectExpr>
                         </configuration>
                     </execution>
                 </executions>

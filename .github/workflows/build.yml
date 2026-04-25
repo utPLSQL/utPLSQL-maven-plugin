@@ -8,21 +8,20 @@ on:
 
   workflow_dispatch:
   
-  repository_dispatch:
-    type: [utPLSQL-build,utPLSQL-java-api-build]
-
 jobs:
   build:
 
     runs-on: ubuntu-latest
     env:
+      UTPLSQL_VERSION: develop
+      UTPLSQL_FILE: utPLSQL
       DB_URL: "//localhost:1521/FREEPDB1"
-      DB_USER: UT3
-      DB_PASS: UT3
+      DB_USER: APP
+      DB_PASS: pass
 
     services:
       oracle:
-        image: gvenzl/oracle-xe:21-slim
+        image: gvenzl/oracle-free:23-slim-faststart
         env:
           ORACLE_PASSWORD: oracle
         ports:
@@ -32,6 +31,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 10
+          --name oracle
 
     steps:
       - uses: actions/checkout@v4
@@ -48,7 +48,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           java-version: '17'
-          distribution: 'adopt'
+          distribution: 'temurin'
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
