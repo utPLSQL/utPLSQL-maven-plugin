@@ -60,4 +60,4 @@ jobs:
       - name: Build and Test
         run: |
           API_VERSION="${{ github.event.client_payload.api_version || inputs.api_version }}"
-          mvn verify appassembler:assemble -Dutplsql-java-api.version="$API_VERSION"
+          mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKey=utPLSQL_utPLSQL-maven-plugin -Dutplsql-java-api.version="$API_VERSION"
