@@ -14,7 +14,7 @@ grant create any procedure to &UTPLSQL_USER;
 grant execute on dbms_lob to &UTPLSQL_USER;
 grant execute on dbms_sql to &UTPLSQL_USER;
 grant execute on dbms_xmlgen to &UTPLSQL_USER;
-grant execute on dbms_lock to &UTPLSQL_USER;  
+grant execute on dbms_lock to &UTPLSQL_USER;
 
 create user &APP_USER identified by &DB_PASS quota unlimited on USERS default tablespace USERS;
 grant create session, create procedure, create type, create table, create sequence, create view to &APP_USER;

@@ -9,9 +9,9 @@
     <packaging>pom</packaging>
 
     <properties>
-        <dbUrl>jdbc:oracle:thin:@127.0.0.1:1521:xe</dbUrl>
+        <dbUrl>jdbc:oracle:thin:@//localhost:1521/FREEPDB1</dbUrl>
         <dbUser>UT3</dbUser>
-        <dbPass>UT3</dbPass>
+        <dbPass>ut3</dbPass>
     </properties>
 
     <build>

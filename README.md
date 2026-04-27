@@ -11,18 +11,8 @@ This plugin is compatible with utPLSQL 3.1.0+.
 
 ## Prerequisites
 
-* Java SE Runtime Environment 8
-* Maven Version 3.5+
-* Oracle JDBC driver
-
-```xml
-
-<dependency>
-    <groupId>com.oracle.database.jdbc</groupId>
-    <artifactId>ojdbc8</artifactId>
-    <version>21.3.0.0</version>
-</dependency>
-```
+* Java SE Runtime Environment 17
+* Maven Version 3.9.9+
 
 ## Usage
 
@@ -31,7 +21,6 @@ This plugin is compatible with utPLSQL 3.1.0+.
 To skip running the tests for a particular project, set the **skipUtplsqlTests** property to true.
 
 ```xml
-
 <configuration>
     <skipUtplsqlTests>true</skipUtplsqlTests>
 </configuration>
@@ -47,7 +36,6 @@ If you want to skip tests by default but want the ability to re-enable tests fro
 properties section in the pom:
 
 ```xml
-
 <configuration>
     <skipUtplsqlTests>true</skipUtplsqlTests>
 </configuration>
@@ -62,7 +50,6 @@ This will allow you to run with all tests disabled by default and to run them wi
 Please refer to the following usage example for the parameters descriptions:
 
 ```xml
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -267,35 +254,35 @@ directory:
 
 ## Comparison with utPLSQL CLI
 
-| CLI short parameter | CLI long parameter | Maven XML path |
-| --- | --- | --- |
-| -c | --color | |
-| | --failure-exit-code | |
-| -p | --path | paths.path |
-| -f | --format | reporters.reporter.name |
-| -o | | reporters.reporter.fileOutput |
-| -s | | reporters.reporter.consoleOutput |
-| | | ignoreFailure |
-| -scc | --skip-compatibility-check | skipCompatibilityCheck |
-| | --tags | tags.tag |
-| -D | --dbms_output | dbmsOutput |
-| -r | --random-test-order | randomTestOrder |
-| -seed | --random-test-order-seed | randomTestOrderSeed |
-| -exclude | | excludeObject |
-| -include | | includeObject |
-| | | |
-| -source_path | | sources.source.directory |
-| -owner | | sourcesOwner |
-| -regex_expression | | sourcesRegexExpression |
-| -type_mapping | | list of testsCustomTypeMapping.customTypeMapping |
-| -owner_subexpression | | sourcesOwnerSubexpression |
-| -type_subexpression | | sourcesTypeSubexpression |
-| -name_subexpression | | sourcesNameSubexpression |
-| | | |
-| -test_path | | tests.test.directory |
-| -owner | | testsOwner |
-| -regex_expression | | testsRegexExpression |
-| -type_mapping | | list of testsCustomTypeMapping.customTypeMapping |
-| -owner_subexpression | | testsOwnerSubexpression |
-| -type_subexpression | | testsTypeSubexpression |
-| -name_subexpression | | testsNameSubexpression |
+| CLI short parameter  | CLI long parameter         | Maven XML path                                   |
+|----------------------|----------------------------|--------------------------------------------------|
+| -c                   | --color                    |                                                  |
+|                      | --failure-exit-code        |                                                  |
+| -p                   | --path                     | paths.path                                       |
+| -f                   | --format                   | reporters.reporter.name                          |
+| -o                   |                            | reporters.reporter.fileOutput                    |
+| -s                   |                            | reporters.reporter.consoleOutput                 |
+|                      |                            | ignoreFailure                                    |
+| -scc                 | --skip-compatibility-check | skipCompatibilityCheck                           |
+|                      | --tags                     | tags.tag                                         |
+| -D                   | --dbms_output              | dbmsOutput                                       |
+| -r                   | --random-test-order        | randomTestOrder                                  |
+| -seed                | --random-test-order-seed   | randomTestOrderSeed                              |
+| -exclude             |                            | excludeObject                                    |
+| -include             |                            | includeObject                                    |
+|                      |                            |                                                  |
+| -source_path         |                            | sources.source.directory                         |
+| -owner               |                            | sourcesOwner                                     |
+| -regex_expression    |                            | sourcesRegexExpression                           |
+| -type_mapping        |                            | list of testsCustomTypeMapping.customTypeMapping |
+| -owner_subexpression |                            | sourcesOwnerSubexpression                        |
+| -type_subexpression  |                            | sourcesTypeSubexpression                         |
+| -name_subexpression  |                            | sourcesNameSubexpression                         |
+|                      |                            |                                                  |
+| -test_path           |                            | tests.test.directory                             |
+| -owner               |                            | testsOwner                                       |
+| -regex_expression    |                            | testsRegexExpression                             |
+| -type_mapping        |                            | list of testsCustomTypeMapping.customTypeMapping |
+| -owner_subexpression |                            | testsOwnerSubexpression                          |
+| -type_subexpression  |                            | testsTypeSubexpression                           |
+| -name_subexpression  |                            | testsNameSubexpression                           |
