@@ -58,7 +58,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
 
-        <utplsql-java-api.version>3.2.3</utplsql-java-api.version>
+        <utplsql-java-api.version>3.2.4</utplsql-java-api.version>
 
         <!-- Minimum Maven API version required to run this plugin -->
         <maven.version>3.9.9</maven.version>
