@@ -61,3 +61,6 @@ jobs:
         run: |
           API_VERSION="${{ github.event.client_payload.api_version || inputs.api_version }}"
           mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKey=utPLSQL_utPLSQL-maven-plugin -Dutplsql-java-api.version="$API_VERSION"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
