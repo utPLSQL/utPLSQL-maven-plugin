@@ -1,5 +1,7 @@
 [![Build status](https://github.com/utPLSQL/utPLSQL-maven-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/utPLSQL/utPLSQL-maven-plugin/actions/workflows/build.yml)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.utplsql%3Autplsql-maven-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.utplsql%3Autplsql-maven-plugin)
+[![license](https://img.shields.io/github/license/utPLSQL/utPLSQL-cli.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Build](https://github.com/utPLSQL/utPLSQL-maven-plugin/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/utPLSQL/utPLSQL-maven-plugin/actions/workflows/build.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=utPLSQL_utPLSQL-maven-plugin&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=utPLSQL_utPLSQL-maven-plugin)
 
 # utPLSQL-maven-plugin
 
