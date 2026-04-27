@@ -8,6 +8,12 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      UTPLSQL_VERSION: develop
+      UTPLSQL_FILE: utPLSQL
+      DB_URL: "//localhost:1521/FREEPDB1"
+      DB_USER: APP
+      DB_PASS: pass
 
     services:
       oracle:
@@ -21,6 +27,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 10
+          --name oracle
 
     steps:
       - uses: actions/checkout@v4
@@ -36,7 +43,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          server-id: ossrh
+          server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
