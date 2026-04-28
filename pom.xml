@@ -12,6 +12,24 @@
     <description>A maven plugin for running Unit Tests with utPLSQL v3+.</description>
     <url>https://github.com/utPLSQL/utPLSQL-maven-plugin</url>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+
+        <utplsql-java-api.version>3.2.4</utplsql-java-api.version>
+
+        <!-- Minimum Maven API version required to run this plugin -->
+        <maven.version>3.9.9</maven.version>
+        <!-- Maven plugin tooling (annotations + plugin-plugin) has its own release cycle -->
+        <maven.plugin.tools.version>3.15.2</maven.plugin.tools.version>
+
+        <itf.version>0.13.1</itf.version>
+        <junit.version>5.12.2</junit.version>
+
+        <sonar.organization>utplsql</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    </properties>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -67,23 +85,6 @@
         </repository>
     </distributionManagement>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>17</maven.compiler.release>
-
-        <utplsql-java-api.version>3.2.4</utplsql-java-api.version>
-
-        <!-- Minimum Maven API version required to run this plugin -->
-        <maven.version>3.9.9</maven.version>
-        <!-- Maven plugin tooling (annotations + plugin-plugin) has its own release cycle -->
-        <maven.plugin.tools.version>3.15.2</maven.plugin.tools.version>
-
-        <itf.version>0.13.1</itf.version>
-        <junit.version>5.12.2</junit.version>
-
-        <sonar.organization>utplsql</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    </properties>
 
     <dependencies>
         <!-- Maven API - provided by the Maven runtime -->
