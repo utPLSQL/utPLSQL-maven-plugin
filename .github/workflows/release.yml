@@ -1,61 +1,52 @@
-name: Build and deploy release
+name: Release
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Release version (e.g. 3.2.3)'
+        required: true
+      next_snapshot:
+        description: 'Next development version (default: auto-increment patch, e.g. 3.2.4) without the "-SNAPSHOT" word'
+        required: false
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
-  build:
-
+  release:
     runs-on: ubuntu-latest
-    env:
-      UTPLSQL_VERSION: develop
-      UTPLSQL_FILE: utPLSQL
-      DB_URL: "//localhost:1521/FREEPDB1"
-      DB_USER: APP
-      DB_PASS: pass
-
-    services:
-      oracle:
-        image: gvenzl/oracle-free:23-slim-faststart
-        env:
-          ORACLE_PASSWORD: oracle
-        ports:
-          - 1521:1521
-        options: >-
-          --health-cmd healthcheck.sh
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
-          --name oracle
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Install utPLSQL
-        run: .github/scripts/1_install_utplsql.sh
-
-      - name: Install demo project
-        run: .github/scripts/2_install_demo_project.sh
-
-      - name: Set up JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v5
         with:
-          java-version: '17'
           distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
           server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - name: Cache local Maven repository
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Set release version
+        run: mvn versions:set -DnewVersion=${{ inputs.release_version }} -DgenerateBackupPoms=false
 
       - name: Maven deploy release
         run: mvn clean deploy -Prelease
@@ -64,3 +55,36 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
+      - name: Commit and tag release version
+        run: |
+          git add pom.xml
+          git commit -m "Release v${{ inputs.release_version }}"
+          git tag -a "v${{ inputs.release_version }}" -m "Release ${{ inputs.release_version }}"
+
+      - name: Calculate and set next development version
+        run: |
+          if [[ -n "${{ inputs.next_snapshot }}" ]]; then
+            NEXT="${{ inputs.next_snapshot }}-SNAPSHOT"
+          else
+            IFS='.' read -r major minor patch <<< "${{ inputs.release_version }}"
+            NEXT="${major}.${minor}.$((patch + 1))-SNAPSHOT"
+          fi
+          mvn -B versions:set -DnewVersion="$NEXT" -DgenerateBackupPoms=false
+          git add pom.xml
+          git commit -m "Prepare next development version $NEXT [skip ci]"
+
+      - name: Push commits and tag
+        run: |
+          git push origin HEAD:${{ github.ref_name }}
+          git push origin "v${{ inputs.release_version }}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.release_version }}
+          name: "utPLSQL-cli v${{ inputs.release_version }}"
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            target/utPLSQL-cli.zip
+            target/utPLSQL-cli.zip.sha256
