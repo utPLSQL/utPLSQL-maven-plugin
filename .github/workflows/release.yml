@@ -29,30 +29,30 @@ jobs:
       DB_USER: APP
       DB_PASS: pass
 
-#    services:
-#      oracle:
-#        image: gvenzl/oracle-free:23-slim-faststart
-#        env:
-#          ORACLE_PASSWORD: oracle
-#        ports:
-#          - 1521:1521
-#        options: >-
-#          --health-cmd healthcheck.sh
-#          --health-interval 10s
-#          --health-timeout 5s
-#          --health-retries 10
-#          --name oracle
+    services:
+      oracle:
+        image: gvenzl/oracle-free:23-slim-faststart
+        env:
+          ORACLE_PASSWORD: oracle
+        ports:
+          - 1521:1521
+        options: >-
+          --health-cmd healthcheck.sh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+          --name oracle
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-#      - name: Install utPLSQL
-#        run: .github/scripts/1_install_utplsql.sh
-#
-#      - name: Install demo project
-#        run: .github/scripts/2_install_demo_project.sh
+      - name: Install utPLSQL
+        run: .github/scripts/1_install_utplsql.sh
+
+      - name: Install demo project
+        run: .github/scripts/2_install_demo_project.sh
 
       - name: Set up JDK
         uses: actions/setup-java@v5
@@ -74,12 +74,12 @@ jobs:
       - name: Set release version
         run: mvn versions:set -DnewVersion=${{ inputs.release_version }} -DgenerateBackupPoms=false
 
-#      - name: Maven deploy release
-#        run: mvn clean deploy -Prelease
-#        env:
-#          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-#          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-#          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+      - name: Maven deploy release
+        run: mvn clean deploy -Prelease
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
       - name: Commit and tag release version
         run: |
