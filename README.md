@@ -188,7 +188,6 @@ Please refer to the following usage example for the parameters descriptions:
                             <!--     UT_COVERAGE_HTML_REPORTER -->
                             <!--     UT_TEAMCITY_REPORTER -->
                             <!--     UT_XUNIT_REPORTER -->
-                            <!--     UT_COVERALLS_REPORTER -->
                             <!--     UT_COVERAGE_SONAR_REPORTER -->
                             <!--     UT_SONAR_TEST_REPORTER -->
                             <reporters>
