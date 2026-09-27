@@ -3,6 +3,7 @@ package org.utplsql.maven.plugin;
 import com.soebes.itf.jupiter.extension.MavenGoal;
 import com.soebes.itf.jupiter.extension.MavenJupiterExtension;
 import com.soebes.itf.jupiter.extension.MavenTest;
+import com.soebes.itf.jupiter.extension.SystemProperty;
 import com.soebes.itf.jupiter.maven.MavenExecutionResult;
 
 import static com.soebes.itf.extension.assertj.MavenITAssertions.assertThat;
@@ -95,6 +96,31 @@ class UtPlsqlMojoIT {
         assertThat(result).isSuccessful();
 
         assertThatReportsAreGeneratedAsExpected(result, "sonar-test-report.xml", "coverage-sonar-report.xml");
+    }
+
+    @MavenTest
+    @SystemProperty(value = "skipTests", content = "true")
+    void skip_tests(MavenExecutionResult result) {
+        assertThat(result).isSuccessful();
+
+        assertThat(result.getMavenLog()).info().contains("utPLSQLTests are skipped.");
+    }
+
+    @MavenTest
+    @SystemProperty(value = "maven.test.skip", content = "true")
+    void maven_test_skip(MavenExecutionResult result) {
+        assertThat(result).isSuccessful();
+
+        assertThat(result.getMavenLog()).info().contains("utPLSQLTests are skipped.");
+    }
+
+    @MavenTest
+    @SystemProperty(value = "skipTests", content = "true")
+    @SystemProperty(value = "skipUtplsqlTests", content = "false")
+    void skip_tests_overridden_by_skip_utplsql_tests(MavenExecutionResult result) {
+        assertThat(result).isSuccessful();
+
+        assertThat(result.getMavenLog()).info().doesNotContain("utPLSQLTests are skipped.");
     }
 
 }

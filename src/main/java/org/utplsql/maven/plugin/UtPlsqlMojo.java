@@ -128,8 +128,18 @@ public class UtPlsqlMojo extends AbstractMojo {
     @Parameter(defaultValue = "${maven.test.failure.ignore}")
     boolean ignoreFailure;
 
-    @Parameter(property = "skipUtplsqlTests", defaultValue = "false")
-    boolean skipUtplsqlTests;
+    /**
+     * Skips the utPLSQL tests when true, runs them when false.
+     * When not set, the tests are skipped together with other tests by skipTests or maven.test.skip.
+     */
+    @Parameter(property = "skipUtplsqlTests")
+    Boolean skipUtplsqlTests;
+
+    @Parameter(property = "skipTests", defaultValue = "false")
+    boolean skipTests;
+
+    @Parameter(property = "maven.test.skip", defaultValue = "false")
+    boolean mavenTestSkip;
 
     @Parameter
     boolean dbmsOutput;
@@ -141,7 +151,7 @@ public class UtPlsqlMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        if (skipUtplsqlTests) {
+        if (isSkipped()) {
             getLog().info("utPLSQLTests are skipped.");
         } else {
             getLog().debug("Java API Version = " + JavaApiVersionInfo.getVersion());
@@ -229,6 +239,18 @@ public class UtPlsqlMojo extends AbstractMojo {
                 }
             }
         }
+    }
+
+    /**
+     * skipUtplsqlTests takes precedence, so -DskipTests -DskipUtplsqlTests=false skips other tests but runs utPLSQL tests.
+     *
+     * @return true when the utPLSQL tests should not be run
+     */
+    boolean isSkipped() {
+        if (skipUtplsqlTests != null) {
+            return skipUtplsqlTests;
+        }
+        return skipTests || mavenTestSkip;
     }
 
     private Connection createConnection() throws SQLException {

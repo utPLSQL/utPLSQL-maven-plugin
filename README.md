@@ -216,13 +216,24 @@ utPLSQL reports coverage per source file instead of per database object. The plu
 
 ## Skipping tests
 
-Set `skipUtplsqlTests` to `true` in the plugin configuration or on the command line:
+The utPLSQL tests are skipped together with other tests by Maven's standard `-DskipTests` or `-Dmaven.test.skip=true`:
+
+```bash
+mvn install -DskipTests
+```
+
+To skip only the utPLSQL tests, set `skipUtplsqlTests` to `true` in the plugin configuration or on the command line:
 
 ```bash
 mvn install -DskipUtplsqlTests=true
 ```
 
-Maven's `-DskipTests` does not skip utPLSQL tests.
+`skipUtplsqlTests` takes precedence over `skipTests` and `maven.test.skip`. To skip other tests but run the utPLSQL
+tests, set it to `false`:
+
+```bash
+mvn install -DskipTests -DskipUtplsqlTests=false
+```
 
 To skip the tests by default and enable them only when needed, set the property in the `pom.xml`:
 
@@ -298,9 +309,10 @@ All parameters are optional:
                             <!-- Default: ${maven.test.failure.ignore} -->
                             <ignoreFailure>false</ignoreFailure>
 
-                            <!-- Skip the tests. Command line: -DskipUtplsqlTests=true -->
-                            <!-- Default: false -->
-                            <skipUtplsqlTests>false</skipUtplsqlTests>
+                            <!-- Skip (true) or run (false) the tests, regardless of skipTests and maven.test.skip. -->
+                            <!-- Command line: -DskipUtplsqlTests=true -->
+                            <!-- Default: not set, the tests are skipped by -DskipTests or -Dmaven.test.skip=true -->
+                            <!-- <skipUtplsqlTests>true</skipUtplsqlTests> -->
 
                             <!-- Skip the check of compatibility with the utPLSQL version in the database. -->
                             <!-- Default: false -->
@@ -427,6 +439,10 @@ The plugin's integration tests double as examples, in
 * [`ora_stuck_timeout`](src/test/resources-its/org/utplsql/maven/plugin/UtPlsqlMojoIT/ora_stuck_timeout):
   `oraStuckTimeout`.
 * [`skip`](src/test/resources-its/org/utplsql/maven/plugin/UtPlsqlMojoIT/skip): `skipUtplsqlTests`.
+* [`skip_tests`](src/test/resources-its/org/utplsql/maven/plugin/UtPlsqlMojoIT/skip_tests),
+  [`maven_test_skip`](src/test/resources-its/org/utplsql/maven/plugin/UtPlsqlMojoIT/maven_test_skip) and
+  [`skip_tests_overridden_by_skip_utplsql_tests`](src/test/resources-its/org/utplsql/maven/plugin/UtPlsqlMojoIT/skip_tests_overridden_by_skip_utplsql_tests):
+  skipping with `-DskipTests` and `-Dmaven.test.skip=true`, run with the system properties set in `UtPlsqlMojoIT`.
 
 ## Comparison with utPLSQL-cli
 
