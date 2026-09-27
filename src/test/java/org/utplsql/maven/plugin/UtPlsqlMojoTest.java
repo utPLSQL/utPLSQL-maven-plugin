@@ -1,15 +1,19 @@
 package org.utplsql.maven.plugin;
 
+import oracle.security.pki.OracleSecretStore;
+import oracle.security.pki.OracleWallet;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.MojoRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.utplsql.api.FileMapperOptions;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -20,8 +24,13 @@ import static org.junit.Assert.assertTrue;
 
 public class UtPlsqlMojoTest {
 
+    private static final String WALLET_TNS_ALIAS = "UTPLSQL_MAVEN_WALLET";
+
     @Rule
     public final MojoRule rule = new MojoRule();
+
+    @Rule
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     /**
      * Invalid Sources Directory
@@ -320,6 +329,78 @@ public class UtPlsqlMojoTest {
         System.clearProperty("dbUrl");
         System.clearProperty("dbUser");
         System.clearProperty("dbPass");
+    }
+
+    /**
+     * Connection using Oracle Wallet (Secure External Password Store)
+     * <p>
+     * Given : a pom.xml without dbUser and dbPass and a dbUrl pointing to a TNS alias stored in an Oracle Wallet
+     * When : tests are run
+     * Then : credentials are taken from the wallet
+     */
+    @Test
+    public void wallet_connection_without_credentials() throws Exception {
+        System.setProperty("dbUrl", walletDbUrl());
+        try {
+            UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("wallet_connection");
+            assertNotNull(utPlsqlMojo);
+
+            utPlsqlMojo.execute();
+        } finally {
+            System.clearProperty("dbUrl");
+        }
+    }
+
+    /**
+     * Connection using Oracle Wallet with empty credentials
+     * <p>
+     * Given : a dbUrl pointing to a TNS alias stored in an Oracle Wallet and empty dbUser and dbPass (e.g. -DdbUser= -DdbPass=)
+     * When : tests are run
+     * Then : empty credentials are ignored and credentials are taken from the wallet
+     */
+    @Test
+    public void wallet_connection_with_empty_credentials() throws Exception {
+        System.setProperty("dbUrl", walletDbUrl());
+        System.setProperty("dbUser", "");
+        System.setProperty("dbPass", "");
+        try {
+            UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("wallet_connection");
+            assertNotNull(utPlsqlMojo);
+
+            utPlsqlMojo.execute();
+        } finally {
+            System.clearProperty("dbUrl");
+            System.clearProperty("dbUser");
+            System.clearProperty("dbPass");
+        }
+    }
+
+    /**
+     * Creates an auto-login Oracle Wallet holding the UT3 credentials for {@link #WALLET_TNS_ALIAS},
+     * with tnsnames.ora and ojdbc.properties next to it, so no Oracle client tooling (mkstore/orapki) is needed.
+     *
+     * @return JDBC URL of the TNS alias, with the generated directory as TNS_ADMIN
+     */
+    private String walletDbUrl() throws Exception {
+        File tnsAdmin = temporaryFolder.newFolder("tns_admin");
+
+        OracleWallet wallet = new OracleWallet();
+        wallet.create("Wallet_Pwd_123".toCharArray());
+        OracleSecretStore secretStore = wallet.getSecretStore();
+        secretStore.createCredential(WALLET_TNS_ALIAS.toCharArray(), "UT3".toCharArray(), "ut3".toCharArray());
+        wallet.setSecretStore(secretStore);
+        wallet.saveAs(tnsAdmin.getPath());
+        wallet.createSSO();
+        wallet.saveSSO();
+
+        Files.writeString(tnsAdmin.toPath().resolve("tnsnames.ora"),
+                WALLET_TNS_ALIAS + " = (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))"
+                        + "(CONNECT_DATA = (SERVICE_NAME = FREEPDB1)))\n");
+        // ${TNS_ADMIN} is resolved by the JDBC driver, the same way as in wallets downloaded for Oracle Autonomous Database
+        Files.writeString(tnsAdmin.toPath().resolve("ojdbc.properties"),
+                "oracle.net.wallet_location=(SOURCE=(METHOD=FILE)(METHOD_DATA=(DIRECTORY=${TNS_ADMIN})))\n");
+
+        return "jdbc:oracle:thin:@" + WALLET_TNS_ALIAS + "?TNS_ADMIN=" + tnsAdmin.getAbsolutePath().replace('\\', '/');
     }
 
     /**

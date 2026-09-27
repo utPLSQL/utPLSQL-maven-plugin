@@ -70,7 +70,7 @@ Please refer to the following usage example for the parameters descriptions:
         <!-- -DdbUser="user" -->
         <dbUser>user</dbUser>
         <!-- Database connection password. -->
-        <!-- -DdbPassword="password" -->
+        <!-- -DdbPass="password" -->
         <dbPass>password</dbPass>
     </properties>
 
@@ -252,6 +252,40 @@ directory:
   testsRegexExpression, ...), to tell utPLSQL how project files should be mapped into database objects.
 * **type-mapping-project:** Example how to use regex and custom type parameters together.
 * **owner-param-project:** Demonstrates how to use sourcesOwner and testsOwner parameters.
+
+### Oracle Wallet (Secure External Password Store)
+
+To keep the database password out of the `pom.xml` and the command line, store the credentials in an Oracle Wallet,
+leave `dbUser` and `dbPass` unset and point `dbUrl` to the TNS alias of the stored credential:
+
+```xml
+<properties>
+    <dbUrl>jdbc:oracle:thin:@MYDATABASE</dbUrl>
+</properties>
+```
+
+Setup example:
+
+```
+# create an auto-login wallet with credentials for TNS alias MYDATABASE
+orapki wallet create -wallet $HOME/oracle/wallet -auto_login_local
+mkstore -wrl $HOME/oracle/wallet -createCredential MYDATABASE someusername
+
+# point the JDBC driver to the wallet
+echo "oracle.net.wallet_location=(SOURCE=(METHOD=FILE)(METHOD_DATA=(DIRECTORY=$HOME/oracle/wallet)))" \
+  > $HOME/oracle/network/admin/ojdbc.properties
+
+# tnsnames.ora with the MYDATABASE entry must be in the same directory
+export TNS_ADMIN=$HOME/oracle/network/admin
+```
+
+The JDBC driver looks for `tnsnames.ora` and `ojdbc.properties` in the directory given by (in order of precedence):
+
+1. `TNS_ADMIN` parameter in the URL, e.g. `jdbc:oracle:thin:@MYDATABASE?TNS_ADMIN=/path/to/network/admin`
+2. Java system property `oracle.net.tns_admin`, e.g. `export MAVEN_OPTS="-Doracle.net.tns_admin=/path/to/network/admin"`
+3. `TNS_ADMIN` environment variable
+
+The TNS alias used in `dbUrl` must match the alias of the credential stored in the wallet.
 
 ## Comparison with utPLSQL CLI
 
