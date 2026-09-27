@@ -247,6 +247,67 @@ class UtPlsqlMojoTest {
     @Test
     @Basedir(UNIT_TESTS + "skip_utplsql_tests")
     void skip_utplsql_tests(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
+        assertTrue(executeAndGetInfoMessages(utPlsqlMojo).contains("utPLSQLTests are skipped."));
+    }
+
+    /**
+     * Skip Tests
+     * <p>
+     * Given : a pom.xml without skipUtplsqlTests and -DskipTests
+     * When : pom is read
+     * Then : Tests are skipped
+     */
+    @Test
+    @Basedir(UNIT_TESTS + "skip_tests")
+    @MojoParameter(name = "skipTests", value = "true")
+    void skip_tests(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
+        assertTrue(executeAndGetInfoMessages(utPlsqlMojo).contains("utPLSQLTests are skipped."));
+    }
+
+    /**
+     * Maven Test Skip
+     * <p>
+     * Given : a pom.xml without skipUtplsqlTests and -Dmaven.test.skip
+     * When : pom is read
+     * Then : Tests are skipped
+     */
+    @Test
+    @Basedir(UNIT_TESTS + "skip_tests")
+    @MojoParameter(name = "mavenTestSkip", value = "true")
+    void maven_test_skip(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
+        assertTrue(executeAndGetInfoMessages(utPlsqlMojo).contains("utPLSQLTests are skipped."));
+    }
+
+    /**
+     * Skip Tests overridden by skipUtplsqlTests
+     * <p>
+     * Given : -DskipTests and -DskipUtplsqlTests=false
+     * When : pom is read
+     * Then : utPLSQL tests are not skipped
+     */
+    @Test
+    @Basedir(UNIT_TESTS + "skip_tests")
+    @MojoParameter(name = "skipTests", value = "true")
+    @MojoParameter(name = "mavenTestSkip", value = "true")
+    @MojoParameter(name = "skipUtplsqlTests", value = "false")
+    void skip_tests_overridden_by_skip_utplsql_tests(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) {
+        assertFalse(utPlsqlMojo.isSkipped());
+    }
+
+    /**
+     * Tests are not skipped by default
+     * <p>
+     * Given : a pom.xml without skipUtplsqlTests, skipTests and maven.test.skip
+     * When : pom is read
+     * Then : utPLSQL tests are not skipped
+     */
+    @Test
+    @Basedir(UNIT_TESTS + "skip_tests")
+    void not_skipped_by_default(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) {
+        assertFalse(utPlsqlMojo.isSkipped());
+    }
+
+    private static List<String> executeAndGetInfoMessages(UtPlsqlMojo utPlsqlMojo) throws Exception {
         List<String> infoMessages = new ArrayList<>();
         utPlsqlMojo.setLog(new SystemStreamLog() {
             @Override
@@ -257,7 +318,7 @@ class UtPlsqlMojoTest {
 
         utPlsqlMojo.execute();
 
-        assertTrue(infoMessages.contains("utPLSQLTests are skipped."));
+        return infoMessages;
     }
 
     /**
