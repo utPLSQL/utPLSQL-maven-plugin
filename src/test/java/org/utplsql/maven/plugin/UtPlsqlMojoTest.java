@@ -1,36 +1,37 @@
 package org.utplsql.maven.plugin;
 
-import oracle.security.pki.OracleSecretStore;
-import oracle.security.pki.OracleWallet;
+import org.apache.maven.api.plugin.testing.Basedir;
+import org.apache.maven.api.plugin.testing.InjectMojo;
+import org.apache.maven.api.plugin.testing.MojoParameter;
+import org.apache.maven.api.plugin.testing.MojoTest;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.testing.MojoRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.junit.jupiter.api.Test;
 import org.utplsql.api.FileMapperOptions;
 import org.utplsql.maven.plugin.model.ReporterParameter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.PrintStream;
-import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UtPlsqlMojoTest {
+/**
+ * Tests of the mojo configured from the pom.xml files in {@value #UNIT_TESTS}.
+ * <p>
+ * The test harness does not resolve pom properties, so the database connection is given as mojo parameters.
+ * Reports are written to the build directory instead of next to the test poms.
+ */
+@MojoTest
+@MojoParameter(name = "url", value = "jdbc:oracle:thin:@//localhost:1521/FREEPDB1")
+@MojoParameter(name = "user", value = "UT3")
+@MojoParameter(name = "password", value = "ut3")
+@MojoParameter(name = "targetDir", value = "target/unit-tests")
+class UtPlsqlMojoTest {
 
-    private static final String WALLET_TNS_ALIAS = "UTPLSQL_MAVEN_WALLET";
-
-    @Rule
-    public final MojoRule rule = new MojoRule();
-
-    @Rule
-    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
+    static final String UNIT_TESTS = "src/test/resources/unit-tests/";
 
     /**
      * Invalid Sources Directory
@@ -40,10 +41,8 @@ public class UtPlsqlMojoTest {
      * Then : it should throw a MojoExecutionException
      */
     @Test
-    public void invalid_sources_directory() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("invalid_sources_directory");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "invalid_sources_directory")
+    void invalid_sources_directory(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) {
         MojoExecutionException exception = assertThrows(MojoExecutionException.class, utPlsqlMojo::execute);
 
         assertEquals("Directory foo does not exist!", exception.getMessage());
@@ -57,10 +56,8 @@ public class UtPlsqlMojoTest {
      * Then : it should throw a MojoExecutionException
      */
     @Test
-    public void invalid_tests_directory() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("invalid_tests_directory");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "invalid_tests_directory")
+    void invalid_tests_directory(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) {
         MojoExecutionException exception = assertThrows(MojoExecutionException.class, utPlsqlMojo::execute);
 
         assertEquals("Directory bar does not exist!", exception.getMessage());
@@ -74,10 +71,8 @@ public class UtPlsqlMojoTest {
      * Then : it should fill all parameters correctly
      */
     @Test
-    public void sources_tests_parameters() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("sources_tests_parameters");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "sources_tests_parameters")
+    void sources_tests_parameters(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         assertEquals(2, utPlsqlMojo.reporters.size());
 
         // check sources
@@ -116,10 +111,8 @@ public class UtPlsqlMojoTest {
      * Then : it should not find any source files
      */
     @Test
-    public void sources_and_tests_parameter_does_not_exist() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("sources_and_tests_parameter_does_not_exist");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "sources_and_tests_parameter_does_not_exist")
+    void sources_and_tests_parameter_does_not_exist(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         // check sources
         FileMapperOptions sources = utPlsqlMojo.buildSourcesOptions();
         assertEquals(0, sources.getFilePaths().size());
@@ -137,10 +130,8 @@ public class UtPlsqlMojoTest {
      * Then : it should find all sources/tests files in default directories
      */
     @Test
-    public void sources_and_tests_parameter_does_not_exist_but_default_directory_exists() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("sources_and_tests_parameter_does_not_exist_but_default_directory_exists");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "sources_and_tests_parameter_does_not_exist_but_default_directory_exists")
+    void sources_and_tests_parameter_does_not_exist_but_default_directory_exists(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         // check sources
         FileMapperOptions sources = utPlsqlMojo.buildSourcesOptions();
         assertEquals(2, sources.getFilePaths().size());
@@ -162,10 +153,8 @@ public class UtPlsqlMojoTest {
      * Then : it should find all sources/tests files in default directories
      */
     @Test
-    public void sources_and_tests_parameter_have_not_directory_tag() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("sources_and_tests_parameter_have_not_directory_tag");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "sources_and_tests_parameter_have_not_directory_tag")
+    void sources_and_tests_parameter_have_not_directory_tag(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         // check sources
         FileMapperOptions sources = utPlsqlMojo.buildSourcesOptions();
         assertEquals(2, sources.getFilePaths().size());
@@ -188,10 +177,8 @@ public class UtPlsqlMojoTest {
      * Then : it should find all sources/tests files in default directories
      */
     @Test
-    public void sources_and_tests_parameter_have_not_includes_tag() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("sources_and_tests_parameter_have_not_includes_tag");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "sources_and_tests_parameter_have_not_includes_tag")
+    void sources_and_tests_parameter_have_not_includes_tag(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         // check sources
         FileMapperOptions sources = utPlsqlMojo.buildSourcesOptions();
         assertEquals(2, sources.getFilePaths().size());
@@ -213,10 +200,8 @@ public class UtPlsqlMojoTest {
      * Then : it should set the correct output channels
      */
     @Test
-    public void default_console_output_behaviour() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("default_console_output_behaviour");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "default_console_output_behaviour")
+    void default_console_output_behaviour(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         utPlsqlMojo.execute();
 
         // Assert that we added only the necessary reporters to the writer.
@@ -244,10 +229,8 @@ public class UtPlsqlMojoTest {
      * Then : it should set the default reporter
      */
     @Test
-    public void default_reporter() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("default_reporter");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "default_reporter")
+    void default_reporter(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         utPlsqlMojo.execute();
 
         assertEquals(1, utPlsqlMojo.reporters.size());
@@ -262,18 +245,19 @@ public class UtPlsqlMojoTest {
      * Then : Tests are skipped
      */
     @Test
-    public void skip_utplsql_tests() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("skip_utplsql_tests");
-        assertNotNull(utPlsqlMojo);
-
-        final ByteArrayOutputStream console = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(console));
+    @Basedir(UNIT_TESTS + "skip_utplsql_tests")
+    void skip_utplsql_tests(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
+        List<String> infoMessages = new ArrayList<>();
+        utPlsqlMojo.setLog(new SystemStreamLog() {
+            @Override
+            public void info(CharSequence content) {
+                infoMessages.add(content.toString());
+            }
+        });
 
         utPlsqlMojo.execute();
 
-        String standardOutput = console.toString();
-
-        assertTrue(standardOutput.contains("utPLSQLTests are skipped."));
+        assertTrue(infoMessages.contains("utPLSQLTests are skipped."));
     }
 
     /**
@@ -284,10 +268,8 @@ public class UtPlsqlMojoTest {
      * Then : Property is set
      */
     @Test
-    public void ora_stuck_timeout() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("ora_stuck_timeout");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "ora_stuck_timeout")
+    void ora_stuck_timeout(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         utPlsqlMojo.execute();
 
         assertEquals(5, (int) utPlsqlMojo.oraStuckTimeout);
@@ -301,106 +283,9 @@ public class UtPlsqlMojoTest {
      * Then : DBMS_OUTPUT is enabled
      */
     @Test
-    public void dbms_output() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("dbms_output");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "dbms_output")
+    void dbms_output(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         utPlsqlMojo.execute();
-    }
-
-    /**
-     * DB configuration from System Properties
-     * <p>
-     * Given : a pom.xml without dbUrl, dbUser and dbPass configured
-     * When : pom is read
-     * Then : System Properties must be used to configure database
-     */
-    @Test
-    public void db_config_using_system_properties() throws Exception {
-        System.setProperty("dbUrl", "jdbc:oracle:thin:@//localhost:1521/FREEPDB1");
-        System.setProperty("dbUser", "UT3");
-        System.setProperty("dbPass", "ut3");
-
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("db_config_using_system_properties");
-        assertNotNull(utPlsqlMojo);
-
-        utPlsqlMojo.execute();
-
-        System.clearProperty("dbUrl");
-        System.clearProperty("dbUser");
-        System.clearProperty("dbPass");
-    }
-
-    /**
-     * Connection using Oracle Wallet (Secure External Password Store)
-     * <p>
-     * Given : a pom.xml without dbUser and dbPass and a dbUrl pointing to a TNS alias stored in an Oracle Wallet
-     * When : tests are run
-     * Then : credentials are taken from the wallet
-     */
-    @Test
-    public void wallet_connection_without_credentials() throws Exception {
-        System.setProperty("dbUrl", walletDbUrl());
-        try {
-            UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("wallet_connection");
-            assertNotNull(utPlsqlMojo);
-
-            utPlsqlMojo.execute();
-        } finally {
-            System.clearProperty("dbUrl");
-        }
-    }
-
-    /**
-     * Connection using Oracle Wallet with empty credentials
-     * <p>
-     * Given : a dbUrl pointing to a TNS alias stored in an Oracle Wallet and empty dbUser and dbPass (e.g. -DdbUser= -DdbPass=)
-     * When : tests are run
-     * Then : empty credentials are ignored and credentials are taken from the wallet
-     */
-    @Test
-    public void wallet_connection_with_empty_credentials() throws Exception {
-        System.setProperty("dbUrl", walletDbUrl());
-        System.setProperty("dbUser", "");
-        System.setProperty("dbPass", "");
-        try {
-            UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("wallet_connection");
-            assertNotNull(utPlsqlMojo);
-
-            utPlsqlMojo.execute();
-        } finally {
-            System.clearProperty("dbUrl");
-            System.clearProperty("dbUser");
-            System.clearProperty("dbPass");
-        }
-    }
-
-    /**
-     * Creates an auto-login Oracle Wallet holding the UT3 credentials for {@link #WALLET_TNS_ALIAS},
-     * with tnsnames.ora and ojdbc.properties next to it, so no Oracle client tooling (mkstore/orapki) is needed.
-     *
-     * @return JDBC URL of the TNS alias, with the generated directory as TNS_ADMIN
-     */
-    private String walletDbUrl() throws Exception {
-        File tnsAdmin = temporaryFolder.newFolder("tns_admin");
-
-        OracleWallet wallet = new OracleWallet();
-        wallet.create("Wallet_Pwd_123".toCharArray());
-        OracleSecretStore secretStore = wallet.getSecretStore();
-        secretStore.createCredential(WALLET_TNS_ALIAS.toCharArray(), "UT3".toCharArray(), "ut3".toCharArray());
-        wallet.setSecretStore(secretStore);
-        wallet.saveAs(tnsAdmin.getPath());
-        wallet.createSSO();
-        wallet.saveSSO();
-
-        Files.writeString(tnsAdmin.toPath().resolve("tnsnames.ora"),
-                WALLET_TNS_ALIAS + " = (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))"
-                        + "(CONNECT_DATA = (SERVICE_NAME = FREEPDB1)))\n");
-        // ${TNS_ADMIN} is resolved by the JDBC driver, the same way as in wallets downloaded for Oracle Autonomous Database
-        Files.writeString(tnsAdmin.toPath().resolve("ojdbc.properties"),
-                "oracle.net.wallet_location=(SOURCE=(METHOD=FILE)(METHOD_DATA=(DIRECTORY=${TNS_ADMIN})))\n");
-
-        return "jdbc:oracle:thin:@" + WALLET_TNS_ALIAS + "?TNS_ADMIN=" + tnsAdmin.getAbsolutePath().replace('\\', '/');
     }
 
     /**
@@ -411,10 +296,8 @@ public class UtPlsqlMojoTest {
      * Then : Objects are excluded
      */
     @Test
-    public void exclude_object() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("exclude_object");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "exclude_object")
+    void exclude_object(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         utPlsqlMojo.execute();
 
         assertEquals("app.pkg_test_me,app.test_pkg_test_me", utPlsqlMojo.excludeObject);
@@ -428,10 +311,8 @@ public class UtPlsqlMojoTest {
      * Then : Objects are included
      */
     @Test
-    public void include_object() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("include_object");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "include_object")
+    void include_object(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         utPlsqlMojo.execute();
 
         assertEquals("app.pkg_test_me,app.test_pkg_test_me", utPlsqlMojo.includeObject);
@@ -445,10 +326,8 @@ public class UtPlsqlMojoTest {
      * Then : Objects are included
      */
     @Test
-    public void include_object_expr() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("include_object_expr");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "include_object_expr")
+    void include_object_expr(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         utPlsqlMojo.execute();
 
         assertEquals("APP.*", utPlsqlMojo.includeObjectExpr);
@@ -462,10 +341,8 @@ public class UtPlsqlMojoTest {
      * Then : Objects are included
      */
     @Test
-    public void exclude_object_expr() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("exclude_object_expr");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "exclude_object_expr")
+    void exclude_object_expr(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         utPlsqlMojo.execute();
 
         assertEquals("*", utPlsqlMojo.excludeObjectExpr);
@@ -480,10 +357,8 @@ public class UtPlsqlMojoTest {
      * Then : Objects are included
      */
     @Test
-    public void include_schema_expr() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("include_schema_expr");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "include_schema_expr")
+    void include_schema_expr(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         utPlsqlMojo.execute();
 
         assertEquals("APP", utPlsqlMojo.includeSchemaExpr);
@@ -497,17 +372,10 @@ public class UtPlsqlMojoTest {
      * Then : Objects are included
      */
     @Test
-    public void exclude_schema_expr() throws Exception {
-        UtPlsqlMojo utPlsqlMojo = createUtPlsqlMojo("exclude_schema_expr");
-        assertNotNull(utPlsqlMojo);
-
+    @Basedir(UNIT_TESTS + "exclude_schema_expr")
+    void exclude_schema_expr(@InjectMojo(goal = "test", pom = "pom.xml") UtPlsqlMojo utPlsqlMojo) throws Exception {
         utPlsqlMojo.execute();
 
         assertEquals("*", utPlsqlMojo.excludeSchemaExpr);
     }
-
-    private UtPlsqlMojo createUtPlsqlMojo(String directory) throws Exception {
-        return (UtPlsqlMojo) rule.lookupConfiguredMojo(new File("src/test/resources/unit-tests/" + directory), "test");
-    }
-
 }
