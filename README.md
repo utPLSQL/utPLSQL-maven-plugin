@@ -198,8 +198,27 @@ described in [Coverage](https://www.utplsql.org/utPLSQL/latest/userguide/coverag
 | `includeObjectExpr` | Regular expression for the names of objects to include                               |
 | `excludeObjectExpr` | Regular expression for the names of objects to exclude                               |
 
-The regular expression filters need a utPLSQL version that supports them. See
-[Coverage reporting options](https://www.utplsql.org/utPLSQL/latest/userguide/coverage.html#coverage-reporting-options).
+The plugin passes these values unchanged to utPLSQL, which defines their exact semantics. See
+[Filtering objects in coverage reports](https://www.utplsql.org/utPLSQL/latest/userguide/coverage.html#filtering-objects-in-coverage-reports)
+in the utPLSQL documentation. The points that matter most in practice:
+
+* The `*Expr` parameters are regular expressions, matched case-insensitively. They are matched against the schema
+  name (`*SchemaExpr`) or the object name **without** the schema (`*ObjectExpr`). Use `^` and `$` to anchor them,
+  otherwise any partial match counts (`APP` also matches `MY_APP_TEST`).
+* If `includeSchemaExpr` or `includeObjectExpr` is set, utPLSQL ignores `includeObject`. All exclude parameters are
+  always applied and can be combined.
+* utPLSQL ignores all include/exclude filters when file mappings are in use, that is when the plugin finds files for
+  `sources` (explicitly configured, or in the default `src/main/plsql` directory). See
+  [Mapping project files to database objects](#mapping-project-files-to-database-objects). Use the filters when
+  your project does not provide source files to map.
+* Blank values are ignored.
+
+Example: report coverage of all packages in the `APP` schema except those ending in `_TMP`:
+
+```xml
+<includeSchemaExpr>^APP$</includeSchemaExpr>
+<excludeObjectExpr>_TMP$</excludeObjectExpr>
+```
 
 ### Mapping project files to database objects
 
@@ -466,7 +485,10 @@ The plugin's integration tests double as examples, in
 | `--ora-stuck-timeout`              | `oraStuckTimeout`                                        |
 | `-include`                         | `includeObject`                                          |
 | `-exclude`                         | `excludeObject`                                          |
-| not available                      | `includeSchemaExpr`, `excludeSchemaExpr`, `includeObjectExpr`, `excludeObjectExpr` |
+| `-include-schema-expr`             | `includeSchemaExpr`                                      |
+| `-exclude-schema-expr`             | `excludeSchemaExpr`                                      |
+| `-include-object-expr`             | `includeObjectExpr`                                      |
+| `-exclude-object-expr`             | `excludeObjectExpr`                                      |
 | not available                      | `skipUtplsqlTests`                                       |
 | `--coverage-schemes`               | not available                                            |
 | `-t`, `--timeout`                  | not available                                            |
