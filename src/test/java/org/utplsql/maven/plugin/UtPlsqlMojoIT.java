@@ -99,6 +99,20 @@ class UtPlsqlMojoIT {
     }
 
     @MavenTest
+    void include_schema_expr(MavenExecutionResult result) {
+        assertThat(result).isSuccessful();
+
+        assertThatReportsAreGeneratedAsExpected(result, "sonar-test-report.xml", "coverage-sonar-report.xml");
+    }
+
+    @MavenTest
+    void exclude_schema_expr(MavenExecutionResult result) {
+        assertThat(result).isSuccessful();
+
+        assertThatReportsAreGeneratedAsExpected(result, "sonar-test-report.xml", "coverage-sonar-report.xml");
+    }
+
+    @MavenTest
     @SystemProperty(value = "skipTests", content = "true")
     void skip_tests(MavenExecutionResult result) {
         assertThat(result).isSuccessful();
