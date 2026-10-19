@@ -205,8 +205,9 @@ in the utPLSQL documentation. The points that matter most in practice:
 * The `*Expr` parameters are regular expressions, matched case-insensitively. They are matched against the schema
   name (`*SchemaExpr`) or the object name **without** the schema (`*ObjectExpr`). Use `^` and `$` to anchor them,
   otherwise any partial match counts (`APP` also matches `MY_APP_TEST`).
-* If `includeSchemaExpr` or `includeObjectExpr` is set, utPLSQL ignores `includeObject`. All exclude parameters are
-  always applied and can be combined.
+* If `includeSchemaExpr` or `includeObjectExpr` is set, utPLSQL ignores `includeObject`.
+* `excludeSchemaExpr` and `excludeObjectExpr` are both applied. If either of them is set, utPLSQL ignores `excludeObject`.
+  Include and exclude expressions can be combined.
 * utPLSQL ignores all include/exclude filters when file mappings are in use, that is when the plugin finds files for
   `sources` (explicitly configured, or in the default `src/main/plsql` directory). See
   [Mapping project files to database objects](#mapping-project-files-to-database-objects). Use the filters when
